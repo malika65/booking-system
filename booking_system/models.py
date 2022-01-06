@@ -2,16 +2,6 @@ from django.db import models
 
 from datetime import datetime, timedelta
 
-class Guest(models.Model):
-    name = models.CharField(max_length=20)
-    age = models.IntegerField(default=20)
-    phone = models.CharField(max_length=20)
-    email = models.CharField(max_length=20)
-
-
-    def __str__(self) -> str:
-        return self.name
-
 
 class Hotel(models.Model):
     name     = models.CharField(max_length=20)
@@ -40,7 +30,6 @@ class Room(models.Model):
 
 
 class Booking(models.Model):
-    guest         = models.ForeignKey(Guest, on_delete=models.CASCADE)
     hotel         = models.ForeignKey(Hotel, on_delete=models.CASCADE)
     room          = models.ForeignKey(Room, on_delete=models.CASCADE)
     num_of_guest  = models.IntegerField(default=1)

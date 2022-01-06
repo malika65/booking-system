@@ -1,16 +1,9 @@
 from django.db import models
 from rest_framework import fields, serializers
 
-from .models import Guest, Hotel, Room, Booking
+from .models import Hotel, Room, Booking
 
 
-class GuestSerializer(serializers.HyperlinkedModelSerializer):
-
-    class Meta:
-        model = Guest
-        fields = ('name', 'age', 'phone', 'email')
-
-    
 class HotelSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -26,10 +19,9 @@ class RoomSerializer(serializers.ModelSerializer):
 
 
 class BookingSerializer(serializers.ModelSerializer):
-    guest = GuestSerializer()
     hotel = HotelSerializer()
     room  = RoomSerializer()
 
     class Meta:
         model  = Booking
-        fields = ('guest', 'hotel', 'room', 'checkin_date', 'checkout_date', 'is_checkout')
+        fields = ('hotel', 'room', 'checkin_date', 'checkout_date', 'is_checkout')

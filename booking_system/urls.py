@@ -1,7 +1,8 @@
-from django.urls import re_path
+from django.urls import path
 
-from .views import ListView
+from .views import HotelList, HotelDetail
 
 urlpatterns = [
-    re_path(r"^(?P<api_name>[a-z]+)", ListView, name='hotel-objects'),
+    path('hotel-list/', HotelList.as_view()),
+    path('hotel-detail/<int:pk>', HotelDetail.as_view()),
 ]
