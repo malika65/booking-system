@@ -53,6 +53,13 @@ CORS_ALLOWED_ORIGIN_REGEXES = [
     'http://localhost:3000',
 ]
 
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:3000',
+] # If this is used, then not need to use `CORS_ORIGIN_ALLOW_ALL = True`
+CORS_ORIGIN_REGEX_WHITELIST = [
+    'http://localhost:3000',
+]
+
 AUTH_USER_MODEL = 'authe.User'
 
 # Application definition
