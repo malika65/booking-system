@@ -33,7 +33,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-
 CORS_ORIGIN_ALLOW_ALL=True
 
 CORS_ALLOW_CREDENTIALS = True
@@ -52,6 +51,15 @@ CORS_ALLOW_ALL_ORIGINS = True # If this is used then `CORS_ALLOWED_ORIGINS` will
 CORS_ALLOWED_ORIGIN_REGEXES = [
     'http://localhost:3000',
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://silk-travel.herokuapp.com",
+    "https://silk-travel.herokuapp.com",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+
 
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000',
@@ -83,16 +91,18 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'main.middleware.open_access_middleware'
 ]
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
