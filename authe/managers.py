@@ -23,9 +23,9 @@ class CustomUserManager(BaseUserManager):
 
     def create_superuser(self, email, password, **extra_fields):
         extra_fields.setdefault('is_active', True)
-        extra_fields.setdefault('role', 'A')
+        extra_fields.setdefault('role', 1)
 
-        if extra_fields.get('role') != 'A':
+        if extra_fields.get('role') != 1:
             raise ValueError('Superuser must have role of Global Admin')
         user = self.create_user(email, password, **extra_fields)
 
