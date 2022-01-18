@@ -1,6 +1,7 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import get_permission_codename
+from django.contrib.admin.options import InlineModelAdmin
 
 
 class CustomUserManager(BaseUserManager):

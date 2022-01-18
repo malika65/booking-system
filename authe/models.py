@@ -11,24 +11,25 @@ from .managers import CustomUserManager
 
 class User(AbstractBaseUser, PermissionsMixin):    
 
-    ROLE_CHOICES = Choices(
-        ("A", 'Admin'),
-        ("M", 'Manager'),
-        ("E", 'Employee'),
-        ("R", 'Regular User'),
-        ("B", 'Bussiness User'),
-    )
+    ROLE_CHOICES = (
+        (1, 'Admin'),
+        (2, 'Manager'),
+        (3, 'Employee'),
+        (4, 'Regular User'),
+        (5, 'Bussiness User')
+        )
+    
     
     class Meta:
         verbose_name = 'user'
         verbose_name_plural = 'users'
 
-    # Roles created here
+
     uid = models.UUIDField(unique=True, editable=False, default=uuid.uuid4, verbose_name='Public identifier')
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=50, blank=True)
-    role = models.CharField(choices=ROLE_CHOICES, max_length=1, default=ROLE_CHOICES.R)
+    role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, blank=True, null=True, default=4)
     date_joined = models.DateTimeField(auto_now_add=True)
     is_verified = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
