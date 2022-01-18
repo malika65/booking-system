@@ -159,7 +159,6 @@ class UserView(GenericAPIView):
     renderer_classes = (UserJSONRenderer,)
 
     def get(self, request):
-        print(request.headers["Authorization"])
         token = request.META.get('HTTP_AUTHORIZATION', " ").split(" ")[1]
 
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms='HS256')         
