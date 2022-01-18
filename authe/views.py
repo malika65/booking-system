@@ -21,7 +21,7 @@ from .serializers import (EmailVerificationSerializer, LogoutSerializer,
                           UserRegistrationSerializer, UserSerializer)
 
 from.renderer import UserJSONRenderer
-
+from django.contrib.auth import login
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.http import HttpResponsePermanentRedirect
 from django.utils.encoding import (DjangoUnicodeDecodeError, force_str,
@@ -47,14 +47,19 @@ class UserRegistrationView(GenericAPIView):
             user_data = serializer.data
             user = User.objects.get(email=user_data['email'])
             current_site = get_current_site(request).domain
-
+            refresh = RefreshToken.for_user(user)
+            refresh_token = str(refresh)
+            access_token = str(refresh.access_token)
+            login(request, user)
             Util.send_email(user, current_site)
 
             response = {
                 'success': True,
                 'statusCode': status_code,
                 'message': 'User successfully registered!',
-                'user': serializer.data
+                'user': serializer.data,
+                'access_token': access_token,
+                'refresh_token': refresh_token
             }
 
             return Response(response, status=status_code)
@@ -154,9 +159,9 @@ class UserView(GenericAPIView):
     renderer_classes = (UserJSONRenderer,)
 
     def get(self, request):
+        print(request.headers["Authorization"])
+        token = request.META.get('HTTP_AUTHORIZATION', " ").split(" ")[1]
 
-        token = request.META.get('HTTP_AUTHORIZATION', " ")
-        
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms='HS256')         
         user = User.objects.get(id=payload['user_id'])
         
@@ -186,8 +191,6 @@ class RequestPasswordResetEmail(GenericAPIView):
             relativeLink = reverse(
                 'password-reset-confirm', kwargs={'uidb64': uidb64, 'token': token})
 
-            # redirect_url = request.data.get('redirect_url', '')
-            # print(redirect_url)
             absurl = 'http://'+current_site + relativeLink
             email_body = 'Hello, \n Use link below to reset your password  \n' + absurl
             data = {'email_body': email_body, 'to_email': user.email,

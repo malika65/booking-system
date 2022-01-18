@@ -9,14 +9,19 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
 from .models import User
+from rest_framework.fields import ChoiceField
+
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
+    role = serializers.ChoiceField(choices=User.ROLE_CHOICES)
+
     class Meta:
         model = User
         fields = (
             'email',
-            'password'
+            'password',
+            'role'
         )
         # this field does not be in response
         extra_kwargs = {

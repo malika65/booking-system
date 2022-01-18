@@ -1,5 +1,6 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth import get_permission_codename
 
 
 class CustomUserManager(BaseUserManager):
@@ -21,9 +22,9 @@ class CustomUserManager(BaseUserManager):
 
     def create_superuser(self, email, password, **extra_fields):
         extra_fields.setdefault('is_active', True)
-        extra_fields.setdefault('role', 1)
+        extra_fields.setdefault('role', 'A')
 
-        if extra_fields.get('role') != 1:
+        if extra_fields.get('role') != 'A':
             raise ValueError('Superuser must have role of Global Admin')
         user = self.create_user(email, password, **extra_fields)
 
@@ -32,3 +33,12 @@ class CustomUserManager(BaseUserManager):
         user.save()
 
         return user
+
+    def has_delete_permission(self, request, obj=None):
+        if self.opts.auto_created:
+            # We're checking the rights to an auto-created intermediate model,
+            # which doesn't have its own individual permissions. The user needs
+            # to have the change permission for the related model in order to
+            # be able to do anything with the intermediate model.
+            return self.has_change_permission(request, obj)
+        return super(InlineModelAdmin, self).has_delete_permission(request, obj)

@@ -42,7 +42,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
 ]
 
-CSRF_COOKIE_SECURE=False
 
 CSRF_TRUSTED_ORIGINS = ['https://silk-travel.herokuapp.com']
 
@@ -80,6 +79,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'whitenoise.runserver_nostatic',
+    'smart_selects',
     'corsheaders',
     'rest_framework',
     'drf_yasg',
@@ -101,8 +101,13 @@ MIDDLEWARE = [
     'main.middleware.open_access_middleware'
 ]
 
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_SSL_REDIRECT = True
+JQUERY_URL = False
+
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT=False
+SESSION_COOKIE_SECURE=False
+CSRF_COOKIE_SECURE=False
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
@@ -112,13 +117,18 @@ SWAGGER_SETTINGS = {
     'LOGIN_URL': '/admin/login',
     'USE_SESSION_AUTH': True,
     'SECURITY_DEFINITIONS': {
-        'Token': {'type': 'apiKey', 'name': 'Authorization', 'in': 'header'},
+        'api_key': {
+            'type': 'apiKey', 
+            'in': 'header',
+            'name': 'Authorization'
+            },
     },
     'JSON_EDITOR': True,
     'SHOW_REQUEST_HEADERS': True,
     'OPERATIONS_SORTER': 'alpha',
     'PERSIST_AUTH': True,
 }
+
 
 # REST framework settings
 REST_FRAMEWORK = {
@@ -127,7 +137,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication'
     ),
 }
@@ -242,7 +252,7 @@ EMAIL_BCC = 'Qualle'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'muratbekovamalika00@gmail.com'
-EMAIL_HOST_PASSWORD = 'xkwklpdmxjhozyya'
+EMAIL_HOST_PASSWORD = 'snqljefirendbekv'
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
