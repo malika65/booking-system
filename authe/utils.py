@@ -21,7 +21,7 @@ class Util:
     def send_email(user, current_site):
         token = RefreshToken.for_user(user).access_token
         relativeLink = reverse('email-verify')
-        absurl = 'http://'+current_site+relativeLink+"?token="+str(token)
+        absurl = 'http://'+current_site+relativeLink+"?token=Bearer "+str(token)
         email_body = 'Hi '+user.email + \
                 ' Use the link below to verify your email \n' + absurl
         data = {'email_body': email_body, 'to_email': user.email,
