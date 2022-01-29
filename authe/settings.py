@@ -5,7 +5,7 @@ from django.test.signals import setting_changed
 from django.utils.translation import gettext_lazy as _
 from rest_framework.settings import APISettings as _APISettings
 
-from .utils import format_lazy
+from .token_utils import format_lazy
 
 USER_SETTINGS = getattr(settings, 'SIMPLE_JWT', None)
 
