@@ -9,14 +9,20 @@ from model_utils import Choices
 from .managers import CustomUserManager
 
 
-class User(AbstractBaseUser, PermissionsMixin):    
+class User(AbstractBaseUser, PermissionsMixin): 
+
+    ADMIN = 1
+    MANAGER = 2
+    EMPLOYEE = 3
+    REGULAR_USER = 4
+    BUSSINESS_USER = 5  
 
     ROLE_CHOICES = (
-        (1, 'Admin'),
-        (2, 'Manager'),
-        (3, 'Employee'),
-        (4, 'Regular User'),
-        (5, 'Bussiness User')
+        (ADMIN, 'Admin'),
+        (MANAGER, 'Managers'),
+        (EMPLOYEE, 'Employee'),
+        (REGULAR_USER, 'Regular User'),
+        (BUSSINESS_USER, 'Bussiness User')
         )
     
     
@@ -29,7 +35,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=50, blank=True)
-    role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, blank=True, null=True, default=4)
+    role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, blank=True, null=True, default=REGULAR_USER)
     date_joined = models.DateTimeField(auto_now_add=True)
     is_verified = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
