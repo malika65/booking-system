@@ -10,7 +10,8 @@ from .views import (
     ResendVerifyEmailView,
     RequestPasswordResetEmail,
     PasswordTokenCheckAPI,
-    SetNewPasswordAPIView
+    SetNewPasswordAPIView,
+    SendRequestToRegisterAPIView
 )
 
 urlpatterns = [
@@ -26,5 +27,6 @@ urlpatterns = [
     path('password-reset/<uidb64>/<token>/',
          PasswordTokenCheckAPI.as_view(), name='password-reset-confirm'),
     path('password-reset-complete/', SetNewPasswordAPIView.as_view(),
-         name='password-reset-complete')
+         name='password-reset-complete'),
+    path('request-to-register/', SendRequestToRegisterAPIView.as_view(), name='request-to-register'),
 ]

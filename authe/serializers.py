@@ -147,3 +147,18 @@ class SetNewPasswordSerializer(serializers.Serializer):
             raise AuthenticationFailed('The reset link is invalid', 401)
         return super().validate(attrs)
 
+
+class UserRegisterRequestSerializer(serializers.Serializer):
+    fio = serializers.CharField(max_length=120)
+    object_name = serializers.CharField(max_length=120)
+    address = serializers.CharField(max_length=120)
+    phone = serializers.CharField(max_length=120)
+    email = serializers.EmailField()
+    # message = serializers.CharField(max_length=128, write_only=True)
+    # subject = serializers.CharField(max_length=128, write_only=True)
+    # file_field = serializers.FileField(max_length=200, allow_empty_file=False, write_only=True)
+  
+    class Meta:
+        fields = ['fio', 'object_name', 'address', 'phone', 'email']
+
+

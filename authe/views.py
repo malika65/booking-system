@@ -18,7 +18,8 @@ from .models import User
 from .serializers import (EmailVerificationSerializer, LogoutSerializer,
                           ResetPasswordEmailRequestSerializer,
                           SetNewPasswordSerializer, UserLoginSerializer,
-                          UserRegistrationSerializer, UserSerializer)
+                          UserRegistrationSerializer, UserSerializer,
+                          UserRegisterRequestSerializer)
 
 from.renderer import UserJSONRenderer
 from django.contrib.auth import login
@@ -30,6 +31,10 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
 from .utils import Util
 
+from django.http import HttpResponse
+from django.core.mail import send_mail, EmailMessage
+from rest_framework.parsers import FileUploadParser 
+from rest_framework.parsers import FormParser, MultiPartParser
 
 class UserRegistrationView(GenericAPIView):
     serializer_class = UserRegistrationSerializer
@@ -231,3 +236,27 @@ class SetNewPasswordAPIView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         return Response({'success': True, 'message': 'Password reset success'}, status=status.HTTP_200_OK)
 
+
+class SendRequestToRegisterAPIView(GenericAPIView):
+    serializer_class = UserRegisterRequestSerializer
+    permission_classes = (AllowAny,)
+    parser_classes = (FormParser, MultiPartParser)
+
+    def post(self, request, *args, **kwargs):
+        fio = request.data.get('fio', '')
+        object_name = request.data.get('object_name', '')
+        address = request.data.get('address', '')
+        phone = request.data.get('phone', '')
+        email = request.data.get('email', '')
+        message = f'Заявка от отеля: {object_name}<br>'\
+            f'ФИО заявителя: {fio}<br>'\
+            f'Адрес: {address}<br>'\
+            f'Контактный номер" {phone}<br>'\
+            f'Email" {email}'
+        subject = 'Заявка от отеля'
+
+        email = EmailMessage(subject, message, settings.EMAIL_HOST, [settings.EMAIL_HOST_USER])
+        email.content_subtype = 'html'
+
+        email.send()
+        return HttpResponse("Sent")
