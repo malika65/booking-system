@@ -6,7 +6,7 @@ from django.utils.encoding import (DjangoUnicodeDecodeError, force_str,
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from rest_framework import serializers
 from rest_framework.exceptions import AuthenticationFailed
-from .token import RefreshToken, TokenError
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
 from .models import User
 from rest_framework.fields import ChoiceField
