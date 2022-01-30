@@ -1,16 +1,21 @@
 from django.contrib import admin
 
 from .models import User
-from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
+
+from rest_framework_simplejwt import token_blacklist
 
 class PersonAdmin(admin.ModelAdmin):
     model = User
-    
-    def BE_AWARE_NO_WARNING_clear_tokens_and_delete(self, request, queryset):
-        users = queryset.values("id")
-        OutstandingToken.objects.filter(user__id__in=users).delete()
-        queryset.delete()
+    def has_delete_permission(self, request, obj=None):
+        return True
 
-    actions = ["BE_AWARE_NO_WARNING_clear_tokens_and_delete"]
+
+class OutstandingTokenAdmin(token_blacklist.admin.OutstandingTokenAdmin):
+
+    def has_delete_permission(self, *args, **kwargs):
+        return True # or whatever logic you want
+
+admin.site.unregister(token_blacklist.models.OutstandingToken)
+admin.site.register(token_blacklist.models.OutstandingToken, OutstandingTokenAdmin)
 
 admin.site.register(User)
