@@ -10,6 +10,7 @@ from .models import (
     Category,
     FoodCategory,
     HotelCategory,
+    Characteristics
 )
 
 
@@ -32,10 +33,15 @@ class RoomTypeInline(admin.TabularInline):
     model = RoomType
 
 
+class CharacteristicsInline(admin.TabularInline):
+    model = Characteristics
+
+
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
     inlines = [
         RoomTypeInline,
+        CharacteristicsInline,
     ]
 
 

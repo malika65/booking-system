@@ -6,14 +6,13 @@ from rest_framework_simplejwt import token_blacklist
 
 class PersonAdmin(admin.ModelAdmin):
     model = User
-    def has_delete_permission(self, request, obj=None):
-        return True
 
 
 class OutstandingTokenAdmin(token_blacklist.admin.OutstandingTokenAdmin):
 
     def has_delete_permission(self, *args, **kwargs):
         return True # or whatever logic you want
+
 
 admin.site.unregister(token_blacklist.models.OutstandingToken)
 admin.site.register(token_blacklist.models.OutstandingToken, OutstandingTokenAdmin)

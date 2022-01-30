@@ -101,6 +101,10 @@ class Room(models.Model):
     class Meta:
         verbose_name_plural = "7. Номера"
 
+class Characteristics(models.Model):
+    name = models.CharField(max_length=50)
+    capacity = models.IntegerField(default=1)
+    room_id = models.ForeignKey(Room, null=True, blank=True, on_delete=models.CASCADE)
 
 class RoomType(models.Model):
     type_name = models.CharField(max_length=50, null=True, blank=True)

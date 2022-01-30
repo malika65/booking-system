@@ -240,9 +240,11 @@ class SetNewPasswordAPIView(GenericAPIView):
 class SendRequestToRegisterAPIView(GenericAPIView):
     serializer_class = UserRegisterRequestSerializer
     permission_classes = (AllowAny,)
-    parser_classes = (FormParser, MultiPartParser)
+    # parser_classes = (FormParser, MultiPartParser)
+    renderer_classes = (UserJSONRenderer,)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
+        print(request)
         fio = request.data.get('fio', '')
         object_name = request.data.get('object_name', '')
         address = request.data.get('address', '')
