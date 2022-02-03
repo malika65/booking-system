@@ -5,6 +5,7 @@ from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.utils import timezone
 from model_utils import Choices
+from django.utils.crypto import get_random_string
 
 from .managers import CustomUserManager
 
@@ -60,3 +61,17 @@ class User(AbstractBaseUser, PermissionsMixin):
         super().delete(*args, **kwargs)
 
     
+class ConfirmCode(models.Model):
+    code = models.CharField(max_length=6)
+    confirm = models.BooleanField(default=False)
+    user = models.ForeignKey(User, related_name = 'codes' , on_delete=models.CASCADE)
+    reset = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = 'Код подтверждения'
+        verbose_name_plural = 'Коды подтверждения'
+
+    def save(self, *args, **kwargs):
+        if not self.code:
+            self.code = get_random_string(length=6)
+        super(ConfirmCode, self).save(*args, **kwargs)

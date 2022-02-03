@@ -14,7 +14,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .models import User
+from .models import User, ConfirmCode
 from .serializers import (EmailVerificationSerializer, LogoutSerializer,
                           ResetPasswordEmailRequestSerializer,
                           SetNewPasswordSerializer, UserLoginSerializer,
@@ -51,12 +51,13 @@ class UserRegistrationView(GenericAPIView):
 
             user_data = serializer.data
             user = User.objects.get(email=user_data['email'])
-            current_site = get_current_site(request).domain
+            code = ConfirmCode.objects.create(user=user)
+            # current_site = get_current_site(request).domain
             refresh = RefreshToken.for_user(user)
             refresh_token = str(refresh)
             access_token = str(refresh.access_token)
             login(request, user)
-            Util.send_email(user, current_site)
+            Util.send_code_to_email(user, code.code)
 
             response = {
                 'success': True,
@@ -74,9 +75,19 @@ class VerifyEmail(APIView):
     permission_classes = (AllowAny, )
     renderer_classes = (UserJSONRenderer,)
 
-    def get(self, request, token):
+    def get(self, request, code):
 
         try:
+            if ConfirmCode.objects.filter(code=code):
+                code = ConfirmCode.objects.get(code=code)
+                if not code.confirm:
+                    code.confirm = True
+                    code.user.verified = True
+                    code.user.save()
+                    code.save()         
+            
+            token = request.META.get('HTTP_AUTHORIZATION', " ").split(" ")[1]
+
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms='HS256')         
             user = User.objects.get(id=payload['user_id'])
 

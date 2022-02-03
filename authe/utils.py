@@ -30,6 +30,15 @@ class Util:
             subject=data['email_subject'], body=data['email_body'], to=[data['to_email']])
         EmailThread(email).start()
 
+    @staticmethod
+    def send_code_to_email(user, code):
+        email_body = code
+        data = {'email_body': email_body, 'to_email': user.email,
+                    'email_subject': 'Ваш код для подтверждения почты'}
+        email = EmailMessage(
+            subject=data['email_subject'], body=data['email_body'], to=[data['to_email']])
+        EmailThread(email).start()
+
     def send_reset_email(data):
         email = EmailMessage(
             subject=data['email_subject'], body=data['email_body'], to=[data['to_email']])
