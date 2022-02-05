@@ -113,13 +113,12 @@ class ResendVerifyEmailView(GenericAPIView):
         email = request.data['email']
         try:
             user = User.objects.get(email=email)
+            code = ConfirmCode.objects.create(user=user)
        
             if user.is_verified:
                 return Response({'msg':'User is already verified'})
-            
-            current_site= get_current_site(request).domain
-            
-            Util.send_email(user, current_site)
+                        
+            Util.send_code_to_email(user, code.code)
             return Response({'msg':'The verification email has been sent'}, status=status.HTTP_201_CREATED)
         except User.DoesNotExist:
             return Response({'msg':'No such user, register first'})
@@ -255,7 +254,6 @@ class SendRequestToRegisterAPIView(GenericAPIView):
     renderer_classes = (UserJSONRenderer,)
 
     def post(self, request):
-        print(request)
         fio = request.data.get('fio', '')
         object_name = request.data.get('object_name', '')
         address = request.data.get('address', '')
