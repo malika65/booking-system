@@ -71,9 +71,9 @@ class Hotel(models.Model):
         show_all=False,
         auto_choose=True,
         sort=True, blank=True, null=True)
-    food_category = models.ManyToManyField(FoodCategory, blank=True, null=True)
-    hotel_category = models.ManyToManyField(HotelCategory, blank=True, null=True)
-    category_id = models.ManyToManyField(Category, null=True, blank=True, default="Hotel")
+    food_category = models.ManyToManyField(FoodCategory, blank=True)
+    hotel_category = models.ManyToManyField(HotelCategory, blank=True)
+    category_id = models.ManyToManyField(Category, blank=True, default="Hotel")
     is_active = models.BooleanField(default=True)
 
 

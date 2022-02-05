@@ -94,6 +94,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'booking_system',
     'authe.apps.AutheConfig',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -266,3 +267,9 @@ EMAIL_USE_SSL = False
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 SERVER_EMAIL = 'muratbekovamalika00@gmail.com'
+
+
+GRAPH_MODELS = {
+  'all_applications': True,
+  'group_models': True,
+}

@@ -85,9 +85,8 @@ class VerifyEmail(APIView):
                     code.user.verified = True
                     code.user.save()
                     code.save()         
-            
-            token = request.META.get('HTTP_AUTHORIZATION', " ").split(" ")[1]
-
+            token = request.headers['Authorization'].split(' ').pop()
+           
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms='HS256')         
             user = User.objects.get(id=payload['user_id'])
 
@@ -174,7 +173,7 @@ class UserView(GenericAPIView):
     renderer_classes = (UserJSONRenderer,)
 
     def get(self, request):
-        token = request.META.get('HTTP_AUTHORIZATION', " ").split(" ")[1]
+        token = request.headers['Authorization'].split(' ').pop()
 
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms='HS256')         
         user = User.objects.get(id=payload['user_id'])
