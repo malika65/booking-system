@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import User
+from .models import User, ConfirmCode
 
 from rest_framework_simplejwt import token_blacklist
 
@@ -18,3 +18,4 @@ admin.site.unregister(token_blacklist.models.OutstandingToken)
 admin.site.register(token_blacklist.models.OutstandingToken, OutstandingTokenAdmin)
 
 admin.site.register(User)
+admin.site.register(ConfirmCode)

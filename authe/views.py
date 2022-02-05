@@ -1,4 +1,5 @@
 import os
+from traceback import print_tb
 import jwt
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
@@ -52,7 +53,6 @@ class UserRegistrationView(GenericAPIView):
             user_data = serializer.data
             user = User.objects.get(email=user_data['email'])
             code = ConfirmCode.objects.create(user=user)
-            # current_site = get_current_site(request).domain
             refresh = RefreshToken.for_user(user)
             refresh_token = str(refresh)
             access_token = str(refresh.access_token)
@@ -79,23 +79,21 @@ class VerifyEmail(APIView):
 
         try:
             if ConfirmCode.objects.filter(code=code):
-                code = ConfirmCode.objects.get(code=code)
+                token = request.headers['Authorization'].split(' ').pop()
+                payload = jwt.decode(token, settings.SECRET_KEY, algorithms='HS256')         
+                user = User.objects.get(id=payload['user_id'])
+                code = ConfirmCode.objects.get(code=code, user=user)
                 if not code.confirm:
                     code.confirm = True
-                    code.user.verified = True
+                    code.user.is_verified = True
                     code.user.save()
-                    code.save()         
-            token = request.headers['Authorization'].split(' ').pop()
+                    code.save()
+                    return Response({'email': 'Successfully activated'}, status=status.HTTP_200_OK)
+                return Response({'email': 'Already activated'}, status=status.HTTP_200_OK)        
+        
            
-            payload = jwt.decode(token, settings.SECRET_KEY, algorithms='HS256')         
-            user = User.objects.get(id=payload['user_id'])
+            return Response({'email': 'Code is outdated or incorrect'}, status=status.HTTP_200_OK)
 
-            if not user.is_verified:
-                user.is_verified = True
-                user.save()
-                return Response({'email': 'Successfully activated'}, status=status.HTTP_200_OK)
-
-            return Response({'email':'User is already verified'}, status=status.HTTP_409_CONFLICT)
         except jwt.ExpiredSignatureError as identifier:
             return Response({'error': 'Activation Expired'}, status=status.HTTP_400_BAD_REQUEST)
         except jwt.exceptions.DecodeError as identifier:
