@@ -61,7 +61,7 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_HEADERS = [
     'accept',
     'accept-encoding',
-    'authorization',
+    'http_authorization',
     'content-type',
     'dnt',
     'origin',
