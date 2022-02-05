@@ -2,6 +2,7 @@ from django.db import models
 
 from datetime import datetime, timedelta
 from authe.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 from smart_selects.db_fields import ChainedForeignKey
 
@@ -18,6 +19,7 @@ class Category(models.Model):
 
 class FoodCategory(models.Model):
     foodcategory_name = models.CharField(max_length=50)
+    foodcategory_abbreviation = models.CharField(max_length=2, default=None)
 
     def __str__(self) -> str:
             return self.foodcategory_name or ''
@@ -28,6 +30,10 @@ class FoodCategory(models.Model):
 
 class HotelCategory(models.Model):
     hotelcategory_name = models.CharField(max_length=50)
+    hotelcategory_stars = models.IntegerField(default=1, validators=[
+            MaxValueValidator(5),
+            MinValueValidator(1)
+        ])
 
     def __str__(self) -> str:
             return self.hotelcategory_name or ''
