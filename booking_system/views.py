@@ -8,9 +8,15 @@ from .serializers import HotelSerializer, BookingSerializer
 
 from collections import namedtuple
 
+from rest_framework import filters
 
+class DynamicSearchFilter(filters.SearchFilter):
+    def get_search_fields(self, view, request):
+        return request.GET.getlist('search_fields', [])
 
 class HotelList(generics.ListCreateAPIView):
+    # search_fields = ['question_text']
+    filter_backends = (DynamicSearchFilter,)
     queryset = Hotel.objects.all()
     serializer_class = HotelSerializer
     permission_classes = (AllowAny,)
