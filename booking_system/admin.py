@@ -7,10 +7,11 @@ from .models import (
     Room, 
     RoomType, 
     Booking, 
-    Category,
+    FacilitiesAndServicesHotels,
+    FacilitiesAndServicesRooms,
     FoodCategory,
-    HotelCategory,
-    Characteristics
+    HotelCategoryStars,
+    Characteristics,
 )
 
 
@@ -45,8 +46,9 @@ class RoomAdmin(admin.ModelAdmin):
     ]
 
 
-admin.site.register(Category)
+admin.site.register(FacilitiesAndServicesHotels)
 admin.site.register(Booking)
 admin.site.register(FoodCategory)
-admin.site.register(HotelCategory)
+admin.site.register(HotelCategoryStars)
+admin.site.register(FacilitiesAndServicesRooms)
 
