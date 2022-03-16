@@ -97,7 +97,6 @@ INSTALLED_APPS = [
     'booking_system',
     'authe.apps.AutheConfig',
     'django_extensions',
-    'nested_inline',
 ]
 
 MIDDLEWARE = [

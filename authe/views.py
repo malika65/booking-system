@@ -287,3 +287,46 @@ class SendRequestToRegisterAPIView(GenericAPIView):
 
         email.send()
         return HttpResponse("Заявка была отправлена")
+
+
+class SendRequestToRegisterHotelAPIView(GenericAPIView):
+    serializer_class = UserRegisterRequestSerializer
+    permission_classes = (AllowAny,)
+    parser_classes = (FormParser, MultiPartParser)
+    renderer_classes = (UserJSONRenderer,)
+
+    def post(self, request):
+        fio = request.data.get('fio', '')
+        object_name = request.data.get('object_name', '')
+        phone = request.data.get('phone', '')
+        email = request.data.get('email', '')
+        gos_register = request.FILES['gos_register']
+        reshenie_o_sozd_yr_lisa = request.data.get('reshenie_o_sozd_yr_lisa', '')
+        uchredit_dogovor = request.data.get('uchredit_dogovor', '')
+        spravka_iz_nalogovoi = request.data.get('spravka_iz_nalogovoi', '')
+        spravka_iz_sozfond = request.data.get('spravka_iz_sozfond', '')
+        pasport = request.data.get('pasport', '')
+        message = f'Заявка от юр. лица: {object_name}<br>'\
+            f'ФИО заявителя: {fio}<br>'\
+            f'Контактный номер: {phone}<br>'\
+            f'Email: {email}<br>'\
+            f'Свидетельво о гос. регистрации: {gos_register}<br>'\
+            f'Решение о создании юр. лица: {reshenie_o_sozd_yr_lisa}<br>'\
+            f'Учредительный договор: {uchredit_dogovor}<br>'\
+            f'Справка с налоговой о неимении задолженности: {spravka_iz_nalogovoi}<br>'\
+            f'Справка из соц. фонда о неимении задолженности: {spravka_iz_sozfond}<br>'\
+            f'Копия паспорта директора: {pasport}'
+        subject = 'Заявка на регистрацию'
+
+        email = EmailMessage(subject, message, settings.EMAIL_HOST, [settings.EMAIL_HOST_USER])
+        email.content_subtype = 'html'
+
+        email.attach("Свидетельво о гос. регистрации", gos_register.read(), gos_register.content_type)
+        email.attach("Решение о создании юр. лица", reshenie_o_sozd_yr_lisa.read(), reshenie_o_sozd_yr_lisa.content_type)
+        email.attach("Учредительный договор", uchredit_dogovor.read(), uchredit_dogovor.content_type)
+        email.attach("Справка с налоговой о неимении задолженности", spravka_iz_nalogovoi.read(), spravka_iz_nalogovoi.content_type)
+        email.attach("Справка из соц. фонда о неимении задолженности", spravka_iz_sozfond.read(), spravka_iz_sozfond.content_type)
+        email.attach("Копия паспорта директора", pasport.read(), pasport.content_type)
+
+        email.send()
+        return HttpResponse("Заявка была отправлена")

@@ -1,6 +1,5 @@
 from re import A
 from django.contrib import admin
-from nested_inline.admin import NestedStackedInline, NestedModelAdmin, NestedTabularInline
 
 from .models import (
     Hotel, 
@@ -26,15 +25,6 @@ class CountryAdmin(admin.ModelAdmin):
     inlines = [
         CityInline,
     ]
-
-# class CharacteristicsInline(admin.TabularInline):
-#     model = Characteristics
-
-# class RoomTabularInline(NestedTabularInline):
-#     model = Room
-#     extra = 1
-#     inlines = [CharacteristicsInline, ]
-
 
 
 
