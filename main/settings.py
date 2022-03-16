@@ -97,6 +97,7 @@ INSTALLED_APPS = [
     'booking_system',
     'authe.apps.AutheConfig',
     'django_extensions',
+    'nested_inline',
 ]
 
 MIDDLEWARE = [
@@ -144,7 +145,7 @@ SWAGGER_SETTINGS = {
 # REST framework settings
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -173,7 +174,7 @@ SIMPLE_JWT = {
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates/')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

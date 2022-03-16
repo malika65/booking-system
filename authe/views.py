@@ -194,6 +194,7 @@ class RequestPasswordResetEmail(GenericAPIView):
 
         if User.objects.filter(email=email).exists():
             user = User.objects.get(email=email)
+            
             uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
             token = PasswordResetTokenGenerator().make_token(user)
             current_site = get_current_site(
@@ -217,6 +218,7 @@ class CustomRedirect(HttpResponsePermanentRedirect):
 
 class PasswordTokenCheckAPI(GenericAPIView):
     serializer_class = SetNewPasswordSerializer
+    permission_classes = (AllowAny, )
 
     def get(self, request, uidb64, token):
 
@@ -226,17 +228,17 @@ class PasswordTokenCheckAPI(GenericAPIView):
 
             if not PasswordResetTokenGenerator().check_token(user, token):
                 return Response({'error': 'Token is not valid, please request a new one'}, status=status.HTTP_401_UNAUTHORIZED)
-
+            
             return Response({'success': True, 'message': 'Credentials Valid', 'uidb64': uidb64, 'token': token}, status=status.HTTP_200_OK)
 
         except DjangoUnicodeDecodeError as identifier:
             if not PasswordResetTokenGenerator().check_token(user):
                 return Response({'error': 'Token is not valid, please request a new one'}, status=status.HTTP_401_UNAUTHORIZED)
-
-
+    
 
 class SetNewPasswordAPIView(GenericAPIView):
     serializer_class = SetNewPasswordSerializer
+    permission_classes = (AllowAny, )
 
     def patch(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -247,24 +249,41 @@ class SetNewPasswordAPIView(GenericAPIView):
 class SendRequestToRegisterAPIView(GenericAPIView):
     serializer_class = UserRegisterRequestSerializer
     permission_classes = (AllowAny,)
-    # parser_classes = (FormParser, MultiPartParser)
+    parser_classes = (FormParser, MultiPartParser)
     renderer_classes = (UserJSONRenderer,)
 
     def post(self, request):
         fio = request.data.get('fio', '')
         object_name = request.data.get('object_name', '')
-        address = request.data.get('address', '')
         phone = request.data.get('phone', '')
         email = request.data.get('email', '')
-        message = f'Заявка от отеля: {object_name}<br>'\
+        gos_register = request.FILES['gos_register']
+        reshenie_o_sozd_yr_lisa = request.data.get('reshenie_o_sozd_yr_lisa', '')
+        uchredit_dogovor = request.data.get('uchredit_dogovor', '')
+        spravka_iz_nalogovoi = request.data.get('spravka_iz_nalogovoi', '')
+        spravka_iz_sozfond = request.data.get('spravka_iz_sozfond', '')
+        pasport = request.data.get('pasport', '')
+        message = f'Заявка от юр. лица: {object_name}<br>'\
             f'ФИО заявителя: {fio}<br>'\
-            f'Адрес: {address}<br>'\
-            f'Контактный номер" {phone}<br>'\
-            f'Email" {email}'
-        subject = 'Заявка от отеля'
+            f'Контактный номер: {phone}<br>'\
+            f'Email: {email}<br>'\
+            f'Свидетельво о гос. регистрации: {gos_register}<br>'\
+            f'Решение о создании юр. лица: {reshenie_o_sozd_yr_lisa}<br>'\
+            f'Учредительный договор: {uchredit_dogovor}<br>'\
+            f'Справка с налоговой о неимении задолженности: {spravka_iz_nalogovoi}<br>'\
+            f'Справка из соц. фонда о неимении задолженности: {spravka_iz_sozfond}<br>'\
+            f'Копия паспорта директора: {pasport}'
+        subject = 'Заявка на регистрацию'
 
         email = EmailMessage(subject, message, settings.EMAIL_HOST, [settings.EMAIL_HOST_USER])
         email.content_subtype = 'html'
 
+        email.attach("Свидетельво о гос. регистрации", gos_register.read(), gos_register.content_type)
+        email.attach("Решение о создании юр. лица", reshenie_o_sozd_yr_lisa.read(), reshenie_o_sozd_yr_lisa.content_type)
+        email.attach("Учредительный договор", uchredit_dogovor.read(), uchredit_dogovor.content_type)
+        email.attach("Справка с налоговой о неимении задолженности", spravka_iz_nalogovoi.read(), spravka_iz_nalogovoi.content_type)
+        email.attach("Справка из соц. фонда о неимении задолженности", spravka_iz_sozfond.read(), spravka_iz_sozfond.content_type)
+        email.attach("Копия паспорта директора", pasport.read(), pasport.content_type)
+
         email.send()
-        return HttpResponse("Sent")
+        return HttpResponse("Заявка была отправлена")

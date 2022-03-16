@@ -14,14 +14,12 @@ from rest_framework.fields import ChoiceField
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
-    role = serializers.ChoiceField(choices=User.ROLE_CHOICES)
-
+   
     class Meta:
         model = User
         fields = (
             'email',
-            'password',
-            'role'
+            'password'
         )
         # this field does not be in response
         extra_kwargs = {
@@ -31,6 +29,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         auth_user = User.objects.create_user(**validated_data)
         return auth_user
+
 
 
 class EmailVerificationSerializer(serializers.ModelSerializer):
@@ -151,14 +150,20 @@ class SetNewPasswordSerializer(serializers.Serializer):
 class UserRegisterRequestSerializer(serializers.Serializer):
     fio = serializers.CharField(max_length=120)
     object_name = serializers.CharField(max_length=120)
-    address = serializers.CharField(max_length=120)
     phone = serializers.CharField(max_length=120)
     email = serializers.EmailField()
-    # message = serializers.CharField(max_length=128, write_only=True)
-    # subject = serializers.CharField(max_length=128, write_only=True)
-    # file_field = serializers.FileField(max_length=200, allow_empty_file=False, write_only=True)
-  
+    gos_register = serializers.FileField(max_length=200, allow_empty_file=False, write_only=True)
+    reshenie_o_sozd_yr_lisa = serializers.FileField(max_length=200, allow_empty_file=False, write_only=True)
+    uchredit_dogovor = serializers.FileField(max_length=200, allow_empty_file=False, write_only=True)
+    spravka_iz_nalogovoi = serializers.FileField(max_length=200, allow_empty_file=False, write_only=True)
+    spravka_iz_sozfond = serializers.FileField(max_length=200, allow_empty_file=False, write_only=True)
+    pasport = serializers.FileField(max_length=200, allow_empty_file=False, write_only=True)
+
     class Meta:
-        fields = ['fio', 'object_name', 'address', 'phone', 'email']
+        fields = ['fio', 'object_name', 
+        'phone', 'email', 'gos_register', 
+        'reshenie_o_sozd_yr_lisa', 'uchredit_dogovor',
+        'spravka_iz_nalogovoi', 'spravka_iz_sozfond',
+        'pasport']
 
 

@@ -6,6 +6,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 from smart_selects.db_fields import ChainedForeignKey
 
+
 class FacilitiesAndServicesHotels(models.Model):
     hotel_category_name = models.CharField(max_length=50, verbose_name='Наименование услуги и удобств отеля')
 
@@ -24,7 +25,7 @@ class FacilitiesAndServicesRooms(models.Model):
             
 
     class Meta:
-        verbose_name_plural = "8. Удобства и услуги комнат"
+        verbose_name_plural = "9. Удобства и услуги комнат"
 
 class FoodCategory(models.Model):
     foodcategory_name = models.CharField(max_length=50, verbose_name='Категория питания')
@@ -70,11 +71,42 @@ class City(models.Model):
             return self.city_name or ''
 
 
+
+class Characteristics(models.Model):
+    name = models.CharField(max_length=50, verbose_name='Название')
+    capacity = models.IntegerField(default=1, verbose_name='Вместимость')
+    # hotel_id = models.ForeignKey(Hotel, null=True, blank=True, on_delete=models.CASCADE, verbose_name='Отель')
+
+    def __str__(self) -> str:
+        return self.name or ''
+
+
+    class Meta:
+        verbose_name_plural = "8. Характеристики"
+
+
+class Room(models.Model):
+    room_name = models.CharField(max_length=50, null=True, blank=True, verbose_name='Название комнаты')
+    room_no = models.IntegerField(default=101, null=True, blank=True, verbose_name='Номер комнаты')
+    room_description = models.TextField(max_length=1500, null=True, blank=True, verbose_name='Описание комнаты')
+    price = models.FloatField(default=1000.0, null=True, blank=True, verbose_name='Цена')
+    category_id = models.ManyToManyField(FacilitiesAndServicesRooms, blank=True, default="Hotel", verbose_name='Удобства и услуги комнаты')
+    characteristics_id = models.ManyToManyField(Characteristics, blank=True, verbose_name='Комната')
+
+
+    def __str__(self) -> str:
+        return self.room_name or ''
+
+
+    class Meta:
+        verbose_name_plural = "7. Типы Номеров"
+
+
 class Hotel(models.Model):
     hotel_name = models.CharField(max_length=20, null=True, blank=True, verbose_name='Название отеля')
     hotel_address = models.CharField(max_length=50, null=True, blank=True, verbose_name='Адрес отеля')
     hotel_description = models.TextField(max_length=1500, null=True, blank=True, verbose_name='Описание отеля')
-    hotel_phone = models.CharField(max_length=20, null=True, blank=True, verbose_name='Номер отеля')
+    hotel_phone = models.CharField(max_length=20, null=True, blank=True, verbose_name='Номер телефона отеля')
     country = models.ForeignKey(Country, blank=True, null=True, on_delete=models.CASCADE, verbose_name='Страна')
     city = ChainedForeignKey(
         City,
@@ -87,6 +119,7 @@ class Hotel(models.Model):
     hotel_category = models.ManyToManyField(HotelCategoryStars, blank=True, verbose_name='Звезды отеля')
     category_id = models.ManyToManyField(FacilitiesAndServicesHotels, blank=True, default="Hotel", verbose_name='Удобства и услуги')
     is_active = models.BooleanField(default=True, verbose_name='Активный')
+    room_id = models.ManyToManyField(Room, blank=True, verbose_name='Типы комнат')
 
 
     class Meta:
@@ -95,38 +128,6 @@ class Hotel(models.Model):
 
     def __str__(self) -> str:
         return self.hotel_name or ''
-
-
-class Room(models.Model):
-    room_name = models.CharField(max_length=50, null=True, blank=True, verbose_name='Название комнаты')
-    room_no = models.IntegerField(default=101, null=True, blank=True, verbose_name='Номер комнаты')
-    room_description = models.TextField(max_length=1500, null=True, blank=True, verbose_name='Описание комнаты')
-    price = models.FloatField(default=1000.0, null=True, blank=True, verbose_name='Цена')
-    hotel_id = models.ForeignKey(Hotel, null=True, blank=True, on_delete=models.CASCADE, verbose_name='Отель')
-    category_id = models.ManyToManyField(FacilitiesAndServicesRooms, blank=True, default="Hotel", verbose_name='Удобства и услуги комнаты')
-    is_booked = models.BooleanField(default=False, verbose_name='Забронирован') 
-
-
-    def __str__(self) -> str:
-        return self.room_name or ''
-
-
-    class Meta:
-        verbose_name_plural = "7. Номера"
-
-class Characteristics(models.Model):
-    name = models.CharField(max_length=50, verbose_name='Название')
-    capacity = models.IntegerField(default=1, verbose_name='Вместимость')
-    room_id = models.ForeignKey(Room, null=True, blank=True, on_delete=models.CASCADE, verbose_name='Комната')
-
-class RoomType(models.Model):
-    type_name = models.CharField(max_length=50, null=True, blank=True, verbose_name='Название')
-    room_id = models.ForeignKey(Room, null=True, blank=True, on_delete=models.CASCADE, verbose_name='Комната')
-
-    def __str__(self) -> str:
-            return self.type_name or ''
-
-
 
 
 

@@ -16,14 +16,17 @@ class User(AbstractBaseUser, PermissionsMixin):
     MANAGER = 2
     EMPLOYEE = 3
     REGULAR_USER = 4
-    BUSSINESS_USER = 5  
+    BUSSINESS_USER = 5
+    TOUR_OPERATOR = 6
+
 
     ROLE_CHOICES = (
-        (ADMIN, 'Admin'),
-        (MANAGER, 'Managers'),
-        (EMPLOYEE, 'Employee'),
-        (REGULAR_USER, 'Regular User'),
-        (BUSSINESS_USER, 'Bussiness User')
+        ("ADMIN", 'Admin'),
+        ("MANAGER", 'Managers'),
+        ("EMPLOYEE", 'Employee'),
+        ("REGULAR_USER", 'Regular User'),
+        ("BUSSINESS_USER", 'Bussiness User'),
+        ("TOUR_OPERATOR", 'Tour Operator')
         )
     
     
@@ -36,7 +39,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=50, blank=True)
-    role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, blank=True, null=True, default=REGULAR_USER)
+    role = models.CharField(choices=ROLE_CHOICES, blank=True, null=True, default="REGULAR_USER", max_length=20)
     date_joined = models.DateTimeField(auto_now_add=True)
     is_verified = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
