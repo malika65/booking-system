@@ -117,7 +117,7 @@ MIDDLEWARE = [
 
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts': 'localhost:9200'
+        'hosts': 'https://silk-travel.kb.us-central1.gcp.cloud.es.io:9243'
     },
 }
 
