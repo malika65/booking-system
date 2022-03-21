@@ -89,14 +89,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'whitenoise.runserver_nostatic',
+    'django_elasticsearch_dsl',
     'smart_selects',
     'corsheaders',
     'rest_framework',
     'drf_yasg',
     'rest_framework_simplejwt.token_blacklist',
-    'booking_system',
+    'booking_system.apps.BookingSystemConfig',
     'authe.apps.AutheConfig',
     'django_extensions',
+    'search.apps.SearchConfig',
+
 ]
 
 MIDDLEWARE = [
@@ -112,13 +115,19 @@ MIDDLEWARE = [
     'main.middleware.open_access_middleware'
 ]
 
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'localhost:9200'
+    },
+}
+
 JQUERY_URL = False
 
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_SSL_REDIRECT = True
-SECURE_SSL_REDIRECT=False
-SESSION_COOKIE_SECURE=False
-CSRF_COOKIE_SECURE=False
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+SECURE_SSL_REDIRECT = False
+
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
@@ -151,6 +160,8 @@ REST_FRAMEWORK = {
         # 'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication'
     ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 25
 }
 
 # Configure the JWT settings

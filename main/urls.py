@@ -26,6 +26,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('booking-app/', include('booking_system.urls')),
     path('authe/', include('authe.urls')),
+    path('search/', include('search.urls')),
     url(r'^chaining/', include('smart_selects.urls')),
 ]
 

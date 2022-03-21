@@ -1,31 +1,31 @@
-from django.db import models
-
 from datetime import datetime, timedelta
-from authe.models import User
-from django.core.validators import MaxValueValidator, MinValueValidator
 
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
 from smart_selects.db_fields import ChainedForeignKey
+
+from authe.models import User
 
 
 class FacilitiesAndServicesHotels(models.Model):
     hotel_category_name = models.CharField(max_length=50, verbose_name='Наименование услуги и удобств отеля')
 
     def __str__(self) -> str:
-            return self.hotel_category_name or ''
-            
+        return self.hotel_category_name or ''
 
     class Meta:
         verbose_name_plural = "6. Удобства и услуги отелей"
+
 
 class FacilitiesAndServicesRooms(models.Model):
     room_category_name = models.CharField(max_length=50, verbose_name='Наименование услуги и удобств комнаты')
 
     def __str__(self) -> str:
             return self.room_category_name or ''
-            
 
     class Meta:
         verbose_name_plural = "9. Удобства и услуги комнат"
+
 
 class FoodCategory(models.Model):
     foodcategory_name = models.CharField(max_length=50, verbose_name='Категория питания')
@@ -121,19 +121,16 @@ class Hotel(models.Model):
     is_active = models.BooleanField(default=True, verbose_name='Активный')
     room_id = models.ManyToManyField(Room, blank=True, verbose_name='Типы комнат')
 
-
     class Meta:
         verbose_name_plural = "2. Отели"
-
 
     def __str__(self) -> str:
         return self.hotel_name or ''
 
 
-
 class Booking(models.Model):
     guest_id = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE, verbose_name='ID гостя')
-    checkin_date  = models.DateField(default = datetime.now)
+    checkin_date = models.DateField(default = datetime.now)
     checkout_date = models.DateField(default = datetime.now)
     created_at = models.DateTimeField(default = datetime.now)
     updated_at = models.DateTimeField(default = datetime.now)
@@ -146,9 +143,9 @@ class Booking(models.Model):
         auto_choose=True,
         sort=True, 
         verbose_name='Комната')
-    num_of_guest  = models.IntegerField(default=1, verbose_name='Кол-во гостей')
+    num_of_guest = models.IntegerField(default=1, verbose_name='Кол-во гостей')
    
-    is_checkout   = models.BooleanField(default=False, verbose_name='Проверено')
+    is_checkout = models.BooleanField(default=False, verbose_name='Проверено')
 
     def __str__(self) -> str:
         return self.guest_id.email

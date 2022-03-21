@@ -22,7 +22,7 @@ from .serializers import (EmailVerificationSerializer, LogoutSerializer,
                           UserRegistrationSerializer, UserSerializer,
                           UserRegisterRequestSerializer)
 
-from.renderer import UserJSONRenderer
+from .renderer import UserJSONRenderer
 from django.contrib.auth import login
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.http import HttpResponsePermanentRedirect
@@ -34,12 +34,13 @@ from .utils import Util
 
 from django.http import HttpResponse
 from django.core.mail import send_mail, EmailMessage
-from rest_framework.parsers import FileUploadParser 
+from rest_framework.parsers import FileUploadParser
 from rest_framework.parsers import FormParser, MultiPartParser
+
 
 class UserRegistrationView(GenericAPIView):
     serializer_class = UserRegistrationSerializer
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny,)
     renderer_classes = (UserJSONRenderer,)
 
     def post(self, request):
@@ -70,9 +71,10 @@ class UserRegistrationView(GenericAPIView):
 
             return Response(response, status=status_code)
 
+
 class VerifyEmail(APIView):
     serializer_class = EmailVerificationSerializer
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny,)
     renderer_classes = (UserJSONRenderer,)
 
     def get(self, request, code):
@@ -80,7 +82,7 @@ class VerifyEmail(APIView):
         try:
             if ConfirmCode.objects.filter(code=code):
                 token = request.headers['Authorization'].split(' ').pop()
-                payload = jwt.decode(token, settings.SECRET_KEY, algorithms='HS256')         
+                payload = jwt.decode(token, settings.SECRET_KEY, algorithms='HS256')
                 user = User.objects.get(id=payload['user_id'])
                 code = ConfirmCode.objects.get(code=code, user=user)
                 if not code.confirm:
@@ -89,9 +91,8 @@ class VerifyEmail(APIView):
                     code.user.save()
                     code.save()
                     return Response({'email': 'Successfully activated'}, status=status.HTTP_200_OK)
-                return Response({'email': 'Already activated'}, status=status.HTTP_200_OK)        
-        
-           
+                return Response({'email': 'Already activated'}, status=status.HTTP_200_OK)
+
             return Response({'email': 'Code is outdated or incorrect'}, status=status.HTTP_200_OK)
 
         except jwt.ExpiredSignatureError as identifier:
@@ -99,31 +100,30 @@ class VerifyEmail(APIView):
         except jwt.exceptions.DecodeError as identifier:
             print(identifier)
             return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
-    
 
 
 class ResendVerifyEmailView(GenericAPIView):
     serializer_class = UserRegistrationSerializer
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny,)
 
     def post(self, request):
         email = request.data['email']
         try:
             user = User.objects.get(email=email)
             code = ConfirmCode.objects.create(user=user)
-       
+
             if user.is_verified:
-                return Response({'msg':'User is already verified'})
-                        
+                return Response({'msg': 'User is already verified'})
+
             Util.send_code_to_email(user, code.code)
-            return Response({'msg':'The verification email has been sent'}, status=status.HTTP_201_CREATED)
+            return Response({'msg': 'The verification email has been sent'}, status=status.HTTP_201_CREATED)
         except User.DoesNotExist:
-            return Response({'msg':'No such user, register first'})
+            return Response({'msg': 'No such user, register first'})
 
 
 class UserLoginView(GenericAPIView):
     serializer_class = UserLoginSerializer
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny,)
     renderer_classes = (UserJSONRenderer,)
 
     def post(self, request):
@@ -147,13 +147,13 @@ class UserLoginView(GenericAPIView):
 
             return Response(response, status=status_code)
 
+
 class LogoutView(GenericAPIView):
     serializer_class = LogoutSerializer
 
     permission_classes = (IsAuthenticated,)
 
     def post(self, request):
-
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -173,15 +173,14 @@ class UserView(GenericAPIView):
     def get(self, request):
         token = request.headers['Authorization'].split(' ').pop()
 
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms='HS256')         
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms='HS256')
         user = User.objects.get(id=payload['user_id'])
         response = {
-                'email': user.email,
-                'role': user.get_role_display(),
-            }
-            
-        return Response(response,)
+            'email': user.email,
+            'role': user.get_role_display(),
+        }
 
+        return Response(response, )
 
 
 class RequestPasswordResetEmail(GenericAPIView):
@@ -194,7 +193,7 @@ class RequestPasswordResetEmail(GenericAPIView):
 
         if User.objects.filter(email=email).exists():
             user = User.objects.get(email=email)
-            
+
             uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
             token = PasswordResetTokenGenerator().make_token(user)
             current_site = get_current_site(
@@ -202,43 +201,46 @@ class RequestPasswordResetEmail(GenericAPIView):
             relativeLink = reverse(
                 'password-reset-confirm', kwargs={'uidb64': uidb64, 'token': token})
 
-            absurl = 'http://'+current_site + relativeLink
+            absurl = 'http://' + current_site + relativeLink
             email_body = 'Hello, \n Use link below to reset your password  \n' + absurl
             data = {'email_body': email_body, 'to_email': user.email,
                     'email_subject': 'Reset your passsword'}
             Util.send_reset_email(data)
-           
+
         return Response({'success': 'We have sent you a link to reset your password'}, status=status.HTTP_200_OK)
 
 
-
 class CustomRedirect(HttpResponsePermanentRedirect):
-
     allowed_schemes = [os.environ.get('APP_SCHEME'), 'http', 'https']
+
 
 class PasswordTokenCheckAPI(GenericAPIView):
     serializer_class = SetNewPasswordSerializer
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny,)
 
     def get(self, request, uidb64, token):
 
+        global user
         try:
             id = smart_str(urlsafe_base64_decode(uidb64))
             user = User.objects.get(id=id)
 
             if not PasswordResetTokenGenerator().check_token(user, token):
-                return Response({'error': 'Token is not valid, please request a new one'}, status=status.HTTP_401_UNAUTHORIZED)
-            
-            return Response({'success': True, 'message': 'Credentials Valid', 'uidb64': uidb64, 'token': token}, status=status.HTTP_200_OK)
+                return Response({'error': 'Token is not valid, please request a new one'},
+                                status=status.HTTP_401_UNAUTHORIZED)
+
+            return Response({'success': True, 'message': 'Credentials Valid', 'uidb64': uidb64, 'token': token},
+                            status=status.HTTP_200_OK)
 
         except DjangoUnicodeDecodeError as identifier:
             if not PasswordResetTokenGenerator().check_token(user):
-                return Response({'error': 'Token is not valid, please request a new one'}, status=status.HTTP_401_UNAUTHORIZED)
-    
+                return Response({'error': 'Token is not valid, please request a new one'},
+                                status=status.HTTP_401_UNAUTHORIZED)
+
 
 class SetNewPasswordAPIView(GenericAPIView):
     serializer_class = SetNewPasswordSerializer
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny,)
 
     def patch(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -263,26 +265,29 @@ class SendRequestToRegisterAPIView(GenericAPIView):
         spravka_iz_nalogovoi = request.data.get('spravka_iz_nalogovoi', '')
         spravka_iz_sozfond = request.data.get('spravka_iz_sozfond', '')
         pasport = request.data.get('pasport', '')
-        message = f'Заявка от юр. лица: {object_name}<br>'\
-            f'ФИО заявителя: {fio}<br>'\
-            f'Контактный номер: {phone}<br>'\
-            f'Email: {email}<br>'\
-            f'Свидетельво о гос. регистрации: {gos_register}<br>'\
-            f'Решение о создании юр. лица: {reshenie_o_sozd_yr_lisa}<br>'\
-            f'Учредительный договор: {uchredit_dogovor}<br>'\
-            f'Справка с налоговой о неимении задолженности: {spravka_iz_nalogovoi}<br>'\
-            f'Справка из соц. фонда о неимении задолженности: {spravka_iz_sozfond}<br>'\
-            f'Копия паспорта директора: {pasport}'
+        message = f'Заявка от юр. лица: {object_name}<br>' \
+                  f'ФИО заявителя: {fio}<br>' \
+                  f'Контактный номер: {phone}<br>' \
+                  f'Email: {email}<br>' \
+                  f'Свидетельво о гос. регистрации: {gos_register}<br>' \
+                  f'Решение о создании юр. лица: {reshenie_o_sozd_yr_lisa}<br>' \
+                  f'Учредительный договор: {uchredit_dogovor}<br>' \
+                  f'Справка с налоговой о неимении задолженности: {spravka_iz_nalogovoi}<br>' \
+                  f'Справка из соц. фонда о неимении задолженности: {spravka_iz_sozfond}<br>' \
+                  f'Копия паспорта директора: {pasport}'
         subject = 'Заявка на регистрацию'
 
         email = EmailMessage(subject, message, settings.EMAIL_HOST, [settings.EMAIL_HOST_USER])
         email.content_subtype = 'html'
 
         email.attach("Свидетельво о гос. регистрации", gos_register.read(), gos_register.content_type)
-        email.attach("Решение о создании юр. лица", reshenie_o_sozd_yr_lisa.read(), reshenie_o_sozd_yr_lisa.content_type)
+        email.attach("Решение о создании юр. лица", reshenie_o_sozd_yr_lisa.read(),
+                     reshenie_o_sozd_yr_lisa.content_type)
         email.attach("Учредительный договор", uchredit_dogovor.read(), uchredit_dogovor.content_type)
-        email.attach("Справка с налоговой о неимении задолженности", spravka_iz_nalogovoi.read(), spravka_iz_nalogovoi.content_type)
-        email.attach("Справка из соц. фонда о неимении задолженности", spravka_iz_sozfond.read(), spravka_iz_sozfond.content_type)
+        email.attach("Справка с налоговой о неимении задолженности", spravka_iz_nalogovoi.read(),
+                     spravka_iz_nalogovoi.content_type)
+        email.attach("Справка из соц. фонда о неимении задолженности", spravka_iz_sozfond.read(),
+                     spravka_iz_sozfond.content_type)
         email.attach("Копия паспорта директора", pasport.read(), pasport.content_type)
 
         email.send()
@@ -306,26 +311,29 @@ class SendRequestToRegisterHotelAPIView(GenericAPIView):
         spravka_iz_nalogovoi = request.data.get('spravka_iz_nalogovoi', '')
         spravka_iz_sozfond = request.data.get('spravka_iz_sozfond', '')
         pasport = request.data.get('pasport', '')
-        message = f'Заявка от юр. лица: {object_name}<br>'\
-            f'ФИО заявителя: {fio}<br>'\
-            f'Контактный номер: {phone}<br>'\
-            f'Email: {email}<br>'\
-            f'Свидетельво о гос. регистрации: {gos_register}<br>'\
-            f'Решение о создании юр. лица: {reshenie_o_sozd_yr_lisa}<br>'\
-            f'Учредительный договор: {uchredit_dogovor}<br>'\
-            f'Справка с налоговой о неимении задолженности: {spravka_iz_nalogovoi}<br>'\
-            f'Справка из соц. фонда о неимении задолженности: {spravka_iz_sozfond}<br>'\
-            f'Копия паспорта директора: {pasport}'
+        message = f'Заявка от юр. лица: {object_name}<br>' \
+                  f'ФИО заявителя: {fio}<br>' \
+                  f'Контактный номер: {phone}<br>' \
+                  f'Email: {email}<br>' \
+                  f'Свидетельво о гос. регистрации: {gos_register}<br>' \
+                  f'Решение о создании юр. лица: {reshenie_o_sozd_yr_lisa}<br>' \
+                  f'Учредительный договор: {uchredit_dogovor}<br>' \
+                  f'Справка с налоговой о неимении задолженности: {spravka_iz_nalogovoi}<br>' \
+                  f'Справка из соц. фонда о неимении задолженности: {spravka_iz_sozfond}<br>' \
+                  f'Копия паспорта директора: {pasport}'
         subject = 'Заявка на регистрацию'
 
         email = EmailMessage(subject, message, settings.EMAIL_HOST, [settings.EMAIL_HOST_USER])
         email.content_subtype = 'html'
 
         email.attach("Свидетельво о гос. регистрации", gos_register.read(), gos_register.content_type)
-        email.attach("Решение о создании юр. лица", reshenie_o_sozd_yr_lisa.read(), reshenie_o_sozd_yr_lisa.content_type)
+        email.attach("Решение о создании юр. лица", reshenie_o_sozd_yr_lisa.read(),
+                     reshenie_o_sozd_yr_lisa.content_type)
         email.attach("Учредительный договор", uchredit_dogovor.read(), uchredit_dogovor.content_type)
-        email.attach("Справка с налоговой о неимении задолженности", spravka_iz_nalogovoi.read(), spravka_iz_nalogovoi.content_type)
-        email.attach("Справка из соц. фонда о неимении задолженности", spravka_iz_sozfond.read(), spravka_iz_sozfond.content_type)
+        email.attach("Справка с налоговой о неимении задолженности", spravka_iz_nalogovoi.read(),
+                     spravka_iz_nalogovoi.content_type)
+        email.attach("Справка из соц. фонда о неимении задолженности", spravka_iz_sozfond.read(),
+                     spravka_iz_sozfond.content_type)
         email.attach("Копия паспорта директора", pasport.read(), pasport.content_type)
 
         email.send()

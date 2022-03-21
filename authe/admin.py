@@ -10,6 +10,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
+
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
     fields, plus a repeated password."""
@@ -63,12 +64,12 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('email', 'role', 'is_superuser', 'is_staff',  'first_name', 'last_name', 'is_verified',)
+    list_display = ('email', 'role', 'is_superuser', 'is_staff', 'first_name', 'last_name', 'is_verified',)
     list_filter = ('is_superuser',)
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Personal info', {'fields': ('first_name', 'last_name')}),
-        ('Permissions', {'fields': ('is_superuser','is_staff', 'role', 'groups')}),
+        ('Permissions', {'fields': ('is_superuser', 'is_staff', 'role', 'groups')}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
@@ -76,14 +77,17 @@ class UserAdmin(BaseUserAdmin):
         (None, {
             'classes': ('wide',),
             'fields': ('email', 'role', 'password1', 'password2', 'is_staff', 'is_superuser',)}
-        ),
+         ),
     )
     search_fields = ('email',)
     ordering = ('email',)
     filter_horizontal = ()
 
+
 # Now register the new UserAdmin...
 admin.site.register(User, UserAdmin)
+
+
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 # admin.site.register(Group)
@@ -91,7 +95,7 @@ admin.site.register(User, UserAdmin)
 class OutstandingTokenAdmin(token_blacklist.admin.OutstandingTokenAdmin):
 
     def has_delete_permission(self, *args, **kwargs):
-        return True # or whatever logic you want
+        return True  # or whatever logic you want
 
 
 admin.site.unregister(token_blacklist.models.OutstandingToken)
