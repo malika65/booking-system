@@ -117,7 +117,7 @@ MIDDLEWARE = [
 
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts': 'https://silk-travel.kb.us-central1.gcp.cloud.es.io:9243'
+        'hosts': 'https://silk-travel.ent.us-central1.gcp.cloud.es.io/api/as/v1/engines/silkway-engine/documents'
     },
 }
 
