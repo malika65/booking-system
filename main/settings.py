@@ -115,11 +115,11 @@ MIDDLEWARE = [
     'main.middleware.open_access_middleware'
 ]
 
-# ELASTICSEARCH_DSL = {
-#     'default': {
-#         'hosts': 'https://silk-travel.ent.us-central1.gcp.cloud.es.io/api/as/v1/engines/silkway-engine/documents'
-#     },
-# }
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'localhost:9200'
+    },
+}
 
 JQUERY_URL = False
 
