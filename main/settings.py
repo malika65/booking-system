@@ -115,15 +115,15 @@ MIDDLEWARE = [
     'main.middleware.open_access_middleware'
 ]
 
-ELASTICSEARCH_DSL = {
-    'default': {
-        'hosts': 'https://silk-travel.ent.us-central1.gcp.cloud.es.io/api/as/v1/engines/silkway-engine/documents'
-    },
-}
+# ELASTICSEARCH_DSL = {
+#     'default': {
+#         'hosts': 'https://silk-travel.ent.us-central1.gcp.cloud.es.io/api/as/v1/engines/silkway-engine/documents'
+#     },
+# }
 
 JQUERY_URL = False
 
-# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
 SECURE_SSL_REDIRECT = False
