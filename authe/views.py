@@ -185,7 +185,8 @@ class UserView(GenericAPIView):
 
 class RequestPasswordResetEmail(GenericAPIView):
     serializer_class = ResetPasswordEmailRequestSerializer
-
+    permission_classes = (AllowAny,)
+    
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
 
