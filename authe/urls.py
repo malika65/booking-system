@@ -24,7 +24,7 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'), 
     path('user/', UserView.as_view(), name='user'),
     path('request-reset-password-by-email/', RequestPasswordResetEmail.as_view(), name="request-reset-email"),
-    re_path(r'^password-reset/(?uidb=<uidb64>&token=<token>)$/',
+    path('password-reset/?uidb=<uidb64>&token=<token>/',
          PasswordTokenCheckAPI.as_view(), name='password-reset-confirm'),
     path('password-reset-complete/', SetNewPasswordAPIView.as_view(),
          name='password-reset-complete'),
