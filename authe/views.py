@@ -116,7 +116,7 @@ class ResendVerifyEmailView(GenericAPIView):
                 return Response({'msg': 'User is already verified'})
 
             Util.send_code_to_email(user, code.code)
-            return Response({'msg': 'The verification email has been sent'}, status=status.HTTP_201_CREATED)
+            return Response({'msg': 'The verification email has been sent'}, status=status.HTTP_200_OK)
         except User.DoesNotExist:
             return Response({'msg': 'No such user, register first'})
 
