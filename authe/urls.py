@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 from rest_framework_simplejwt import views as jwt_views
 
 from .views import (
@@ -24,7 +24,7 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'), 
     path('user/', UserView.as_view(), name='user'),
     path('request-reset-password-by-email/', RequestPasswordResetEmail.as_view(), name="request-reset-email"),
-    path('password-reset/uidb=<uidb64>&token=<token>/',
+    re_path(r'^password-reset/(?uidb=<uidb64>&token=<token>)$/',
          PasswordTokenCheckAPI.as_view(), name='password-reset-confirm'),
     path('password-reset-complete/', SetNewPasswordAPIView.as_view(),
          name='password-reset-complete'),
