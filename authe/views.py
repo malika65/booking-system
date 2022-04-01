@@ -294,7 +294,8 @@ class SendRequestToRegisterAPIView(GenericAPIView):
         email.attach("Копия паспорта директора", pasport.read(), pasport.content_type)
 
         email.send()
-        return HttpResponse("Заявка была отправлена")
+
+        return Response({'success': True, 'message': 'Заявка была отправлена'}, status=status.HTTP_200_OK)
 
 
 class SendRequestToRegisterHotelAPIView(GenericAPIView):
@@ -340,4 +341,4 @@ class SendRequestToRegisterHotelAPIView(GenericAPIView):
         email.attach("Копия паспорта директора", pasport.read(), pasport.content_type)
 
         email.send()
-        return HttpResponse("Заявка была отправлена")
+        return Response({'success': True, 'message': 'Заявка была отправлена'}, status=status.HTTP_200_OK)
