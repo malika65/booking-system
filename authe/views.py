@@ -12,6 +12,7 @@ from rest_framework.generics import (GenericAPIView, ListAPIView,
                                      RetrieveUpdateAPIView)
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.schemas.openapi import AutoSchema
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -37,11 +38,13 @@ from django.core.mail import send_mail, EmailMessage
 from rest_framework.parsers import FileUploadParser
 from rest_framework.parsers import FormParser, MultiPartParser
 
+from drf_yasg.utils import swagger_auto_schema
 
 class UserRegistrationView(GenericAPIView):
     serializer_class = UserRegistrationSerializer
     permission_classes = (AllowAny,)
     renderer_classes = (UserJSONRenderer,)
+    schema = AutoSchema(tags=["pets"])
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)

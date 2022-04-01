@@ -1,16 +1,13 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import update_last_login
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.utils.encoding import (DjangoUnicodeDecodeError, force_str,
-                                   smart_bytes, smart_str)
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.utils.encoding import (force_str)
+from django.utils.http import urlsafe_base64_decode
 from rest_framework import serializers
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
 from .models import User
-from rest_framework.fields import ChoiceField
-
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
@@ -92,9 +89,8 @@ class UserSerializer(serializers.Serializer):
 class LogoutSerializer(serializers.Serializer):
     refresh = serializers.CharField()
 
-    default_error_message = {
-        'bad_token': ('Token is expired or invalid')
-    }
+    class Meta:
+        extra_kwargs = {'refresh': {'error_messages': {'bad_token': 'Token is expired or invalid'}}}
 
     def validate(self, attrs):
         self.token = attrs['refresh']
@@ -106,6 +102,7 @@ class LogoutSerializer(serializers.Serializer):
             RefreshToken(self.token).blacklist()
 
         except TokenError:
+
             self.fail('bad_token')
 
 
