@@ -223,7 +223,6 @@ class PasswordTokenCheckAPI(GenericAPIView):
     permission_classes = (AllowAny,)
 
     def get(self, request, uidb64, token):
-
         global user
         try:
             id = smart_str(urlsafe_base64_decode(uidb64))
