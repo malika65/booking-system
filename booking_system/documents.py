@@ -192,8 +192,8 @@ class HotelDocument(Document):
                 properties={
                     'id': fields.IntegerField(),
                     'contry_name': StringField(fields={
-                    'raw': KeywordField(),
-                    'suggest': fields.CompletionField(),
+                        'raw': KeywordField(),
+                        'suggest': fields.CompletionField(),
                 }),
                 }
             )

@@ -172,6 +172,7 @@ class UserView(GenericAPIView):
     authenticated_class = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
     renderer_classes = (UserJSONRenderer,)
+    pagination_class = None
 
     def get(self, request):
         token = request.headers['Authorization'].split(' ').pop()

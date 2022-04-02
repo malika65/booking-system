@@ -83,7 +83,7 @@ class UserSerializer(serializers.Serializer):
         min_length=1, write_only=True)
 
     class Meta:
-        fields = ['email', 'role', 'token']
+        fields = ['id', 'email', 'role', 'token']
 
 
 class LogoutSerializer(serializers.Serializer):

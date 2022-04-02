@@ -3,6 +3,7 @@ import abc
 from django.http import HttpResponse
 from elasticsearch_dsl import Q
 from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 
 from booking_system.documents import HotelDocument
@@ -36,6 +37,7 @@ class PaginatedElasticSearchAPIView(APIView, LimitOffsetPagination):
 class SearchHotels(PaginatedElasticSearchAPIView):
     serializer_class = HotelSerializer
     document_class = HotelDocument
+    permission_classes = (AllowAny,)
 
     def generate_q_expression(self, query):
         return Q('multi_match', query=query,

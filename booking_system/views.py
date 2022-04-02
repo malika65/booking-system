@@ -1,4 +1,5 @@
 from rest_framework import serializers, status
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -6,21 +7,11 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import Hotel, Room, Booking
 from .serializers import HotelSerializer, BookingSerializer
 
-from collections import namedtuple
-
-from rest_framework import filters
-
-class DynamicSearchFilter(filters.SearchFilter):
-    def get_search_fields(self, view, request):
-        return request.GET.getlist('search_fields', [])
 
 class HotelList(generics.ListCreateAPIView):
-    # search_fields = ['question_text']
-    filter_backends = (DynamicSearchFilter,)
     queryset = Hotel.objects.all()
     serializer_class = HotelSerializer
     permission_classes = (AllowAny,)
-
 
 
 class HotelDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -35,8 +26,11 @@ class BookingList(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-            user = self.request.user
-            return Booking.objects.filter(guest_id=user.id)
+        user = self.request.user
+        return Booking.objects.filter(guest_id=user.id)
+
+    def perform_create(self, serializer):
+        serializer.save(guest_id=self.request.user,)
 
 
 class BookingDetail(generics.RetrieveUpdateDestroyAPIView):

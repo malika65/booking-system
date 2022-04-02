@@ -1,7 +1,12 @@
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+from rest_framework.generics import get_object_or_404
 
+from authe.models import User
 from .models import Hotel, Room, Booking, Country, City, FoodCategory, HotelCategoryStars, FacilitiesAndServicesHotels, \
     Characteristics, FacilitiesAndServicesRooms
+
+from authe.serializers import UserSerializer
 
 
 class CountrySerializer(serializers.ModelSerializer):
@@ -82,9 +87,10 @@ class HotelSerializer(serializers.Serializer):
 
 
 class BookingSerializer(serializers.ModelSerializer):
-    hotel = HotelSerializer()
-    room = RoomSerializer()
+    hotel = HotelSerializer(read_only=True)
+    guest_id = UserSerializer()
+    room = RoomSerializer(read_only=True)
 
     class Meta:
-        model  = Booking
-        fields = ('guest_id', 'checkin_date', 'checkout_date', 'hotel', 'room', 'num_of_guest', 'is_checkout')
+        model = Booking
+        fields = ('guest_id', 'checkin_date', 'checkout_date', 'hotel', 'room', 'num_of_guest')
