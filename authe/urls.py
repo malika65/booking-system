@@ -11,7 +11,8 @@ from .views import (
     RequestPasswordResetEmail,
     PasswordTokenCheckAPI,
     SetNewPasswordAPIView,
-    SendRequestToRegisterAPIView
+    SendRequestToRegisterAPIView,
+    SendRequestToRegisterHotelAPIView
 )
 
 urlpatterns = [
@@ -29,4 +30,5 @@ urlpatterns = [
     path('password-reset-complete/', SetNewPasswordAPIView.as_view(),
          name='password-reset-complete'),
     path('request-to-register/', SendRequestToRegisterAPIView.as_view(), name='request-to-register'),
+    path('request-to-register-hotel/', SendRequestToRegisterHotelAPIView.as_view(), name='request-to-register-hotel'),
 ]

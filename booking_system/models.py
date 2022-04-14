@@ -91,7 +91,7 @@ class Room(models.Model):
     room_description = models.TextField(max_length=1500, null=True, blank=True, verbose_name='Описание комнаты')
     price = models.FloatField(default=1000.0, null=True, blank=True, verbose_name='Цена')
     category_id = models.ManyToManyField(FacilitiesAndServicesRooms, blank=True, default="Hotel", verbose_name='Удобства и услуги комнаты')
-    characteristics_id = models.ManyToManyField(Characteristics, blank=True, verbose_name='Комната')
+    characteristics_id = models.ManyToManyField(Characteristics, blank=True, verbose_name='Характеристики(вместимости)')
 
 
     def __str__(self) -> str:
@@ -130,10 +130,10 @@ class Hotel(models.Model):
 
 class Booking(models.Model):
     guest_id = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE, verbose_name='ID гостя')
-    checkin_date = models.DateField(default = datetime.now)
-    checkout_date = models.DateField(default = datetime.now)
-    created_at = models.DateTimeField(default = datetime.now)
-    updated_at = models.DateTimeField(default = datetime.now)
+    checkin_date = models.DateField(default=datetime.now)
+    checkout_date = models.DateField(default=datetime.now)
+    created_at = models.DateTimeField(default=datetime.now)
+    updated_at = models.DateTimeField(default=datetime.now)
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, verbose_name='Отель')
     room = ChainedForeignKey(
         Room,
