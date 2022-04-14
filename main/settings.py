@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 import os
+from urllib.parse import urlparse
 
 import dj_database_url
 
@@ -115,11 +116,12 @@ MIDDLEWARE = [
     'main.middleware.open_access_middleware'
 ]
 
-ELASTICSEARCH_DSL = {
-    'default': {
-        'hosts': 'localhost:9200'
-    },
+ES_URL = urlparse(os.environ.get('https://i6s9ze18p4:uvqw5a0bvx@holly-906727421.eu-west-1.bonsaisearch.net:443') or 'http://127.0.0.1:9200/')
 
+ELASTICSEARCH_DSL={
+    'default': {
+        'hosts': ES_URL
+    },
 }
 
 JQUERY_URL = False
