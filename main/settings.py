@@ -116,9 +116,9 @@ MIDDLEWARE = [
     'main.middleware.open_access_middleware'
 ]
 
-ES_URL = urlparse(os.environ.get('https://i6s9ze18p4:uvqw5a0bvx@holly-906727421.eu-west-1.bonsaisearch.net:443') or 'http://127.0.0.1:9200/')
+ES_URL = urlparse(os.environ.get('https://i6s9ze18p4:uvqw5a0bvx@holly-906727421.eu-west-1.bonsaisearch.net:443'))
 
-ELASTICSEARCH_DSL={
+ELASTICSEARCH_DSL = {
     'default': {
         'hosts': ES_URL
     },
