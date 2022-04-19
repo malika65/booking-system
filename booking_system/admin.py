@@ -31,7 +31,9 @@ class HotelAdmin(admin.ModelAdmin):
     formfield_overrides = {
         models.ManyToManyField: {'widget': CheckboxSelectMultiple},
     }
-    fields = ('country', 'city', 'hotel_name', 'category_id', 'food_category', 'hotel_category', 'hotel_address', 'hotel_description', 'room_id')
+    fields = ('country', 'city', 'hotel_name', 'category_id',
+              'food_category', 'hotel_category', 'hotel_address',
+              'hotel_description', 'room_id', 'checkin_date', 'checkout_date')
 
 
 @admin.register(Room)
