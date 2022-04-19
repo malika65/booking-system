@@ -1,12 +1,16 @@
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
-from rest_framework.generics import get_object_or_404
-
-from authe.models import User
-from .models import Hotel, Room, Booking, Country, City, FoodCategory, HotelCategoryStars, FacilitiesAndServicesHotels, \
-    Characteristics, FacilitiesAndServicesRooms
 
 from authe.serializers import UserSerializer
+from .models.booking_models import Booking
+from .models.characteristic_models import (
+    FoodCategory,
+    HotelCategoryStars,
+    FacilitiesAndServicesHotels,
+    Characteristics,
+    FacilitiesAndServicesRooms, Category
+)
+from .models.country_models import Country, City
+from .models.hotel_models import Hotel, Room
 
 
 class CountrySerializer(serializers.ModelSerializer):
@@ -28,14 +32,14 @@ class FacilitiesAndServicesRoomsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FacilitiesAndServicesRooms
-        fields = ('room_category_name', )
+        fields = ('id', 'room_category_name', )
 
 
 class CharacteristicsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Characteristics
-        fields = ('name', 'capacity')
+        fields = ('id', 'name', 'capacity')
 
 
 class RoomSerializer(serializers.ModelSerializer):
@@ -44,7 +48,14 @@ class RoomSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Room
-        fields = ('room_name', 'room_no', 'room_description', 'price', 'category_id', 'characteristics_id')
+        fields = ('id', 'room_name', 'room_no', 'room_description', 'price', 'category_id', 'characteristics_id')
+
+
+class CategorySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Category
+        fields = "__all__"
 
 
 class FoodCategorySerializer(serializers.ModelSerializer):
@@ -58,21 +69,20 @@ class HotelCategoryStarsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = HotelCategoryStars
-        fields = ('hotelcategory_name', 'hotelcategory_stars')
+        fields = ('id', 'hotel_category_name', 'hotel_category_stars')
 
 
 class FacilitiesAndServicesHotelsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FacilitiesAndServicesHotels
-        fields = ('hotel_category_name', )
+        fields = ('id', 'hotel_category_name', )
 
 
 class HotelSerializer(serializers.Serializer):
     hotel_name = serializers.CharField(max_length=100)
     hotel_address = serializers.CharField(max_length=100)
     hotel_description = serializers.CharField(max_length=2500)
-    hotel_phone = serializers.CharField(max_length=100)
     is_active = serializers.BooleanField(default=True)
     city = CitySerializer()
     food_category = FoodCategorySerializer(read_only=True, many=True)
@@ -82,7 +92,7 @@ class HotelSerializer(serializers.Serializer):
 
     class Meta:
         model = Hotel
-        fields = ('hotel_name', 'hotel_address', 'hotel_description', 'hotel_phone', 'is_active', 'city',
+        fields = ('hotel_name', 'hotel_address', 'hotel_description', 'is_active', 'city',
                   'hotel_category', 'food_category', 'category_id', 'room_id')
 
 

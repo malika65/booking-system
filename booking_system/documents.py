@@ -2,16 +2,44 @@ from django_elasticsearch_dsl import Document, fields
 from django_elasticsearch_dsl.registries import registry
 
 from authe.models import User
-from .models import Booking, Hotel, FacilitiesAndServicesHotels, FacilitiesAndServicesRooms, HotelCategoryStars, \
-    Country, City, Characteristics, FoodCategory, Room
+from .models.hotel_models import Hotel, Room
+from .models.country_models import Country, City
+from .models.characteristic_models import (
+    Category,
+    FoodCategory,
+    FacilitiesAndServicesHotels,
+    FacilitiesAndServicesRooms,
+    HotelCategoryStars,
+    Characteristics
+)
+from .models.booking_models import Booking
 from django_elasticsearch_dsl_drf.compat import KeywordField, StringField
 from elasticsearch_dsl import analyzer
+
+
 html_strip = analyzer(
     'html_strip',
     tokenizer="standard",
-    # filter=["standard", "lowercase", "stop", "snowball"],
+    filter=["lowercase", "stop", "snowball"],
     char_filter=["html_strip"]
 )
+
+
+@registry.register_document
+class CategoryDocument(Document):
+    class Index:
+        name = 'categories'
+        settings = {
+            'number_of_shards': 1,
+            'number_of_replicas': 0,
+        }
+
+    class Django:
+        model = Category
+        fields = [
+            'name',
+        ]
+
 
 @registry.register_document
 class FacilitiesAndServicesHotelsDocument(Document):
@@ -48,7 +76,7 @@ class FacilitiesAndServicesRoomsDocument(Document):
 @registry.register_document
 class FoodCategoryDocument(Document):
     class Index:
-        name = 'foodcategory_rooms'
+        name = 'food_category_rooms'
         settings = {
             'number_of_shards': 1,
             'number_of_replicas': 0,
@@ -57,15 +85,15 @@ class FoodCategoryDocument(Document):
     class Django:
         model = FoodCategory
         fields = [
-            'foodcategory_name',
-            'foodcategory_abbreviation'
+            'food_category_name',
+            'food_category_abbreviation'
         ]
 
 
 @registry.register_document
 class HotelCategoryStarsDocument(Document):
     class Index:
-        name = 'hotelcategory_stars'
+        name = 'hotel_category_stars'
         settings = {
             'number_of_shards': 1,
             'number_of_replicas': 0,
@@ -74,8 +102,8 @@ class HotelCategoryStarsDocument(Document):
     class Django:
         model = HotelCategoryStars
         fields = [
-            'hotelcategory_name',
-            'hotelcategory_stars'
+            'hotel_category_name',
+            'hotel_category_stars'
         ]
 
 
@@ -91,7 +119,7 @@ class CountryDocument(Document):
     class Django:
         model = Country
         fields = [
-            'contry_name',
+            'country_name',
         ]
 
 
@@ -99,7 +127,7 @@ class CountryDocument(Document):
 class CityDocument(Document):
     country_id = fields.ObjectField(properties={
         'id': fields.IntegerField(),
-        'contry_name': fields.TextField()
+        'country_name': fields.TextField()
     })
 
     class Index:
@@ -191,7 +219,7 @@ class HotelDocument(Document):
             'country_id': fields.ObjectField(
                 properties={
                     'id': fields.IntegerField(),
-                    'contry_name': StringField(fields={
+                    'country_name': StringField(fields={
                         'raw': KeywordField(),
                         'suggest': fields.CompletionField(),
                 }),
@@ -201,13 +229,13 @@ class HotelDocument(Document):
     )
     food_category = fields.ObjectField(properties={
         'id': fields.IntegerField(),
-        'foodcategory_name': fields.TextField(),
-        'foodcategory_abbreviation': fields.TextField(),
+        'food_category_name': fields.TextField(),
+        'food_category_abbreviation': fields.TextField(),
     })
     hotel_category = fields.ObjectField(properties={
         'id': fields.IntegerField(),
-        'hotelcategory_name': fields.TextField(),
-        'hotelcategory_stars': fields.TextField(),
+        'hotel_category_name': fields.TextField(),
+        'hotel_category_stars': fields.TextField(),
     })
     category_id = fields.ObjectField(properties={
         'id': fields.IntegerField(),
@@ -251,7 +279,6 @@ class HotelDocument(Document):
             'hotel_name',
             'hotel_address',
             'hotel_description',
-            'hotel_phone',
         ]
 
 
@@ -267,27 +294,26 @@ class BookingDocument(Document):
         'hotel_name': fields.TextField(),
         'hotel_address': fields.TextField(),
         'hotel_description': fields.TextField(),
-        'hotel_phone': fields.TextField(),
         'city': fields.ObjectField(
                 properties={
                     'city_name': StringField(),
                     'country_id': fields.ObjectField(
                         properties={
-                            'contry_name': StringField(),
+                            'country_name': StringField(),
                         }
                     )
                 }
             ),
         'food_category': fields.ObjectField(
             properties={
-                'foodcategory_name': fields.TextField(),
-                'foodcategory_abbreviation': fields.TextField()
+                'food_category_name': fields.TextField(),
+                'food_category_abbreviation': fields.TextField()
             }
         ),
         'hotel_category': fields.ObjectField(
             properties={
-                'hotelcategory_name': StringField(),
-                'hotelcategory_stars': fields.IntegerField()
+                'hotel_category_name': StringField(),
+                'hotel_category_stars': fields.IntegerField()
             }
         ),
         'category_id': fields.ObjectField(
