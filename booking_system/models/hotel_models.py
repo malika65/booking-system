@@ -62,8 +62,8 @@ class Hotel(models.Model):
                                          verbose_name='Удобства и услуги')
     is_active = models.BooleanField(default=True, verbose_name='Активный')
     room_id = models.ManyToManyField(Room, blank=True, verbose_name='Типы комнат')
-    checkin_date = models.DateField(null=True, verbose_name='Регистрация заезда с')
-    checkout_date = models.DateField(null=True, verbose_name='Регистрация выезда до')
+    checkin_date = models.CharField(null=True, verbose_name='Регистрация заезда с', max_length=20)
+    checkout_date = models.CharField(null=True, verbose_name='Регистрация выезда до', max_length=20)
 
     class Meta:
         verbose_name_plural = "2. Отели"
