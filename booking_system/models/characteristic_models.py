@@ -1,6 +1,18 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
+EUR = "EURO"
+KGS = "SOM"
+KZT = "TENGE"
+USD = "DOLLAR"
+
+CURRENCY_CHOICES = [
+    (EUR, 'EURO'),
+    (KGS, 'SOM'),
+    (KZT, 'TENGE'),
+    (USD, 'DOLLAR'),
+]
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100, verbose_name='Подкатегории')
@@ -35,7 +47,6 @@ class FacilitiesAndServicesRooms(models.Model):
 
 class FoodCategory(models.Model):
     food_category_name = models.CharField(max_length=50, verbose_name='Категория питания')
-    food_category_abbreviation = models.CharField(max_length=2, default=None, null=True, verbose_name='Аббревиатура питания')
 
     def __str__(self) -> str:
         return self.food_category_name or ''
@@ -67,3 +78,39 @@ class Characteristics(models.Model):
 
     class Meta:
         verbose_name_plural = "8. Характеристики"
+
+
+class AdditionalService(models.Model):
+    name = models.CharField(max_length=50, verbose_name='Название', null=True)
+    price = models.FloatField(default=0, null=True, blank=True, verbose_name='Цена')
+    currency = models.CharField(
+        max_length=10,
+        choices=CURRENCY_CHOICES,
+        default=USD,
+    )
+
+    def __str__(self) -> str:
+        return self.name or ''
+
+    class Meta:
+        verbose_name_plural = "Дополнительные услуги"
+
+
+class ChildService(models.Model):
+    name = models.CharField(max_length=50, verbose_name='Название', null=True)
+    until_age = models.IntegerField(default=1, validators=[
+        MaxValueValidator(17),
+        MinValueValidator(1)
+    ], verbose_name='До какого возраста', null=True)
+    price = models.FloatField(default=0, null=True, blank=True, verbose_name='Цена')
+    currency = models.CharField(
+        max_length=10,
+        choices=CURRENCY_CHOICES,
+        default=USD,
+    )
+
+    def __str__(self) -> str:
+        return self.name or ''
+
+    class Meta:
+        verbose_name_plural = "Услуги проживания с детьми"

@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
-from .models.hotel_models import Hotel, Room
+from .models.hotel_models import Hotel, Room, HotelImage
 from .models.booking_models import Booking
 from .models.characteristic_models import (
     FacilitiesAndServicesHotels,
@@ -22,7 +22,9 @@ from .serializers import (
     FacilitiesAndServicesRoomsSerializer,
     FoodCategorySerializer,
     HotelCategoryStarsSerializer,
-    CharacteristicsSerializer, CategorySerializer
+    CharacteristicsSerializer,
+    CategorySerializer,
+    HotelImageSerializer
 )
 
 
@@ -30,6 +32,12 @@ class HotelList(generics.ListAPIView):
     queryset = Hotel.objects.all()
     serializer_class = HotelSerializer
     permission_classes = (AllowAny,)
+
+
+# class HotelImageList(generics.ListAPIView):
+#     queryset = HotelImage.objects.all()
+#     serializer_class = HotelImageSerializer
+#     permission_classes = (AllowAny,)
 
 
 class HotelDetail(generics.RetrieveAPIView):

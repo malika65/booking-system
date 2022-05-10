@@ -1,8 +1,10 @@
+from django.db.models.fields.files import ImageFieldFile
 from django_elasticsearch_dsl import Document, fields
 from django_elasticsearch_dsl.registries import registry
+from rest_framework.fields import ImageField
 
 from authe.models import User
-from .models.hotel_models import Hotel, Room
+from .models.hotel_models import Hotel, Room, HotelImage
 from .models.country_models import Country, City
 from .models.characteristic_models import (
     Category,
@@ -15,6 +17,7 @@ from .models.characteristic_models import (
 from .models.booking_models import Booking
 from django_elasticsearch_dsl_drf.compat import KeywordField, StringField
 from elasticsearch_dsl import analyzer
+from django_elasticsearch_dsl import TextField
 
 
 html_strip = analyzer(
@@ -33,12 +36,12 @@ class CategoryDocument(Document):
             'number_of_shards': 1,
             'number_of_replicas': 0,
         }
+    name_ru = TextField()
+    name_en = TextField()
 
     class Django:
         model = Category
-        fields = [
-            'name',
-        ]
+        fields = []
 
 
 @registry.register_document
@@ -50,11 +53,12 @@ class FacilitiesAndServicesHotelsDocument(Document):
             'number_of_replicas': 0,
         }
 
+    hotel_category_name_ru = TextField()
+    hotel_category_name_en = TextField()
+
     class Django:
         model = FacilitiesAndServicesHotels
-        fields = [
-            'hotel_category_name',
-        ]
+        fields = []
 
 
 @registry.register_document
@@ -66,11 +70,12 @@ class FacilitiesAndServicesRoomsDocument(Document):
             'number_of_replicas': 0,
         }
 
+    room_category_name_ru = TextField()
+    room_category_name_en = TextField()
+
     class Django:
         model = FacilitiesAndServicesRooms
-        fields = [
-            'room_category_name',
-        ]
+        fields = []
 
 
 @registry.register_document
@@ -82,12 +87,12 @@ class FoodCategoryDocument(Document):
             'number_of_replicas': 0,
         }
 
+    food_category_name_ru = TextField()
+    food_category_name_en = TextField()
+
     class Django:
         model = FoodCategory
-        fields = [
-            'food_category_name',
-            'food_category_abbreviation'
-        ]
+        fields = []
 
 
 @registry.register_document
@@ -99,10 +104,12 @@ class HotelCategoryStarsDocument(Document):
             'number_of_replicas': 0,
         }
 
+    hotel_category_name_ru = TextField()
+    hotel_category_name_en = TextField()
+
     class Django:
         model = HotelCategoryStars
         fields = [
-            'hotel_category_name',
             'hotel_category_stars'
         ]
 
@@ -116,18 +123,20 @@ class CountryDocument(Document):
             'number_of_replicas': 0,
         }
 
+    country_name_ru = TextField()
+    country_name_en = TextField()
+
     class Django:
         model = Country
-        fields = [
-            'country_name',
-        ]
+        fields = []
 
 
 @registry.register_document
 class CityDocument(Document):
     country_id = fields.ObjectField(properties={
         'id': fields.IntegerField(),
-        'country_name': fields.TextField()
+        'country_name_ru': fields.TextField(),
+        'country_name_en': fields.TextField()
     })
 
     class Index:
@@ -137,12 +146,12 @@ class CityDocument(Document):
             'number_of_replicas': 0,
         }
 
+    city_name_ru = TextField()
+    city_name_en = TextField()
+
     class Django:
         model = City
-        fields = [
-            'city_name',
-            'postal_code',
-        ]
+        fields = []
 
 
 @registry.register_document
@@ -154,10 +163,12 @@ class CharacteristicsDocument(Document):
             'number_of_replicas': 0,
         }
 
+    name_ru = TextField()
+    name_en = TextField()
+
     class Django:
         model = Characteristics
         fields = [
-            'name',
             'capacity',
         ]
 
@@ -166,13 +177,19 @@ class CharacteristicsDocument(Document):
 class RoomDocument(Document):
     category_id = fields.ObjectField(properties={
         'id': fields.IntegerField(),
-        'room_category_name': fields.TextField(),
+        'room_category_name_ru': fields.TextField(),
+        'room_category_name_en': fields.TextField(),
     })
     characteristics_id = fields.ObjectField(properties={
         'id': fields.IntegerField(),
-        'name': fields.TextField(),
+        'name_ru': fields.TextField(),
+        'name_en': fields.TextField(),
         'capacity': fields.IntegerField(),
     })
+    room_name_ru = TextField()
+    room_name_en = TextField()
+    room_description_ru = TextField()
+    room_description_en = TextField()
 
     class Index:
         name = 'room'
@@ -184,10 +201,8 @@ class RoomDocument(Document):
     class Django:
         model = Room
         fields = [
-            'room_name',
-            'room_no',
-            'room_description',
-            'price'
+            'price',
+            'child_capacity'
         ]
 
 
@@ -208,63 +223,123 @@ class UserDocument(Document):
 
 
 @registry.register_document
+class HotelImageDocument(Document):
+    image_url = StringField()
+
+    class Index:
+        name = 'hotel_images'
+        settings = {
+            'number_of_shards': 1,
+            'number_of_replicas': 0,
+        }
+
+    class Django:
+        model = HotelImage
+
+
+@registry.register_document
 class HotelDocument(Document):
     city = fields.ObjectField(
         properties={
             'id': fields.IntegerField(),
-            'city_name': StringField(fields={
+            'city_name_ru': StringField(fields={
                     'raw': KeywordField(),
                     'suggest': fields.CompletionField(),
                 }),
+            'city_name_en': StringField(fields={
+                'raw': KeywordField(),
+                'suggest': fields.CompletionField(),
+            }),
             'country_id': fields.ObjectField(
                 properties={
                     'id': fields.IntegerField(),
-                    'country_name': StringField(fields={
+                    'country_name_ru': StringField(fields={
                         'raw': KeywordField(),
-                        'suggest': fields.CompletionField(),
-                }),
+                        'suggest': fields.CompletionField()
+                    }),
+                    'country_name_en': StringField(fields={
+                        'raw': KeywordField(),
+                        'suggest': fields.CompletionField()
+                    }),
                 }
             )
         }
     )
     food_category = fields.ObjectField(properties={
         'id': fields.IntegerField(),
-        'food_category_name': fields.TextField(),
-        'food_category_abbreviation': fields.TextField(),
+        'food_category_name_ru': fields.TextField(),
+        'food_category_name_en': fields.TextField(),
     })
     hotel_category = fields.ObjectField(properties={
         'id': fields.IntegerField(),
-        'hotel_category_name': fields.TextField(),
+        'hotel_category_name_ru': fields.TextField(),
+        'hotel_category_name_en': fields.TextField(),
         'hotel_category_stars': fields.TextField(),
     })
     category_id = fields.ObjectField(properties={
         'id': fields.IntegerField(),
-        'hotel_category_name': fields.TextField(),
+        'hotel_category_name_ru': fields.TextField(),
+        'hotel_category_name_en': fields.TextField(),
     })
     room_id = fields.ObjectField(
         properties={
             'id': fields.IntegerField(),
-            'room_name': StringField(),
-            'room_no': fields.IntegerField(),
-            'room_description': fields.TextField(),
+            'room_name_ru': StringField(),
+            'room_name_en': StringField(),
+            'room_description_ru': fields.TextField(),
+            'room_description_en': fields.TextField(),
             'price': fields.IntegerField(),
             'category_id': fields.ObjectField(
                 properties={
                     'id': fields.IntegerField(),
-                    'room_category_name': StringField(),
+                    'room_category_name_ru': StringField(),
+                    'room_category_name_en': StringField(),
 
                 }
             ),
             'characteristics_id': fields.ObjectField(
                 properties={
                     'id': fields.IntegerField(),
-                    'name': StringField(),
+                    'name_ru': StringField(),
+                    'name_en': StringField(),
                     'capacity': fields.IntegerField()
 
                 }
-            )
+            ),
+            'child_capacity': fields.IntegerField()
         }
     )
+    additional_service_id = fields.ObjectField(
+        properties={
+            'id': fields.IntegerField(),
+            'name_ru': StringField(),
+            'name_en': StringField(),
+            'price': fields.IntegerField(),
+            'currency': StringField()
+        }
+    )
+    child_service_id = fields.ObjectField(
+        properties={
+            'id': fields.IntegerField(),
+            'name_ru': StringField(),
+            'name_en': StringField(),
+            'until_age': fields.IntegerField(),
+            'price': fields.IntegerField(),
+            'currency': StringField()
+        }
+    )
+    images = fields.NestedField(properties={
+        'id': fields.IntegerField(),
+        'image_url': fields.TextField(analyzer=html_strip,
+                                      fields={'raw': fields.KeywordField()})
+    })
+    total = fields.IntegerField()
+    hotel_name_ru = TextField()
+    hotel_name_en = TextField()
+    hotel_address_ru = TextField()
+    hotel_address_en = TextField()
+    hotel_description_ru = TextField()
+    hotel_description_en = TextField()
 
     class Index:
         name = 'hotels'
@@ -276,10 +351,13 @@ class HotelDocument(Document):
     class Django:
         model = Hotel
         fields = [
-            'hotel_name',
-            'hotel_address',
-            'hotel_description',
+            'checkin_date',
+            'checkout_date',
         ]
+        related_models = [HotelImage]
+
+    def get_instances_from_related(self, related_instance):
+        return related_instance.hotel
 
 
 @registry.register_document
@@ -291,53 +369,63 @@ class BookingDocument(Document):
     })
     hotel = fields.ObjectField(properties={
         'id': fields.IntegerField(),
-        'hotel_name': fields.TextField(),
-        'hotel_address': fields.TextField(),
-        'hotel_description': fields.TextField(),
+        'hotel_name_ru': fields.TextField(),
+        'hotel_name_en': fields.TextField(),
+        'hotel_address_ru': fields.TextField(),
+        'hotel_address_en': fields.TextField(),
+        'hotel_description_ru': fields.TextField(),
+        'hotel_description_en': fields.TextField(),
         'city': fields.ObjectField(
                 properties={
-                    'city_name': StringField(),
+                    'city_name_ru': StringField(),
+                    'city_name_en': StringField(),
                     'country_id': fields.ObjectField(
                         properties={
-                            'country_name': StringField(),
+                            'country_name_ru': StringField(),
+                            'country_name_en': StringField(),
                         }
                     )
                 }
             ),
         'food_category': fields.ObjectField(
             properties={
-                'food_category_name': fields.TextField(),
-                'food_category_abbreviation': fields.TextField()
+                'food_category_name_ru': fields.TextField(),
+                'food_category_name_en': fields.TextField(),
             }
         ),
         'hotel_category': fields.ObjectField(
             properties={
-                'hotel_category_name': StringField(),
+                'hotel_category_name_ru': StringField(),
+                'hotel_category_name_en': StringField(),
                 'hotel_category_stars': fields.IntegerField()
             }
         ),
         'category_id': fields.ObjectField(
             properties={
                 'id': fields.IntegerField(),
-                'hotel_category_name': fields.TextField(),
+                'hotel_category_name_ru': fields.TextField(),
+                'hotel_category_name_en': fields.TextField(),
             }
         ),
         'is_active': fields.TextField(),
         'room_id': fields.ObjectField(
                 properties={
-                    'room_name': StringField(),
-                    'room_no': fields.IntegerField(),
-                    'room_description': fields.TextField(),
+                    'room_name_ru': StringField(),
+                    'room_name_en': StringField(),
+                    'room_description_ru': fields.TextField(),
+                    'room_description_en': fields.TextField(),
                     'price': fields.IntegerField(),
                     'category_id': fields.ObjectField(
                         properties={
-                            'room_category_name': StringField(),
+                            'room_category_name_ru': StringField(),
+                            'room_category_name_en': StringField(),
 
                         }
                     ),
                     'characteristics_id': fields.ObjectField(
                         properties={
-                            'name': StringField(),
+                            'name_ru': StringField(),
+                            'name_en': StringField(),
                             'capacity': fields.IntegerField()
 
                         }
@@ -349,19 +437,22 @@ class BookingDocument(Document):
 
     room = fields.ObjectField(properties={
         'id': fields.IntegerField(),
-        'room_name': fields.TextField(),
-        'room_no': fields.IntegerField(),
-        'room_description': fields.TextField(),
+        'room_name_ru': fields.TextField(),
+        'room_name_en': fields.TextField(),
+        'room_description_ru': fields.TextField(),
+        'room_description_en': fields.TextField(),
         'price': fields.FloatField(),
         'category_id': fields.ObjectField(
                 properties={
-                    'room_category_name': StringField(),
+                    'room_category_name_ru': StringField(),
+                    'room_category_name_en': StringField(),
 
                 }
             ),
         'characteristics_id': fields.ObjectField(
             properties={
-                'name': StringField(),
+                'name_ru': StringField(),
+                'name_en': StringField(),
                 'capacity': fields.IntegerField()
 
             }

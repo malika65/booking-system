@@ -1,12 +1,17 @@
+import os
+
 from django.db import models
 from smart_selects.db_fields import ChainedForeignKey
 
+from main import settings
 from .characteristic_models import (
     FacilitiesAndServicesRooms,
     Characteristics,
     FoodCategory,
     HotelCategoryStars,
-    FacilitiesAndServicesHotels
+    FacilitiesAndServicesHotels,
+    ChildService,
+    AdditionalService
 )
 from .country_models import Country, City
 
@@ -25,9 +30,9 @@ CURRENCY_CHOICES = [
 
 class Room(models.Model):
     room_name = models.CharField(max_length=50, null=True, blank=True, verbose_name='Название комнаты')
-    room_no = models.IntegerField(default=101, null=True, blank=True, verbose_name='Номер комнаты')
     room_description = models.TextField(max_length=1500, null=True, blank=True, verbose_name='Описание комнаты')
-    price = models.FloatField(default=1000.0, null=True, blank=True, verbose_name='Цена')
+    price = models.FloatField(default=0, null=True, blank=True, verbose_name='Цена')
+
     currency = models.CharField(
         max_length=10,
         choices=CURRENCY_CHOICES,
@@ -58,8 +63,9 @@ class Hotel(models.Model):
         sort=True, blank=True, null=True, verbose_name='Город')
     food_category = models.ManyToManyField(FoodCategory, blank=True, verbose_name='Категории питания')
     hotel_category = models.ManyToManyField(HotelCategoryStars, blank=True, verbose_name='Звезды отеля')
-    category_id = models.ManyToManyField(FacilitiesAndServicesHotels, blank=True, default="Hotel",
-                                         verbose_name='Удобства и услуги')
+    category_id = models.ManyToManyField(FacilitiesAndServicesHotels, blank=True, verbose_name='Удобства и услуги')
+    additional_service_id = models.ManyToManyField(AdditionalService, blank=True, verbose_name='Дополнительные услуги')
+    child_service_id = models.ManyToManyField(ChildService, blank=True, verbose_name='Услуги проживания с детьми')
     is_active = models.BooleanField(default=True, verbose_name='Активный')
     room_id = models.ManyToManyField(Room, blank=True, verbose_name='Типы комнат')
     checkin_date = models.CharField(null=True, verbose_name='Регистрация заезда с', max_length=20)
@@ -71,4 +77,28 @@ class Hotel(models.Model):
     def __str__(self) -> str:
         return self.hotel_name or ''
 
+    @property
+    def total(self):
+        return sum(room.price for room in self.room_id.all())
 
+
+class HotelImage(models.Model):
+    hotel = models.ForeignKey(Hotel, default=None, on_delete=models.CASCADE, related_name='images')
+    image_url = models.TextField(max_length=10000, blank=True, null=True)
+    image = models.FileField()
+
+    class Meta:
+        verbose_name = 'Изображение'
+        verbose_name_plural = 'Изображения'
+
+    def __str__(self):
+        return self.hotel.hotel_name
+
+    def save(self, *args, **kwargs):
+        try:
+            get_text = self.image.url
+            self.image_url = get_text
+            super(HotelImage, self).save(*args, **kwargs)
+        except Exception as exp:
+            print("Exception: {exp}".format(exp=exp))
+        return super(HotelImage, self).save(*args, **kwargs)

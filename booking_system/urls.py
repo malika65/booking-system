@@ -11,11 +11,12 @@ from .views import (
     FoodCategoryList,
     HotelCategoryStarsList,
     CharacteristicsList,
-    CategoryList
+    CategoryList,
 )
 
 urlpatterns = [
     path('hotel_list/', HotelList.as_view()),
+    # path('hotel_image_list/', HotelImageList.as_view()),
     path('room_list/', RoomList.as_view()),
     path('categories/', CategoryList.as_view()),
     path('facilitiels_of_hotels/', FacilitiesAndServicesHotelsList.as_view()),

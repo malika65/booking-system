@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.forms import CheckboxSelectMultiple
+from modeltranslation.admin import TranslationAdmin, TranslationTabularInline
 
 from .models.booking_models import Booking
 from .models.characteristic_models import (
@@ -8,14 +9,14 @@ from .models.characteristic_models import (
     FoodCategory,
     HotelCategoryStars,
     Characteristics,
-    Category
+    Category, AdditionalService, ChildService
 )
 from .models.country_models import Country, City
-from .models.hotel_models import Hotel, Room
+from .models.hotel_models import Hotel, Room, HotelImage
 from django.db import models
 
 
-class CityInline(admin.TabularInline):
+class CityInline(TranslationTabularInline):
     model = City
 
 
@@ -26,30 +27,90 @@ class CountryAdmin(admin.ModelAdmin):
     ]
 
 
+class HotelImageInline(admin.TabularInline):
+    model = HotelImage
+    extra = 3
+
+
 @admin.register(Hotel)
-class HotelAdmin(admin.ModelAdmin):
+class HotelAdmin(TranslationAdmin):
     formfield_overrides = {
         models.ManyToManyField: {'widget': CheckboxSelectMultiple},
     }
-    fields = ('country', 'city', 'hotel_name', 'category_id',
-              'food_category', 'hotel_category', 'hotel_address',
-              'hotel_description', 'room_id', 'checkin_date', 'checkout_date')
+    field = '__all__'
+    inlines = [HotelImageInline, ]
 
 
 @admin.register(Room)
-class RoomAdmin(admin.ModelAdmin):
+class RoomAdmin(TranslationAdmin):
     formfield_overrides = {
         models.ManyToManyField: {'widget': CheckboxSelectMultiple},
     }
     field = '__all__'
 
 
-admin.site.register(Category)
-admin.site.register(FacilitiesAndServicesHotels)
+@admin.register(Category)
+class CategoryAdmin(TranslationAdmin):
+    formfield_overrides = {
+        models.ManyToManyField: {'widget': CheckboxSelectMultiple},
+    }
+    field = '__all__'
+
+
+@admin.register(FacilitiesAndServicesHotels)
+class FacilitiesAndServicesHotelsAdmin(TranslationAdmin):
+    formfield_overrides = {
+        models.ManyToManyField: {'widget': CheckboxSelectMultiple},
+    }
+    field = '__all__'
+
+
+@admin.register(FoodCategory)
+class FoodCategoryAdmin(TranslationAdmin):
+    formfield_overrides = {
+        models.ManyToManyField: {'widget': CheckboxSelectMultiple},
+    }
+    field = '__all__'
+
+
+@admin.register(HotelCategoryStars)
+class HotelCategoryStarsAdmin(TranslationAdmin):
+    formfield_overrides = {
+        models.ManyToManyField: {'widget': CheckboxSelectMultiple},
+    }
+    field = '__all__'
+
+
+@admin.register(FacilitiesAndServicesRooms)
+class FacilitiesAndServicesRoomsAdmin(TranslationAdmin):
+    formfield_overrides = {
+        models.ManyToManyField: {'widget': CheckboxSelectMultiple},
+    }
+    field = '__all__'
+
+
+@admin.register(Characteristics)
+class CharacteristicsAdmin(TranslationAdmin):
+    formfield_overrides = {
+        models.ManyToManyField: {'widget': CheckboxSelectMultiple},
+    }
+    field = '__all__'
+
+
+@admin.register(AdditionalService)
+class AdditionalServiceAdmin(TranslationAdmin):
+    formfield_overrides = {
+        models.ManyToManyField: {'widget': CheckboxSelectMultiple},
+    }
+    field = '__all__'
+
+
+@admin.register(ChildService)
+class ChildServiceAdmin(TranslationAdmin):
+    formfield_overrides = {
+        models.ManyToManyField: {'widget': CheckboxSelectMultiple},
+    }
+    field = '__all__'
+
+
 admin.site.register(Booking)
-admin.site.register(FoodCategory)
-admin.site.register(HotelCategoryStars)
-admin.site.register(FacilitiesAndServicesRooms)
-admin.site.register(Characteristics)
-
-

@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf.urls import url
+from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.urls import path, include
 from.yasg import urlpatterns as doc_urls
@@ -22,13 +23,14 @@ from django.conf import settings
 
 
 urlpatterns = [
-
     path('admin/', admin.site.urls),
+    url(r'^chaining/', include('smart_selects.urls')),
+] + i18n_patterns(
+    path('i18n/', include('django.conf.urls.i18n')),
     path('booking-app/', include('booking_system.urls')),
     path('authe/', include('authe.urls')),
     path('search/', include('search.urls')),
-    url(r'^chaining/', include('smart_selects.urls')),
-]
+)
 
 urlpatterns += doc_urls
 
