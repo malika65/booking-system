@@ -48,7 +48,7 @@ class PeriodPrice(models.Model):
 class Room(models.Model):
     room_name = models.CharField(max_length=50, null=True, blank=True, verbose_name='Название комнаты')
     room_description = models.TextField(max_length=1500, null=True, blank=True, verbose_name='Описание комнаты')
-    price = models.ForeignKey(PeriodPrice, blank=True, verbose_name='Цены', on_delete=models.CASCADE)
+    price = models.ManyToManyField(PeriodPrice, blank=True, verbose_name='Цены')
 
     category_id = models.ManyToManyField(FacilitiesAndServicesRooms, blank=True, verbose_name='Удобства и услуги комнаты')
     characteristics_id = models.ManyToManyField(Characteristics, blank=True, verbose_name='Характеристики(вместимости)')
