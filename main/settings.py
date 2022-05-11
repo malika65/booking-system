@@ -37,10 +37,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-CORS_ALLOW_HEADERS = default_headers + (
-    'Access-Control-Allow-Origin',
-)
-
 CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOW_CREDENTIALS = True
@@ -65,6 +61,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CORS_ALLOW_HEADERS = [
+    'Access-Control-Allow-Origin',
     'accept',
     'accept-encoding',
     'authorization',
