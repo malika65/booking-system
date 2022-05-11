@@ -39,7 +39,7 @@ class PeriodPrice(models.Model):
     end_date = models.DateField()
 
     def __str__(self) -> str:
-        return f'С {str(self.start_date.strftime("%d-%b-%Y"))} - По {str(self.end_date.strftime("%d-%b-%Y"))}' or ''
+        return f'С {str(self.start_date.strftime("%d-%b-%Y"))} - По {str(self.end_date.strftime("%d-%b-%Y"))}: {self.price}' or ''
 
     class Meta:
         verbose_name_plural = "Период и цены"
@@ -48,7 +48,7 @@ class PeriodPrice(models.Model):
 class Room(models.Model):
     room_name = models.CharField(max_length=50, null=True, blank=True, verbose_name='Название комнаты')
     room_description = models.TextField(max_length=1500, null=True, blank=True, verbose_name='Описание комнаты')
-    price = models.ManyToManyField(PeriodPrice, blank=True, verbose_name='Цены')
+    price = models.ForeignKey(PeriodPrice, blank=True, verbose_name='Цены', on_delete=models.CASCADE)
 
     category_id = models.ManyToManyField(FacilitiesAndServicesRooms, blank=True, verbose_name='Удобства и услуги комнаты')
     characteristics_id = models.ManyToManyField(Characteristics, blank=True, verbose_name='Характеристики(вместимости)')
