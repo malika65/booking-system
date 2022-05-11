@@ -47,17 +47,14 @@ CSRF_TRUSTED_ORIGINS = ['https://silk-travel.herokuapp.com']
 CORS_ALLOW_ALL_ORIGINS = True # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
-    'http://localhost:3000',
-    'https://localhost:3000',
+    'http://localhost:3000/',
 ]
 
 CORS_ALLOWED_ORIGINS = [
     "http://silk-travel.herokuapp.com",
     "https://silk-travel.herokuapp.com",
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "https://localhost:3000",
-    "https://127.0.0.1:3000",
+    "http://localhost:3000/",
+    "http://127.0.0.1:3000/",
 ]
 
 CORS_ALLOW_HEADERS = [
@@ -74,10 +71,10 @@ CORS_ALLOW_HEADERS = [
 ]
 
 CORS_ORIGIN_WHITELIST = [
-    'http://localhost:3000',
+    'http://localhost:3000/',
 ] # If this is used, then not need to use `CORS_ORIGIN_ALLOW_ALL = True`
 CORS_ORIGIN_REGEX_WHITELIST = [
-    'http://localhost:3000',
+    'http://localhost:3000/',
 ]
 
 AUTH_USER_MODEL = 'authe.User'
