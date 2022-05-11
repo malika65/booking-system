@@ -4,7 +4,7 @@ from django_elasticsearch_dsl.registries import registry
 from rest_framework.fields import ImageField
 
 from authe.models import User
-from .models.hotel_models import Hotel, Room, HotelImage
+from .models.hotel_models import Hotel, Room, HotelImage, PeriodPrice
 from .models.country_models import Country, City
 from .models.characteristic_models import (
     Category,
@@ -174,6 +174,25 @@ class CharacteristicsDocument(Document):
 
 
 @registry.register_document
+class PeriodPriceDocument(Document):
+    class Index:
+        name = 'period_price'
+        settings = {
+            'number_of_shards': 1,
+            'number_of_replicas': 0,
+        }
+
+    class Django:
+        model = PeriodPrice
+        fields = [
+            'price',
+            'start_date',
+            'end_date',
+            'currency'
+        ]
+
+
+@registry.register_document
 class RoomDocument(Document):
     category_id = fields.ObjectField(properties={
         'id': fields.IntegerField(),
@@ -185,6 +204,12 @@ class RoomDocument(Document):
         'name_ru': fields.TextField(),
         'name_en': fields.TextField(),
         'capacity': fields.IntegerField(),
+    })
+    price = fields.ObjectField(properties={
+        'id': fields.IntegerField(),
+        'price': fields.FloatField(),
+        'start_date': fields.DateField(),
+        'end_date': fields.DateField(),
     })
     room_name_ru = TextField()
     room_name_en = TextField()
@@ -201,7 +226,6 @@ class RoomDocument(Document):
     class Django:
         model = Room
         fields = [
-            'price',
             'child_capacity'
         ]
 
@@ -288,7 +312,13 @@ class HotelDocument(Document):
             'room_name_en': StringField(),
             'room_description_ru': fields.TextField(),
             'room_description_en': fields.TextField(),
-            'price': fields.IntegerField(),
+            'price': fields.ObjectField(
+                properties={
+                    'id': fields.IntegerField(),
+                    'price': fields.FloatField(),
+                    'start_date': fields.DateField(),
+                    'end_date': fields.DateField(),
+                }),
             'category_id': fields.ObjectField(
                 properties={
                     'id': fields.IntegerField(),
@@ -333,7 +363,7 @@ class HotelDocument(Document):
         'image_url': fields.TextField(analyzer=html_strip,
                                       fields={'raw': fields.KeywordField()})
     })
-    total = fields.IntegerField()
+    # total = fields.IntegerField()
     hotel_name_ru = TextField()
     hotel_name_en = TextField()
     hotel_address_ru = TextField()
@@ -353,6 +383,7 @@ class HotelDocument(Document):
         fields = [
             'checkin_date',
             'checkout_date',
+            # 'total'
         ]
         related_models = [HotelImage]
 

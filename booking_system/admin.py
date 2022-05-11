@@ -12,7 +12,7 @@ from .models.characteristic_models import (
     Category, AdditionalService, ChildService
 )
 from .models.country_models import Country, City
-from .models.hotel_models import Hotel, Room, HotelImage
+from .models.hotel_models import Hotel, Room, HotelImage, PeriodPrice
 from django.db import models
 
 
@@ -30,6 +30,7 @@ class CountryAdmin(admin.ModelAdmin):
 class HotelImageInline(admin.TabularInline):
     model = HotelImage
     extra = 3
+    exclude = ['image_url']
 
 
 @admin.register(Hotel)
@@ -38,7 +39,7 @@ class HotelAdmin(TranslationAdmin):
         models.ManyToManyField: {'widget': CheckboxSelectMultiple},
     }
     field = '__all__'
-    inlines = [HotelImageInline, ]
+    inlines = [HotelImageInline]
 
 
 @admin.register(Room)
@@ -107,6 +108,14 @@ class AdditionalServiceAdmin(TranslationAdmin):
 
 @admin.register(ChildService)
 class ChildServiceAdmin(TranslationAdmin):
+    formfield_overrides = {
+        models.ManyToManyField: {'widget': CheckboxSelectMultiple},
+    }
+    field = '__all__'
+
+
+@admin.register(PeriodPrice)
+class PeriodPriceAdmin(admin.ModelAdmin):
     formfield_overrides = {
         models.ManyToManyField: {'widget': CheckboxSelectMultiple},
     }

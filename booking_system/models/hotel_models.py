@@ -28,16 +28,28 @@ CURRENCY_CHOICES = [
 ]
 
 
-class Room(models.Model):
-    room_name = models.CharField(max_length=50, null=True, blank=True, verbose_name='Название комнаты')
-    room_description = models.TextField(max_length=1500, null=True, blank=True, verbose_name='Описание комнаты')
-    price = models.FloatField(default=0, null=True, blank=True, verbose_name='Цена')
-
+class PeriodPrice(models.Model):
+    price = models.FloatField(default=0, verbose_name="Цена")
     currency = models.CharField(
         max_length=10,
         choices=CURRENCY_CHOICES,
         default=USD,
     )
+    start_date = models.DateField()
+    end_date = models.DateField()
+
+    def __str__(self) -> str:
+        return f'С {str(self.start_date.strftime("%d-%b-%Y"))} - По {str(self.end_date.strftime("%d-%b-%Y"))}' or ''
+
+    class Meta:
+        verbose_name_plural = "Период и цены"
+
+
+class Room(models.Model):
+    room_name = models.CharField(max_length=50, null=True, blank=True, verbose_name='Название комнаты')
+    room_description = models.TextField(max_length=1500, null=True, blank=True, verbose_name='Описание комнаты')
+    price = models.ManyToManyField(PeriodPrice, blank=True, verbose_name='Цены')
+
     category_id = models.ManyToManyField(FacilitiesAndServicesRooms, blank=True, verbose_name='Удобства и услуги комнаты')
     characteristics_id = models.ManyToManyField(Characteristics, blank=True, verbose_name='Характеристики(вместимости)')
     child_capacity = models.IntegerField(default=0, verbose_name='Сколько детей помещается')
@@ -79,7 +91,11 @@ class Hotel(models.Model):
 
     @property
     def total(self):
-        return sum(room.price for room in self.room_id.all())
+        total_rooms_price = []
+        for room in self.room_id.all():
+            for price in room.price.all():
+                total_rooms_price.append(price.price)
+        return sum(total_rooms_price)
 
 
 class HotelImage(models.Model):

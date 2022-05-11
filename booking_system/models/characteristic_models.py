@@ -102,7 +102,8 @@ class ChildService(models.Model):
         MaxValueValidator(17),
         MinValueValidator(1)
     ], verbose_name='До какого возраста', null=True)
-    price = models.FloatField(default=0, null=True, blank=True, verbose_name='Цена')
+    is_discount = models.BooleanField(default=False, verbose_name='Проценты')
+    price = models.FloatField(default=0, null=True, blank=True, verbose_name='Цена или проценты')
     currency = models.CharField(
         max_length=10,
         choices=CURRENCY_CHOICES,

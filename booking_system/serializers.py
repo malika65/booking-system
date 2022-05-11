@@ -11,7 +11,7 @@ from .models.characteristic_models import (
     FacilitiesAndServicesRooms, Category, AdditionalService, ChildService
 )
 from .models.country_models import Country, City
-from .models.hotel_models import Hotel, Room, HotelImage
+from .models.hotel_models import Hotel, Room, HotelImage, PeriodPrice
 
 
 class CountrySerializer(serializers.ModelSerializer):
@@ -57,9 +57,17 @@ class ChildServiceSerializer(serializers.ModelSerializer):
         fields = ('id', 'name_ru', 'name_en', 'until_age', 'price', 'currency')
 
 
+class PeriodPriceSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = PeriodPrice
+        fields = ('id', 'price', 'currency', 'start_date', 'end_date')
+
+
 class RoomSerializer(serializers.ModelSerializer):
     category_id = FacilitiesAndServicesRoomsSerializer(read_only=True, many=True)
     characteristics_id = CharacteristicsSerializer(read_only=True, many=True)
+    price = PeriodPriceSerializer(read_only=True, many=True)
 
     class Meta:
         model = Room
@@ -128,6 +136,7 @@ class HotelSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
+        # print(representation.get('room_id'))
         return representation
 
 
