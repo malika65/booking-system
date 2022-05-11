@@ -11,12 +11,13 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 import os
+from datetime import timedelta
+from pathlib import Path
 from urllib.parse import urlparse
 
 import dj_database_url
+from corsheaders.defaults import default_headers
 
-from datetime import timedelta
-from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -35,6 +36,10 @@ DEBUG = True
 
 
 ALLOWED_HOSTS = ["*"]
+
+CORS_ALLOW_HEADERS = default_headers + (
+    'Access-Control-Allow-Origin',
+)
 
 CORS_ORIGIN_ALLOW_ALL = True
 
