@@ -121,7 +121,7 @@ ES_URL = 'https://i6s9ze18p4:uvqw5a0bvx@holly-906727421.eu-west-1.bonsaisearch.n
 
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts': ES_URL
+        'hosts': ES_URL,
     },
 }
 
@@ -297,3 +297,10 @@ LANGUAGES = (
 
 MODELTRANSLATION_DEFAULT_LANGUAGE = 'ru'
 MODELTRANSLATION_TRANSLATION_REGISTRY = 'main.translation'
+
+
+# CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+# CELERY_ACCEPT_CONTENT = ['application/json']
+# CELERY_TASK_SERIALIZER = 'json'
+# CELERY_RESULT_SERIALIZER = 'json'
+# CELERY_TIMEZONE = 'Asia/Bishkek'

@@ -363,7 +363,6 @@ class HotelDocument(Document):
         'image_url': fields.TextField(analyzer=html_strip,
                                       fields={'raw': fields.KeywordField()})
     })
-    # total = fields.IntegerField()
     hotel_name_ru = TextField()
     hotel_name_en = TextField()
     hotel_address_ru = TextField()
@@ -383,7 +382,6 @@ class HotelDocument(Document):
         fields = [
             'checkin_date',
             'checkout_date',
-            # 'total'
         ]
         related_models = [HotelImage]
 

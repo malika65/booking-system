@@ -1,6 +1,8 @@
 import os
 
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from smart_selects.db_fields import ChainedForeignKey
 
 from main import settings
@@ -62,9 +64,9 @@ class Room(models.Model):
 
 
 class Hotel(models.Model):
-    hotel_name = models.CharField(max_length=20, null=True, blank=True, verbose_name='Название отеля')
-    hotel_address = models.CharField(max_length=50, null=True, blank=True, verbose_name='Адрес отеля')
-    hotel_description = models.TextField(max_length=1500, null=True, blank=True, verbose_name='Описание отеля')
+    hotel_name = models.CharField(max_length=200, null=True, blank=True, verbose_name='Название отеля')
+    hotel_address = models.CharField(max_length=500, null=True, blank=True, verbose_name='Адрес отеля')
+    hotel_description = models.TextField(max_length=3500, null=True, blank=True, verbose_name='Описание отеля')
     country = models.ForeignKey(Country, blank=True, null=True, on_delete=models.CASCADE, verbose_name='Страна')
     city = ChainedForeignKey(
         City,
@@ -88,14 +90,6 @@ class Hotel(models.Model):
 
     def __str__(self) -> str:
         return self.hotel_name or ''
-
-    @property
-    def total(self):
-        total_rooms_price = []
-        for room in self.room_id.all():
-            for price in room.price.all():
-                total_rooms_price.append(price.price)
-        return sum(total_rooms_price)
 
 
 class HotelImage(models.Model):
