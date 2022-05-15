@@ -120,7 +120,8 @@ from main.celery import reload_indexes
 
 @receiver(post_save)
 def update_index(sender, instance, **kwargs):
-    reload_indexes.delay()
+    management.call_command('search_index', '--rebuild', '-f')
+    # reload_indexes.delay()
     # request_started.send(None)
     # request_finished.connect(my_callback)
     # # loop = asyncio.new_event_loop()
