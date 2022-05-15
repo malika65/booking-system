@@ -112,7 +112,7 @@ class BookingDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def perform_create(self, serializer):
         serializer.save(guest_id=self.request.user,)
-
+from main.celery import reload_indexes
 # from .tasks import reload_indexes
 # @receiver(request_finished)
 # def my_callback(sender, **kwargs):
@@ -120,8 +120,7 @@ class BookingDetail(generics.RetrieveUpdateDestroyAPIView):
 
 @receiver(post_save)
 def update_index(sender, instance, **kwargs):
-    management.call_command('search_index', '--rebuild', '-f')
-    # reload_indexes.delay()
+    reload_indexes.delay()
     # request_started.send(None)
     # request_finished.connect(my_callback)
     # # loop = asyncio.new_event_loop()

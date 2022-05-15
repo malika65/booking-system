@@ -14,7 +14,7 @@ import os
 from datetime import timedelta
 from pathlib import Path
 from urllib.parse import urlparse
-
+from kombu import Queue
 import dj_database_url
 from corsheaders.defaults import default_headers
 
@@ -100,6 +100,7 @@ INSTALLED_APPS = [
     'authe.apps.AutheConfig',
     'django_extensions',
     'search.apps.SearchConfig',
+    'django_celery_beat',
 
 ]
 
@@ -204,20 +205,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'main.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
-
-db_from_env = dj_database_url.config(conn_max_age=600)
-DATABASES['default'].update(db_from_env)
-
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
@@ -298,9 +285,73 @@ LANGUAGES = (
 MODELTRANSLATION_DEFAULT_LANGUAGE = 'ru'
 MODELTRANSLATION_TRANSLATION_REGISTRY = 'main.translation'
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
+#         "NAME": os.environ.get("SQL_DATABASE", os.path.join(BASE_DIR, "db.sqlite3")),
+#         "USER": os.environ.get("SQL_USER", "user"),
+#         "PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
+#         "HOST": os.environ.get("SQL_HOST", "localhost"),
+#         "PORT": os.environ.get("SQL_PORT", "5432"),
+#     }
+# }
 
-# CELERY_RESULT_BACKEND = 'redis://localhost:6379'
-# CELERY_ACCEPT_CONTENT = ['application/json']
-# CELERY_TASK_SERIALIZER = 'json'
-# CELERY_RESULT_SERIALIZER = 'json'
-# CELERY_TIMEZONE = 'Asia/Bishkek'
+
+# db_from_env = dj_database_url.config(conn_max_age=600)
+# DATABASES['default'].update(db_from_env)
+
+DATABASES = {}
+
+DATABASES['default'] = dj_database_url.config(default='DATABASE_URL')
+
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER", "redis://127.0.0.1:6379/0")
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND", "redis://127.0.0.1:6379/0")
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [(os.environ.get("CHANNELS_REDIS", "redis://127.0.0.1:6379/0"))],
+        },
+    },
+}
+
+CELERY_BEAT_SCHEDULE = {
+    # 'task-clear-session': {
+    #     'task': 'task_clear_session',
+    #     "schedule": 5.0,  # five seconds
+    # },
+}
+
+CELERY_TASK_DEFAULT_QUEUE = 'default'
+
+# Force all queues to be explicitly listed in `CELERY_TASK_QUEUES` to help prevent typos
+CELERY_TASK_CREATE_MISSING_QUEUES = False
+
+CELERY_TASK_QUEUES = (
+    # need to define default queue here or exception would be raised
+    Queue('default'),
+
+    Queue('high_priority'),
+    Queue('low_priority'),
+)
+
+# manual task routing
+
+# CELERY_TASK_ROUTES = {
+#     'django_celery_example.celery.*': {
+#         'queue': 'high_priority',
+#     },
+# }
+
+# dynamic task routing
+
+
+def route_task(name, args, kwargs, options, task=None, **kw):
+    if ':' in name:
+        queue, _ = name.split(':')
+        return {'queue': queue}
+    return {'queue': 'default'}
+
+
+CELERY_TASK_ROUTES = (route_task,)
