@@ -4,25 +4,10 @@ RUN pip install --upgrade pip
 
 ENV PYTHONUNBUFFERED 1
 
-RUN apt-get update \
-  # dependencies for building Python packages
-  && apt-get install -y build-essential netcat \
-  # psycopg2 dependencies
-  && apt-get install -y libpq-dev \
-  # Translations dependencies
-  && apt-get install -y gettext \
-  # cleaning up unused files
-  && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
-  && rm -rf /var/lib/apt/lists/*
-
 RUN mkdir /app -p && mkdir /app/static -p
 WORKDIR /app
 COPY requirements.txt /app
 RUN pip install -r requirements.txt
-
-COPY ./entrypoint /entrypoint
-RUN sed -i 's/\r$//g' /entrypoint
-RUN chmod +x /entrypoint
 
 COPY ./start /start
 RUN sed -i 's/\r$//g' /start
@@ -40,6 +25,6 @@ COPY ./flower_start /start-flower
 RUN sed -i 's/\r$//g' /start-flower
 RUN chmod +x /start-flower
 
-WORKDIR /app
-
-ENTRYPOINT ["/entrypoint"]
+#COPY . /app/
+#RUN chmod +x /app/entrypoint.sh
+#ENTRYPOINT ["/app/entrypoint.sh"]
