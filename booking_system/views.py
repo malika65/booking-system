@@ -118,9 +118,9 @@ class BookingDetail(generics.RetrieveUpdateDestroyAPIView):
 # def my_callback(sender, **kwargs):
 #     management.call_command('search_index', '--rebuild', '-f')
 
-@receiver(post_save)
-def update_index(sender, instance, **kwargs):
-    management.call_command('search_index', '--rebuild', '-f')
+# @receiver(post_save)
+# def update_index(sender, instance, **kwargs):
+#     management.call_command('search_index', '--rebuild', '-f')
     # reload_indexes.delay()
     # request_started.send(None)
     # request_finished.connect(my_callback)
