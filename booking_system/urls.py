@@ -25,6 +25,5 @@ urlpatterns = [
     path('hotel_stars_categories/', HotelCategoryStarsList.as_view()),
     path('characteristics/', CharacteristicsList.as_view()),
     path('hotel_detail/<int:pk>/', HotelDetail.as_view()),
-    # path('booking-list/', BookingList.as_view()),
     path('booking-detail/<int:pk>', BookingDetail.as_view()),
 ]
