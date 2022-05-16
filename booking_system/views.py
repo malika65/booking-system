@@ -88,7 +88,7 @@ class RoomList(generics.ListAPIView):
     permission_classes = (AllowAny,)
 
 
-class BookingList(generics.ListAPIView):
+class BookingListCreate(generics.ListCreateAPIView):
     queryset = Booking.objects.all()
     serializer_class = BookingSerializer
     permission_classes = (IsAuthenticated,)
@@ -112,7 +112,7 @@ class BookingDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def perform_create(self, serializer):
         serializer.save(guest_id=self.request.user,)
-from main.celery import reload_indexes
+# from main.celery import reload_indexes
 # from .tasks import reload_indexes
 # @receiver(request_finished)
 # def my_callback(sender, **kwargs):

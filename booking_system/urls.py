@@ -3,7 +3,7 @@ from django.urls import path
 from .views import (
     HotelList,
     HotelDetail,
-    BookingList,
+    BookingListCreate,
     BookingDetail,
     RoomList,
     FacilitiesAndServicesHotelsList,
@@ -16,7 +16,7 @@ from .views import (
 
 urlpatterns = [
     path('hotel_list/', HotelList.as_view()),
-    # path('hotel_image_list/', HotelImageList.as_view()),
+    path('bookings/', BookingListCreate.as_view()),
     path('room_list/', RoomList.as_view()),
     path('categories/', CategoryList.as_view()),
     path('facilitiels_of_hotels/', FacilitiesAndServicesHotelsList.as_view()),
@@ -25,6 +25,6 @@ urlpatterns = [
     path('hotel_stars_categories/', HotelCategoryStarsList.as_view()),
     path('characteristics/', CharacteristicsList.as_view()),
     path('hotel_detail/<int:pk>/', HotelDetail.as_view()),
-    path('booking-list/', BookingList.as_view()),
+    # path('booking-list/', BookingList.as_view()),
     path('booking-detail/<int:pk>', BookingDetail.as_view()),
 ]
