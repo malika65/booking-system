@@ -152,6 +152,11 @@ class HotelSearchSerializer(serializers.ModelSerializer):
     child_service_id = ChildServiceSerializer(read_only=True, many=True)
     room_id = RoomSerializer(read_only=True, many=True)
     images = HotelImageSerializer(many=True)
+    # child_year = serializers.SerializerMethodField('get_extra_field')
+    #
+    # def get_child_year(self, member):
+    #     return ModelASerializer(ModelA.objects.get(pk=member.field)).data
+    # re_password = serializers.CharField(write_only=True)
 
     class Meta:
         model = Hotel
@@ -163,15 +168,17 @@ class HotelSearchSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_room_price_depends_on_capacity(representation, capacity):
         for room in representation['room_id']:
-            print(room)
             for characteristics_id in room['characteristics_id']:
                 if capacity == characteristics_id['capacity']:
                     return room['price'][0]['price']
 
     def to_representation(self, instance):
+
         filters_in_request = self.context['request']
         total_rooms_price = []
         representation = super().to_representation(instance)
+        # print("+++")
+        # print(filters_in_request.GET['re_password'])
         room_capacity = 0
         child_room_capacity = 0
         if 'room_capacity' in filters_in_request.GET.keys():
@@ -187,8 +194,23 @@ class HotelSearchSerializer(serializers.ModelSerializer):
         return representation
 
 
+class HotelBookingSerializer(serializers.ModelSerializer):
+    hotel_name_ru = serializers.CharField(max_length=100)
+    hotel_address_ru = serializers.CharField(max_length=100)
+    hotel_description_ru = serializers.CharField(max_length=2500)
+    is_active = serializers.BooleanField(default=True)
+    city = CitySerializer()
+    child_service_id = ChildServiceSerializer(read_only=True, many=True)
+    room_id = RoomSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = Hotel
+        fields = ['hotel_name_ru', 'hotel_address_ru', 'hotel_description_ru', 'is_active',
+                  'city', 'room_id', 'checkin_date', 'checkout_date', 'child_service_id']
+
+
 class BookingSerializer(serializers.ModelSerializer):
-    hotel = HotelSerializer(read_only=True)
+    hotel = HotelBookingSerializer(read_only=True)
     guest_id = UserSerializer()
     room = RoomSerializer(read_only=True)
 

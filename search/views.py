@@ -45,14 +45,10 @@ class HotelDocumentView(DocumentViewSet):
     search_fields = {
         'hotel_name_ru': {'fuzziness': 2, 'minimum_should_match': "65%"},
         'hotel_name_en': {'fuzziness': 2, 'minimum_should_match': "65%"},
-        'hotel_description_ru': {'fuzziness': 2, 'minimum_should_match': "65%"},
-        'hotel_description_en': {'fuzziness': 2, 'minimum_should_match': "65%"},
         'city.country_id.country_name_ru': {'fuzziness': 2, 'minimum_should_match': "65%"},
         'city.country_id.country_name_en': {'fuzziness': 2, 'minimum_should_match': "65%"},
         'city.city_name_ru': {'fuzziness': 2, 'minimum_should_match': "65%"},
         'city.city_name_en': {'fuzziness': 2, 'minimum_should_match': "65%"},
-        'hotel_address_ru': {'fuzziness': 2, 'minimum_should_match': "65%"},
-        'hotel_address_en': {'fuzziness': 2, 'minimum_should_match': "65%"},
     }
     multi_match_search_fields = (
         'hotel_name_ru',
@@ -61,10 +57,10 @@ class HotelDocumentView(DocumentViewSet):
         'hotel_address_en',
     )
     filter_fields = {
-        # 'food_category': 'food_category.id',
-        # 'hotel_category': 'hotel_category.id',
-        # 'categories': 'category_id.id',
-        # 'room_name_id': 'room_id.id',
+        'food_category': 'food_category.id',
+        'hotel_category': 'hotel_category.id',
+        'categories': 'category_id.id',
+        'room_name_id': 'room_id.id',
         # 'room_price': {
         #     'field': 'room_id.price',
         #     # 'lookups': [
