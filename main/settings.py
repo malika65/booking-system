@@ -14,6 +14,8 @@ import os
 from datetime import timedelta
 from pathlib import Path
 from urllib.parse import urlparse
+
+from celery.schedules import crontab
 from kombu import Queue
 import dj_database_url
 from corsheaders.defaults import default_headers
@@ -302,54 +304,12 @@ DATABASES = {
 db_from_env = dj_database_url.config(conn_max_age=600)
 DATABASES['default'].update(db_from_env)
 
-CELERY_BROKER_URL = os.environ.get("CELERY_BROKER", "redis://127.0.0.1:6379/0")
-CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND", "redis://127.0.0.1:6379/0")
-
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [(os.environ.get("CHANNELS_REDIS", "redis://127.0.0.1:6379/0"))],
-        },
-    },
-}
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER")
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND")
 
 CELERY_BEAT_SCHEDULE = {
-    # 'task-clear-session': {
-    #     'task': 'task_clear_session',
-    #     "schedule": 5.0,  # five seconds
-    # },
+    'queue_every_five_mins': {
+        'task': 'polls.tasks.query_every_five_mins',
+        'schedule': crontab(minute=5),
+    },
 }
-
-CELERY_TASK_DEFAULT_QUEUE = 'default'
-
-# Force all queues to be explicitly listed in `CELERY_TASK_QUEUES` to help prevent typos
-CELERY_TASK_CREATE_MISSING_QUEUES = False
-
-CELERY_TASK_QUEUES = (
-    # need to define default queue here or exception would be raised
-    Queue('default'),
-
-    Queue('high_priority'),
-    Queue('low_priority'),
-)
-
-# manual task routing
-
-# CELERY_TASK_ROUTES = {
-#     'django_celery_example.celery.*': {
-#         'queue': 'high_priority',
-#     },
-# }
-
-# dynamic task routing
-
-
-def route_task(name, args, kwargs, options, task=None, **kw):
-    if ':' in name:
-        queue, _ = name.split(':')
-        return {'queue': queue}
-    return {'queue': 'default'}
-
-
-CELERY_TASK_ROUTES = (route_task,)
