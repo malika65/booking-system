@@ -1,4 +1,7 @@
-.listen(process.env.PORT || 5000)
+release: python manage.py migrate
+
 web: gunicorn main.wsgi --log-file -
-web: python manage.py collectstatic --noinput
-web: python manage.py runserver 0.0.0.0:$PORT --noreload
+
+worker: python manage.py collectstatic --noinput
+worker: python manage.py runserver 0.0.0.0:$PORT --noreload
+worker: celery worker --app=booking_system.app

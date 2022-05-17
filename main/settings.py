@@ -82,6 +82,7 @@ AUTH_USER_MODEL = 'authe.User'
 # Application definition
 
 INSTALLED_APPS = [
+    'whitenoise.runserver_nostatic',
     'modeltranslation',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -89,7 +90,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'whitenoise.runserver_nostatic',
     'django_elasticsearch_dsl',
     'smart_selects',
     'corsheaders',
@@ -115,7 +115,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'main.middleware.open_access_middleware'
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ES_URL = 'https://i6s9ze18p4:uvqw5a0bvx@holly-906727421.eu-west-1.bonsaisearch.net:443'
@@ -244,6 +244,8 @@ USE_TZ = True
 STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
 
 STATIC_URL = '/static/'
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"      # new
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
