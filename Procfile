@@ -1,3 +1,4 @@
+release: python manage.py migrate
 .listen(process.env.PORT || 5000)
 web: gunicorn --pythonpath main.wsgi --preload -b 0.0.0.0:8000
 python manage.py runserver --settings=main.settings.production
