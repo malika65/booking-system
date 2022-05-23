@@ -317,13 +317,12 @@ CELERY_BEAT_SCHEDULE = {
 CURRENCY_RATES_URL = 'https://api.apilayer.com/exchangerates_data'
 CURRENCY_RATES_API_KEY = 'qGVICaUjX1S9XTDMVo7O6WbNLA92wBFk'
 
-CACHES = {
+
+CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "redis_cache.cache.RedisCache",
-        "LOCATION": os.environ.get("REDIS_URL"),
-        'TIMEOUT': 86400,
-        "OPTIONS": {
-            "CLIENT_CLASS": "redis_cache.client.DefaultClient",
-        }
-    }
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [os.environ.get("REDIS_URL")],
+        },
+    },
 }
