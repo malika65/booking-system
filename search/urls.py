@@ -5,7 +5,7 @@ from .views import HotelDocumentView
 
 urlpatterns = [
     # path('hotels/<str:query>/', SearchHotels.as_view()),
-    path('', HotelDocumentView.as_view({'get': 'list'})),
+    # path('', HotelDocumentView.as_view({'get': 'list'})),
 ]
 
 
