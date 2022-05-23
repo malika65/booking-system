@@ -2,6 +2,7 @@ import datetime
 import itertools
 import json
 
+import requests
 from django.core.serializers import serialize
 from django.db.models import Prefetch
 from django.forms import model_to_dict
@@ -9,9 +10,9 @@ from django.http import JsonResponse, HttpResponse
 from rest_framework import serializers
 from rest_framework.fields import Field
 from rest_framework.response import Response
-
 from authe.models import User
 from authe.serializers import UserSerializer
+from .currency_convert import CurrencyExchangeService
 from .models.booking_models import Booking
 from .models.characteristic_models import (
     FoodCategory,
@@ -22,6 +23,8 @@ from .models.characteristic_models import (
 )
 from .models.country_models import Country, City
 from .models.hotel_models import Hotel, Room, HotelImage, PeriodPrice
+
+currency_exchange = CurrencyExchangeService()
 
 
 class CountrySerializer(serializers.ModelSerializer):
@@ -72,17 +75,6 @@ class PeriodPriceSerializer(serializers.ModelSerializer):
     class Meta:
         model = PeriodPrice
         fields = ('id', 'price', 'currency', 'start_date', 'end_date')
-
-
-class RoomSerializer(serializers.ModelSerializer):
-    category_id = FacilitiesAndServicesRoomsSerializer(read_only=True, many=True)
-    characteristics_id = CharacteristicsSerializer(read_only=True, many=True)
-    prices = PeriodPriceSerializer(many=True)
-
-    class Meta:
-        model = Room
-        fields = ('id', 'room_name_ru', 'room_name_en', 'room_description_ru',
-                  'room_description_en', 'category_id', 'prices', 'characteristics_id', 'child_capacity')
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -143,6 +135,39 @@ class HotelSerializer(serializers.ModelSerializer):
                   'hotel_description_ru', 'hotel_description_en', 'is_active', 'city',
                   'hotel_category', 'food_category', 'category_id', 'checkin_date', 'checkout_date',
                   'additional_service_id', 'child_service_id', 'images']
+
+
+class RoomSerializer(serializers.ModelSerializer):
+    category_id = FacilitiesAndServicesRoomsSerializer(read_only=True, many=True)
+    characteristics_id = CharacteristicsSerializer(read_only=True, many=True)
+    prices = PeriodPriceSerializer(many=True)
+    currency_to_convert = serializers.CharField(required=False)
+
+    class Meta:
+        model = Room
+        fields = ('id', 'room_name_ru', 'room_name_en', 'room_description_ru',
+                  'room_description_en', 'category_id', 'prices', 'characteristics_id',
+                  'child_capacity', 'currency_to_convert')
+
+    @staticmethod
+    def get_room_price_depends_on_datetime(representation):
+        for date_price in representation['prices']:
+            today = datetime.datetime.today()
+            start = datetime.datetime.strptime(date_price['start_date'], '%Y-%m-%d')
+            end = datetime.datetime.strptime(date_price['end_date'], '%Y-%m-%d')
+            if start <= today <= end:
+                return date_price
+
+    def to_representation(self, instance):
+        filters_in_request = self.context['request']
+        currency_to = filters_in_request.GET['currency_to_convert']
+        rooms = super().to_representation(instance)
+        actual_room_price = self.get_room_price_depends_on_datetime(rooms)
+        currency_from = actual_room_price['currency']
+        amount = actual_room_price['price']
+        converted = currency_exchange.get_rates_from_api(currency_to, currency_from, amount)
+        rooms['rates'] = {f'{currency_to}': int(converted['result'])}
+        return rooms
 
 
 class HotelSearchSerializer(serializers.ModelSerializer):
@@ -239,21 +264,6 @@ class HotelSearchSerializer(serializers.ModelSerializer):
         # print(total_rooms_price)
         # representation['total'] = sum(total_rooms_price)
         return representation
-
-
-class HotelBookingSerializer(serializers.ModelSerializer):
-    hotel_name_ru = serializers.CharField(max_length=100)
-    hotel_address_ru = serializers.CharField(max_length=100)
-    hotel_description_ru = serializers.CharField(max_length=2500)
-    is_active = serializers.BooleanField(default=True)
-    city = CitySerializer()
-    child_service_id = ChildServiceSerializer(read_only=True, many=True)
-    room_id = RoomSerializer(read_only=True, many=True)
-
-    class Meta:
-        model = Hotel
-        fields = ('hotel_name_ru', 'hotel_name_en', 'hotel_address_ru', 'hotel_description_ru', 'is_active',
-                  'city', 'room_id', 'checkin_date', 'checkout_date', 'child_service_id')
 
 
 class BookingSerializer(serializers.ModelSerializer):

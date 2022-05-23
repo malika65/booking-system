@@ -17,16 +17,16 @@ from .characteristic_models import (
 )
 from .country_models import Country, City
 
-EUR = "EURO"
-KGS = "SOM"
-KZT = "TENGE"
-USD = "DOLLAR"
+EUR = "EUR"
+KGS = "KGS"
+KZT = "KZT"
+USD = "USD"
 
 CURRENCY_CHOICES = [
-    (EUR, 'EURO'),
-    (KGS, 'SOM'),
-    (KZT, 'TENGE'),
-    (USD, 'DOLLAR'),
+    (EUR, 'EUR'),
+    (KGS, 'KGS'),
+    (KZT, 'KZT'),
+    (USD, 'USD'),
 ]
 
 
