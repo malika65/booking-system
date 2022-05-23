@@ -237,6 +237,48 @@ class RoomDocument(Document):
     room_name_en = TextField()
     room_description_ru = TextField()
     room_description_en = TextField()
+    hotel_id = fields.ObjectField(properties={
+        'id': fields.IntegerField(),
+        'hotel_name_ru': fields.TextField(),
+        'hotel_name_en': fields.TextField(),
+        'hotel_address_ru': fields.TextField(),
+        'hotel_address_en': fields.TextField(),
+        'hotel_description_ru': fields.TextField(),
+        'hotel_description_en': fields.TextField(),
+        'city': fields.ObjectField(
+            properties={
+                'city_name_ru': StringField(),
+                'city_name_en': StringField(),
+                'country_id': fields.ObjectField(
+                    properties={
+                        'country_name_ru': StringField(),
+                        'country_name_en': StringField(),
+                    }
+                )
+            }
+        ),
+        'food_category': fields.ObjectField(
+            properties={
+                'food_category_name_ru': fields.TextField(),
+                'food_category_name_en': fields.TextField(),
+            }
+        ),
+        'hotel_category': fields.ObjectField(
+            properties={
+                'hotel_category_name_ru': StringField(),
+                'hotel_category_name_en': StringField(),
+                'hotel_category_stars': fields.IntegerField()
+            }
+        ),
+        'category_id': fields.ObjectField(
+            properties={
+                'id': fields.IntegerField(),
+                'hotel_category_name_ru': fields.TextField(),
+                'hotel_category_name_en': fields.TextField(),
+            }
+        ),
+        'is_active': fields.TextField(),
+    })
 
     class Index:
         name = 'room'
@@ -328,40 +370,6 @@ class HotelDocument(Document):
         'hotel_category_name_ru': fields.TextField(),
         'hotel_category_name_en': fields.TextField(),
     })
-    room_id = fields.ObjectField(
-        properties={
-            'id': fields.IntegerField(),
-            'room_name_ru': StringField(),
-            'room_name_en': StringField(),
-            'room_description_ru': fields.TextField(),
-            'room_description_en': fields.TextField(),
-            'category_id': fields.ObjectField(
-                properties={
-                    'id': fields.IntegerField(),
-                    'room_category_name_ru': StringField(),
-                    'room_category_name_en': StringField(),
-
-                }
-            ),
-            'characteristics_id': fields.ObjectField(
-                properties={
-                    'id': fields.IntegerField(),
-                    'name_ru': StringField(),
-                    'name_en': StringField(),
-                    'capacity': fields.IntegerField()
-
-                }
-            ),
-            'child_capacity': fields.IntegerField(),
-            'prices': fields.NestedField(properties={
-                'id': fields.IntegerField(),
-                'price': fields.FloatField(),
-                'currency': fields.TextField(),
-                'start_date': fields.DateField(),
-                'end_date': fields.DateField()
-            })
-        }
-    )
     additional_service_id = fields.ObjectField(
         properties={
             'id': fields.IntegerField(),
@@ -460,30 +468,6 @@ class BookingDocument(Document):
             }
         ),
         'is_active': fields.TextField(),
-        'room_id': fields.ObjectField(
-                properties={
-                    'room_name_ru': StringField(),
-                    'room_name_en': StringField(),
-                    'room_description_ru': fields.TextField(),
-                    'room_description_en': fields.TextField(),
-                    'category_id': fields.ObjectField(
-                        properties={
-                            'room_category_name_ru': StringField(),
-                            'room_category_name_en': StringField(),
-
-                        }
-                    ),
-                    'characteristics_id': fields.ObjectField(
-                        properties={
-                            'name_ru': StringField(),
-                            'name_en': StringField(),
-                            'capacity': fields.IntegerField()
-
-                        }
-                    )
-                }
-            )
-
     })
 
     room = fields.ObjectField(properties={
@@ -513,7 +497,49 @@ class BookingDocument(Document):
                 'capacity': fields.IntegerField()
 
             }
-        )
+        ),
+        'hotel_id': fields.ObjectField(properties={
+            'id': fields.IntegerField(),
+            'hotel_name_ru': fields.TextField(),
+            'hotel_name_en': fields.TextField(),
+            'hotel_address_ru': fields.TextField(),
+            'hotel_address_en': fields.TextField(),
+            'hotel_description_ru': fields.TextField(),
+            'hotel_description_en': fields.TextField(),
+            'city': fields.ObjectField(
+                properties={
+                    'city_name_ru': StringField(),
+                    'city_name_en': StringField(),
+                    'country_id': fields.ObjectField(
+                        properties={
+                            'country_name_ru': StringField(),
+                            'country_name_en': StringField(),
+                        }
+                    )
+                }
+            ),
+            'food_category': fields.ObjectField(
+                properties={
+                    'food_category_name_ru': fields.TextField(),
+                    'food_category_name_en': fields.TextField(),
+                }
+            ),
+            'hotel_category': fields.ObjectField(
+                properties={
+                    'hotel_category_name_ru': StringField(),
+                    'hotel_category_name_en': StringField(),
+                    'hotel_category_stars': fields.IntegerField()
+                }
+            ),
+            'category_id': fields.ObjectField(
+                properties={
+                    'id': fields.IntegerField(),
+                    'hotel_category_name_ru': fields.TextField(),
+                    'hotel_category_name_en': fields.TextField(),
+                }
+            ),
+            'is_active': fields.TextField(),
+        })
     })
 
     class Index:

@@ -129,20 +129,19 @@ class HotelSerializer(serializers.ModelSerializer):
     hotel_description_ru = serializers.CharField(max_length=2500)
     hotel_description_en = serializers.CharField(max_length=2500)
     is_active = serializers.BooleanField(default=True)
-    city = CitySerializer(many=True)
+    city = CitySerializer()
     food_category = FoodCategorySerializer(read_only=True, many=True)
     hotel_category = HotelCategoryStarsSerializer(read_only=True, many=True)
     category_id = FacilitiesAndServicesHotelsSerializer(read_only=True, many=True)
     additional_service_id = AdditionalServiceSerializer(read_only=True, many=True)
     child_service_id = ChildServiceSerializer(read_only=True, many=True)
-    room_id = RoomSerializer(read_only=True, many=True)
     images = HotelImageSerializer(many=True)
 
     class Meta:
         model = Hotel
         fields = ['id', 'hotel_name_ru', 'hotel_name_en', 'hotel_address_ru', 'hotel_address_en',
                   'hotel_description_ru', 'hotel_description_en', 'is_active', 'city',
-                  'hotel_category', 'food_category', 'category_id', 'room_id', 'checkin_date', 'checkout_date',
+                  'hotel_category', 'food_category', 'category_id', 'checkin_date', 'checkout_date',
                   'additional_service_id', 'child_service_id', 'images']
 
 
@@ -154,7 +153,7 @@ class HotelSearchSerializer(serializers.ModelSerializer):
     hotel_description_ru = serializers.CharField(max_length=2500)
     hotel_description_en = serializers.CharField(max_length=2500)
     is_active = serializers.BooleanField(default=True)
-    city = CitySerializer(many=True)
+    city = CitySerializer()
     food_category = FoodCategorySerializer(read_only=True, many=True)
     hotel_category = HotelCategoryStarsSerializer(read_only=True, many=True)
     category_id = FacilitiesAndServicesHotelsSerializer(read_only=True, many=True)
