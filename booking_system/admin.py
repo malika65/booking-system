@@ -42,12 +42,17 @@ class HotelAdmin(TranslationAdmin):
     inlines = [HotelImageInline]
 
 
+class PeriodPriceInline(admin.TabularInline):
+    model = PeriodPrice
+
+
 @admin.register(Room)
 class RoomAdmin(TranslationAdmin):
     formfield_overrides = {
         models.ManyToManyField: {'widget': CheckboxSelectMultiple},
     }
     field = '__all__'
+    inlines = [PeriodPriceInline]
 
 
 @admin.register(Category)
@@ -114,12 +119,12 @@ class ChildServiceAdmin(TranslationAdmin):
     field = '__all__'
 
 
-@admin.register(PeriodPrice)
-class PeriodPriceAdmin(admin.ModelAdmin):
-    formfield_overrides = {
-        models.ManyToManyField: {'widget': CheckboxSelectMultiple},
-    }
+@admin.register(Booking)
+class BookingServiceAdmin(admin.ModelAdmin):
+    # formfield_overrides = {
+    #     models.ManyToManyField: {'widget': CheckboxSelectMultiple},
+    # }
     field = '__all__'
 
 
-admin.site.register(Booking)
+# admin.site.register(Booking)

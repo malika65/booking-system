@@ -68,12 +68,12 @@ class HotelDocumentView(DocumentViewSet):
         #     #     LOOKUP_QUERY_IN,
         #     # ],
         # },
-        'room_capacity': {
-            'field': 'room_id.characteristics_id.capacity',
-        },
-        'room_capacity_child': {
-            'field': 'room_id.child_capacity',
-        },
+        # 'room_capacity': {
+        #     'field': 'room_id.characteristics_id.capacity',
+        # },
+        # 'room_capacity_child': {
+        #     'field': 'room_id.child_capacity',
+        # },
         'room_category_id': 'room_id.category_id.id',
         'room_characteristic_id': 'room_id.characteristics_id.id'
     }

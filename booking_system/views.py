@@ -1,9 +1,11 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from rest_framework import generics
+from django.http import JsonResponse
+from rest_framework.response import Response
+from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
-from main.celery import reload_indexes
+# from main.celery import reload_indexes
 from .models.booking_models import Booking
 from .models.characteristic_models import (
     FacilitiesAndServicesHotels,
@@ -84,14 +86,18 @@ class RoomList(generics.ListAPIView):
 class BookingListCreate(generics.ListCreateAPIView):
     queryset = Booking.objects.all()
     serializer_class = BookingSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
 
     def get_queryset(self):
         user = self.request.user
         return Booking.objects.filter(guest_id=user.id)
 
     def perform_create(self, serializer):
-        serializer.save(guest_id=self.request.user,)
+        hotel = Hotel.objects.get(pk=self.request.data['hotel'])
+        room = Room.objects.get(pk=self.request.data['room'])
+        serializer.save(guest_id=self.request.user,
+                        hotel=hotel,
+                        room=room)
 
 
 class BookingDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -103,12 +109,9 @@ class BookingDetail(generics.RetrieveUpdateDestroyAPIView):
         user = self.request.user
         return Booking.objects.filter(guest_id=user.id)
 
-    def perform_create(self, serializer):
-        serializer.save(guest_id=self.request.user,)
 
-
-@receiver(post_save)
-def update_index(sender, instance, **kwargs):
-    reload_indexes.delay()
-
+# @receiver(post_save)
+# def update_index(sender, instance, **kwargs):
+#     reload_indexes.delay()
+#
 

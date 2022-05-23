@@ -124,7 +124,7 @@ ES_URL = 'https://i6s9ze18p4:uvqw5a0bvx@holly-906727421.eu-west-1.bonsaisearch.n
 
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts': ES_URL,
+        'hosts': 'localhost:9200'
     },
 }
 
