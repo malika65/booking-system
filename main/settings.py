@@ -318,11 +318,9 @@ CURRENCY_RATES_URL = 'https://api.apilayer.com/exchangerates_data'
 CURRENCY_RATES_API_KEY = 'qGVICaUjX1S9XTDMVo7O6WbNLA92wBFk'
 
 
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [os.environ.get("REDIS_URL")],
-        },
-    },
+CACHES = {
+    'default': {
+        'BACKEND': 'redis_cache.RedisCache',
+        'LOCATION': os.environ.get('REDIS_URL'),
+    }
 }
