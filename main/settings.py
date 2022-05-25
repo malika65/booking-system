@@ -92,7 +92,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'django_elasticsearch_dsl',
+    'django_elasticsearch_dsl',
     'smart_selects',
     'corsheaders',
     'rest_framework',
@@ -120,13 +120,13 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
-# ES_URL = 'https://i6s9ze18p4:uvqw5a0bvx@holly-906727421.eu-west-1.bonsaisearch.net:443'
-#
-# ELASTICSEARCH_DSL = {
-#     'default': {
-#         'hosts': 'localhost:9200'
-#     },
-# }
+ES_URL = 'https://ilc9p88pbx:jab4616504@olive-486304335.eu-west-1.bonsaisearch.net:443'
+
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': ES_URL,
+    },
+}
 
 JQUERY_URL = False
 
@@ -164,7 +164,6 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        # 'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication'
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
@@ -321,6 +320,6 @@ CURRENCY_RATES_API_KEY = 'qGVICaUjX1S9XTDMVo7O6WbNLA92wBFk'
 CACHES = {
     'default': {
         'BACKEND': 'redis_cache.RedisCache',
-        'LOCATION': os.environ.get('REDIS_URL'),
+        'LOCATION': os.environ.get("REDIS_URL", '0.0.0.0'),
     }
 }

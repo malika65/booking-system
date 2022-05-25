@@ -113,5 +113,5 @@ class BookingDetail(generics.RetrieveUpdateDestroyAPIView):
 # @receiver(post_save)
 # def update_index(sender, instance, **kwargs):
 #     reload_indexes.delay()
-#
+
 
