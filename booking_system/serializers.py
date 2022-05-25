@@ -142,12 +142,13 @@ class RoomSerializer(serializers.ModelSerializer):
     characteristics_id = CharacteristicsSerializer(read_only=True, many=True)
     prices = PeriodPriceSerializer(many=True)
     currency_to_convert = serializers.CharField(required=False)
+    hotel_id = HotelSerializer(read_only=True)
 
     class Meta:
         model = Room
         fields = ('id', 'room_name_ru', 'room_name_en', 'room_description_ru',
                   'room_description_en', 'category_id', 'prices', 'characteristics_id',
-                  'child_capacity', 'currency_to_convert')
+                  'child_capacity', 'currency_to_convert', 'hotel_id')
 
     @staticmethod
     def get_room_price_depends_on_datetime(representation):
@@ -184,13 +185,8 @@ class HotelSearchSerializer(serializers.ModelSerializer):
     category_id = FacilitiesAndServicesHotelsSerializer(read_only=True, many=True)
     additional_service_id = AdditionalServiceSerializer(read_only=True, many=True)
     child_service_id = ChildServiceSerializer(read_only=True, many=True)
-    # room_id = RoomSerializer(read_only=True, many=True)
     images = HotelImageSerializer(many=True)
-    # child_years = serializers.CharField(required=False)
-    # room_amount = serializers.IntegerField(min_value=1, required=False)
-    # room_capacity = serializers.IntegerField(min_value=1, required=False)
-    # room_capacity_child = serializers.IntegerField(min_value=1, required=False)
-    guests = serializers.CharField(required=False)
+    guests = serializers.CharField(required=False, read_only=True)
 
     class Meta:
         model = Hotel
@@ -226,33 +222,35 @@ class HotelSearchSerializer(serializers.ModelSerializer):
     def get_child_service_price(representation, capacity):
         pass
 
-    @staticmethod
-    def get_rooms_for_capacity(hotel_id, capacity):
-        room = Room.objects.filter(rooms__id=hotel_id, characteristics_id__capacity=capacity)
-        # aa = room.last()
-        # print(room.values()))
-        room = RoomSerializer(room, many=True)
-        serialized_data = {'data': room.data}
-        return Response(serialized_data)
-
     def to_representation(self, instance):
         filters_in_request = self.context['request']
         total_rooms_price = []
         representation = super().to_representation(instance)
-        guests_room = filters_in_request.GET['guests'].split('-')
+        guests_in_room = filters_in_request.GET['guests'].split('-')
         num_of_guests_in_room = []
+        rooms_with_guest = []
         child_years = []
-        for room in guests_room:
-            num_of_guests_in_room.append(int(room.split('and')[0]))
-            if len(room.split('and')) > 1:
-                child_years.append((room.split('and'))[1].split('.'))
-                child_years = list(itertools.chain(*child_years))
-        child_years = [int(i) for i in child_years]
+        for guest in guests_in_room:
+            s = {}
+            s[guest.split('and')[0]] = guest.split('and')[1].split('.')
+            rooms_with_guest.append(s)
+
         rooms = {}
-        for guest in num_of_guests_in_room:
-            room = self.get_rooms_for_capacity(representation.get('id'), guest)
-            # print(room)
-            rooms[f'room{guest.numerator}'] = room.data
+        for index, adult_child in enumerate(rooms_with_guest, start=1):
+            adult = list(adult_child.keys())[0]
+            child = len(list(adult_child.values())[0])
+            room = Room.objects.filter(hotel_id=representation.get('id'),
+                                       characteristics_id__capacity=adult,
+                                       child_capacity=child)
+        # for guest, child in zip(num_of_guests_in_room, child_years):
+        #     room = Room.objects.filter(hotel_id=representation.get('id'),
+        #                                characteristics_id__capacity=guest,
+        #                                child_capacity=child)
+        #     # print(guest)
+            room = RoomSerializer(room, many=True, context=self.context)
+        #     # print(room)
+        #     # print("=====")
+            rooms[f'room{index}'] = room.data
 
         # print(rooms)
         representation['total'] = rooms
