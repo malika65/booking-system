@@ -120,7 +120,7 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
-ES_URL = 'https://ilc9p88pbx:jab4616504@olive-486304335.eu-west-1.bonsaisearch.net:443'
+ES_URL = os.environ.get('ES_URL')
 
 ELASTICSEARCH_DSL = {
     'default': {
@@ -242,11 +242,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATIC_URL = '/static/'
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"      # new
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -260,18 +260,18 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 
-EMAIL_FROM = 'muratbekovamalika00@gmail.com'
+EMAIL_FROM = os.environ.get('EMAIL_FROM')
 EMAIL_BCC = 'Qualle'
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'muratbekovamalika00@gmail.com'
-EMAIL_HOST_PASSWORD = 'qsqtpajjbswjhlfu'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-SERVER_EMAIL = 'muratbekovamalika00@gmail.com'
+SERVER_EMAIL = os.environ.get('SERVER_EMAIL')
 
 
 GRAPH_MODELS = {
@@ -313,13 +313,18 @@ CELERY_BEAT_SCHEDULE = {
     },
 }
 
-CURRENCY_RATES_URL = 'https://api.apilayer.com/exchangerates_data'
-CURRENCY_RATES_API_KEY = 'qGVICaUjX1S9XTDMVo7O6WbNLA92wBFk'
+CURRENCY_RATES_URL = os.environ.get('CURRENCY_RATES_URL')
+CURRENCY_RATES_API_KEY = os.environ.get('CURRENCY_RATES_API_KEY')
 
+
+CACHE_TTL = 60 * 1500
 
 CACHES = {
     'default': {
-        'BACKEND': 'redis_cache.RedisCache',
+        'BACKEND': 'django_redis.cache.RedisCache',
         'LOCATION': os.environ.get("REDIS_URL", '0.0.0.0'),
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
     }
 }

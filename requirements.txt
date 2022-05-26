@@ -1,5 +1,6 @@
 acme==1.22.0
 amqp==5.1.1
+anyjson==0.3.3
 asgiref==3.4.1
 asyncio==3.4.3
 billiard==3.6.4.0
@@ -34,7 +35,7 @@ django-modeltranslation==0.17.5
 django-nested-inline==0.4.4
 django-nine==0.2.5
 django-parler-rest==2.1
-django-redis-cache==3.0.1
+django-redis==5.2.0
 django-smart-selects==1.5.9
 django-timezone-field==4.2.3
 djangorestframework==3.12.4

@@ -5,7 +5,7 @@ from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
 from elasticsearch_dsl import RangeFacet
 
 from booking_system.documents import HotelDocument
-from booking_system.serializers import HotelSearchSerializer
+from booking_system.serializers.hotel_serializers import HotelSearchSerializer
 from django_elasticsearch_dsl_drf.constants import ( LOOKUP_FILTER_TERMS,
 LOOKUP_FILTER_RANGE,
 LOOKUP_FILTER_PREFIX,

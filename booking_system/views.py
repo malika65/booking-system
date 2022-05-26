@@ -1,11 +1,22 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.http import JsonResponse
-from rest_framework.response import Response
-from rest_framework import generics, status
+from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
-# from main.celery import reload_indexes
+from booking_system.serializers.booking_serializers import BookingSerializer
+from booking_system.serializers.characteristics_serializers import (
+    FacilitiesAndServicesHotelsSerializer,
+    FacilitiesAndServicesRoomsSerializer,
+    FoodCategorySerializer,
+    HotelCategoryStarsSerializer,
+    CharacteristicsSerializer,
+    CategorySerializer
+)
+from booking_system.serializers.hotel_serializers import (
+    HotelSerializer,
+    RoomSerializer,
+)
+from main.celery import reload_indexes
 from .models.booking_models import Booking
 from .models.characteristic_models import (
     FacilitiesAndServicesHotels,
@@ -16,17 +27,6 @@ from .models.characteristic_models import (
     Category
 )
 from .models.hotel_models import Hotel, Room
-from .serializers import (
-    HotelSerializer,
-    BookingSerializer,
-    RoomSerializer,
-    FacilitiesAndServicesHotelsSerializer,
-    FacilitiesAndServicesRoomsSerializer,
-    FoodCategorySerializer,
-    HotelCategoryStarsSerializer,
-    CharacteristicsSerializer,
-    CategorySerializer
-)
 
 
 class HotelList(generics.ListAPIView):
@@ -110,8 +110,8 @@ class BookingDetail(generics.RetrieveUpdateDestroyAPIView):
         return Booking.objects.filter(guest_id=user.id)
 
 
-# @receiver(post_save)
-# def update_index(sender, instance, **kwargs):
-#     reload_indexes.delay()
+@receiver(post_save)
+def update_index(sender, instance, **kwargs):
+    reload_indexes.delay()
 
 

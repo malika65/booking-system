@@ -1,16 +1,16 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
-EUR = "EURO"
-KGS = "SOM"
-KZT = "TENGE"
-USD = "DOLLAR"
+EUR = "EUR"
+KGS = "KGS"
+KZT = "KZT"
+USD = "USD"
 
 CURRENCY_CHOICES = [
-    (EUR, 'EURO'),
-    (KGS, 'SOM'),
-    (KZT, 'TENGE'),
-    (USD, 'DOLLAR'),
+    (EUR, 'EUR'),
+    (KGS, 'KGS'),
+    (KZT, 'KZT'),
+    (USD, 'USD'),
 ]
 
 
