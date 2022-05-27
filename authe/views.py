@@ -1,15 +1,19 @@
 import os
-from traceback import print_tb
+
 import jwt
 from django.conf import settings
+from django.contrib.auth import login
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.sites.shortcuts import get_current_site
-from django.shortcuts import render
+from django.core.mail import EmailMessage
+from django.http import HttpResponsePermanentRedirect
 from django.urls import reverse
+from django.utils.encoding import (DjangoUnicodeDecodeError, smart_bytes, smart_str)
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.exceptions import AuthenticationFailed
-from rest_framework.generics import (GenericAPIView, ListAPIView,
-                                     RetrieveUpdateAPIView)
+from rest_framework.generics import (GenericAPIView)
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.schemas.openapi import AutoSchema
@@ -17,28 +21,14 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import User, ConfirmCode
+from .renderer import UserJSONRenderer
 from .serializers import (EmailVerificationSerializer, LogoutSerializer,
                           ResetPasswordEmailRequestSerializer,
                           SetNewPasswordSerializer, UserLoginSerializer,
                           UserRegistrationSerializer, UserSerializer,
                           UserRegisterRequestSerializer)
+from .utils import send_email, send_code_to_email, send_reset_email
 
-from .renderer import UserJSONRenderer
-from django.contrib.auth import login
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.http import HttpResponsePermanentRedirect
-from django.utils.encoding import (DjangoUnicodeDecodeError, force_str,
-                                   smart_bytes, smart_str)
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-
-from .utils import Util
-
-from django.http import HttpResponse
-from django.core.mail import send_mail, EmailMessage
-from rest_framework.parsers import FileUploadParser
-from rest_framework.parsers import FormParser, MultiPartParser
-
-from drf_yasg.utils import swagger_auto_schema
 
 class UserRegistrationView(GenericAPIView):
     serializer_class = UserRegistrationSerializer
@@ -61,7 +51,7 @@ class UserRegistrationView(GenericAPIView):
             refresh_token = str(refresh)
             access_token = str(refresh.access_token)
             login(request, user)
-            Util.send_code_to_email(user, code.code)
+            send_code_to_email.delay(user, code.code)
 
             response = {
                 'success': True,
@@ -118,7 +108,7 @@ class ResendVerifyEmailView(GenericAPIView):
             if user.is_verified:
                 return Response({'msg': 'User is already verified'})
 
-            Util.send_code_to_email(user, code.code)
+            send_code_to_email.delay(user, code.code)
             return Response({'msg': 'The verification email has been sent'}, status=status.HTTP_200_OK)
         except User.DoesNotExist:
             return Response({'msg': 'No such user, register first'})
@@ -210,7 +200,7 @@ class RequestPasswordResetEmail(GenericAPIView):
             email_body = 'Hello, \n Use link below to reset your password  \n' + absurl
             data = {'email_body': email_body, 'to_email': user.email,
                     'email_subject': 'Reset your password'}
-            Util.send_reset_email(data)
+            send_reset_email.delay(data)
 
         return Response({'success': 'We have sent you a link to reset your password'}, status=status.HTTP_200_OK)
 

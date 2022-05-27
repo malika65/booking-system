@@ -54,13 +54,16 @@ class ChildServiceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ChildService
-        fields = ('id', 'name_ru', 'name_en', 'until_age', 'price', 'currency')
+        fields = ('id', 'name_ru', 'name_en', 'until_age', 'price', 'currency', 'is_discount')
 
     def to_representation(self, instance):
         filters_in_request = self.context['request']
         currency_to = filters_in_request.GET['currency_to_convert']
         child_services = super().to_representation(instance)
-        child_room_price = child_services['price']
+        if 'is_discount' in child_services and child_services['is_discount']:
+            child_room_price = child_services['price']/100
+        else:
+            child_room_price = child_services['price']
         currency_from = child_services['currency']
         converted = currency_exchange.get_rates_from_api()
         rates = [d[currency_from] for d in converted if currency_from in d]

@@ -24,7 +24,7 @@ from corsheaders.defaults import default_headers
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-os.environ["PATH"]=''
+os.environ["PATH"] = ''
 os.environ["PATH"] += os.pathsep + 'C:/Program Files/Graphviz/bin'
 
 # Quick-start development settings - unsuitable for production
@@ -120,11 +120,11 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
-ES_URL = os.environ.get('ES_URL')
+ES_URL = os.environ['ES_URL']
 
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts': ES_URL,
+        'hosts': 'localhost:9200',
     },
 }
 
@@ -260,18 +260,18 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 
-EMAIL_FROM = os.environ.get('EMAIL_FROM')
+EMAIL_FROM = os.environ['EMAIL_FROM']
 EMAIL_BCC = 'Qualle'
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-SERVER_EMAIL = os.environ.get('SERVER_EMAIL')
+SERVER_EMAIL = os.environ['SERVER_EMAIL']
 
 
 GRAPH_MODELS = {
@@ -303,8 +303,8 @@ DATABASES = {
 db_from_env = dj_database_url.config(conn_max_age=600)
 DATABASES['default'].update(db_from_env)
 
-CELERY_BROKER_URL = os.environ.get("REDIS_URL")
-CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND")
+CELERY_BROKER_URL = os.environ['REDIS_URL']
+CELERY_RESULT_BACKEND = os.environ['CELERY_BACKEND']
 
 CELERY_BEAT_SCHEDULE = {
     'queue_every_five_mins': {
@@ -313,8 +313,8 @@ CELERY_BEAT_SCHEDULE = {
     },
 }
 
-CURRENCY_RATES_URL = os.environ.get('CURRENCY_RATES_URL')
-CURRENCY_RATES_API_KEY = os.environ.get('CURRENCY_RATES_API_KEY')
+CURRENCY_RATES_URL = os.environ['CURRENCY_RATES_URL']
+CURRENCY_RATES_API_KEY = os.environ['CURRENCY_RATES_API_KEY']
 
 
 CACHE_TTL = 60 * 1500
@@ -322,7 +322,7 @@ CACHE_TTL = 60 * 1500
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': os.environ.get("REDIS_URL", '0.0.0.0'),
+        'LOCATION':  os.environ['REDIS_URL'],
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }

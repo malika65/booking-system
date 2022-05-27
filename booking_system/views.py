@@ -27,6 +27,7 @@ from .models.characteristic_models import (
     Category
 )
 from .models.hotel_models import Hotel, Room
+from .utils import send_booking_to_email
 
 
 class HotelList(generics.ListAPIView):
@@ -98,6 +99,11 @@ class BookingListCreate(generics.ListCreateAPIView):
         serializer.save(guest_id=self.request.user,
                         hotel=hotel,
                         room=room)
+
+        # print(hotel)
+        # print(room)
+        # print(self.request.user)
+        send_booking_to_email.delay(hotel, room, self.request.user)
 
 
 class BookingDetail(generics.RetrieveUpdateDestroyAPIView):
