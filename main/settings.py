@@ -31,8 +31,8 @@ os.environ["PATH"] += os.pathsep + 'C:/Program Files/Graphviz/bin'
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-l0)5n^%a%9ck*!pwkk=q7szp+_w%j5(ydn(e=1inhqw@wj#bo0'
-
+# SECRET_KEY = 'django-insecure-l0)5n^%a%9ck*!pwkk=q7szp+_w%j5(ydn(e=1inhqw@wj#bo0'
+SECRET_KEY = os.environ['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -102,7 +102,6 @@ INSTALLED_APPS = [
     'authe.apps.AutheConfig',
     'django_extensions',
     'search.apps.SearchConfig',
-    'django_celery_beat',
 
 ]
 
@@ -317,7 +316,7 @@ CURRENCY_RATES_URL = os.environ['CURRENCY_RATES_URL']
 CURRENCY_RATES_API_KEY = os.environ['CURRENCY_RATES_API_KEY']
 
 
-CACHE_TTL = 60 * 1500
+CACHE_TTL = 60 * 240
 
 CACHES = {
     'default': {

@@ -3,7 +3,6 @@ amqp==5.1.1
 asgiref==3.4.1
 asyncio==3.4.3
 billiard==3.6.4.0
-celery==5.2.6
 certbot==1.22.0
 certifi==2021.10.8
 cffi==1.15.0
@@ -22,7 +21,6 @@ distro==1.6.0
 dj-database-url==0.5.0
 dj-static==0.0.6
 Django==3.2.9
-django-celery-beat==2.2.1
 django-cors-headers==3.10.1
 django-elasticsearch-dsl==7.1.2
 django-elasticsearch-dsl-drf==0.22.4
@@ -43,7 +41,6 @@ drf-yasg==1.20.0
 elasticsearch==7.10.1
 elasticsearch-dsl==7.4.0
 et-xmlfile==1.1.0
-flower==1.0.0
 graphviz==0.19.1
 humanize==4.1.0
 idna==3.3
@@ -94,3 +91,4 @@ zope.component==5.0.1
 zope.event==4.5.0
 zope.hookable==5.1.0
 zope.interface==5.4.0
+celery==5.2.7

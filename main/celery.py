@@ -10,7 +10,7 @@ from django.core import management
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'main.settings')
 
 # you can change the name here
-app = Celery("main", BROKER_POOL_LIMIT=None)
+app = Celery("main")
 
 # read config from Django settings, the CELERY namespace would make celery
 # config keys has `CELERY` prefix

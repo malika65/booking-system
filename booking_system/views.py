@@ -96,14 +96,16 @@ class BookingListCreate(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         hotel = Hotel.objects.get(pk=self.request.data['hotel'])
         room = Room.objects.get(pk=self.request.data['room'])
-        serializer.save(guest_id=self.request.user,
-                        hotel=hotel,
-                        room=room)
+        booking = serializer.save(guest_id=self.request.user,
+                                  hotel=hotel,
+                                  room=room)
 
-        # print(hotel)
-        # print(room)
+        # print(serializer.num_of_guest)
+        # print(serializer)
         # print(self.request.user)
-        send_booking_to_email.delay(hotel, room, self.request.user)
+        # hotel_data, room_data, num_of_guests, user_data, price
+        send_booking_to_email(booking.id, hotel, room, self.request.data['num_of_guest'],
+                              self.request.user, self.request.data['room_price'])
 
 
 class BookingDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -116,8 +118,8 @@ class BookingDetail(generics.RetrieveUpdateDestroyAPIView):
         return Booking.objects.filter(guest_id=user.id)
 
 
-@receiver(post_save)
-def update_index(sender, instance, **kwargs):
-    reload_indexes.delay()
+# @receiver(post_save)
+# def update_index(sender, instance, **kwargs):
+#     reload_indexes.delay()
 
 
