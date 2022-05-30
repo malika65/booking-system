@@ -118,8 +118,8 @@ class BookingDetail(generics.RetrieveUpdateDestroyAPIView):
         return Booking.objects.filter(guest_id=user.id)
 
 
-# @receiver(post_save)
-# def update_index(sender, instance, **kwargs):
-#     reload_indexes.delay()
+@receiver(post_save)
+def update_index(sender, instance, **kwargs):
+    reload_indexes.delay()
 
 
