@@ -19,7 +19,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     BUSSINESS_USER = 5
     TOUR_OPERATOR = 6
 
-
     ROLE_CHOICES = (
         ("ADMIN", 'Admin'),
         ("MANAGER", 'Managers'),
@@ -28,12 +27,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         ("BUSSINESS_USER", 'Bussiness User'),
         ("TOUR_OPERATOR", 'Tour Operator')
         )
-    
-    
+
     class Meta:
         verbose_name = 'user'
         verbose_name_plural = 'users'
-
 
     uid = models.UUIDField(unique=True, editable=False, default=uuid.uuid4, verbose_name='Public identifier')
     email = models.EmailField(unique=True)

@@ -16,7 +16,6 @@ class BookingEmailThread:
         self.price = price,
         self.booking_id = booking_id
 
-    @app.task
     def make_message(self):
         message = f'Пользователь {self.email} оставил заявку на бронирование отеля.\n' + \
             f'Отель {self.hotel_name} \n' + \
