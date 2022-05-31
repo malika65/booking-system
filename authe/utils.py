@@ -34,7 +34,7 @@ def send_email(user, current_site):
     EmailThread(email).start()
 
 
-# @app.task
+@app.task
 def send_code_to_email(user_id, code):
     user = User.objects.filter(id=user_id).first()
     email_body = code
