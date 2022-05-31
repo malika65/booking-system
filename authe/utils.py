@@ -1,9 +1,5 @@
 from django.core.mail import EmailMessage
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.sites.shortcuts import get_current_site
-from django.urls import reverse
-
-import threading
 
 from authe.models import User
 from main.celery import app

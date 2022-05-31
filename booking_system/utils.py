@@ -1,27 +1,9 @@
-import os
-
 from django.core.mail import EmailMessage
-from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.sites.shortcuts import get_current_site
-from django.urls import reverse
-
-import threading
 
 from authe.models import User
 from booking_system.models.hotel_models import Hotel, Room
 from main import settings
 from main.celery import app
-
-
-class EmailThread(threading.Thread):
-
-    def __init__(self, email):
-        self.email = email
-        threading.Thread.__init__(self)
-
-    @app.task
-    def run(self):
-        self.email.send()
 
 
 class BookingEmailThread:
@@ -57,6 +39,6 @@ def send_booking_to_email(booking_id, hotel_id, room_id, num_of_guests, user_id,
             'email_subject': f'Запрос на бронирование отеля {hotel_data.hotel_name}'}
     email = EmailMessage(
         subject=data['email_subject'], body=data['email_body'], to=[settings.EMAIL_FROM])
-    EmailThread(email).start()
+    email.send()
 
 
