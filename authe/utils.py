@@ -37,9 +37,9 @@ def send_email(user, current_site):
 @app.task
 def send_code_to_email(user_id, code):
     user = User.objects.filter(id=user_id)
-    print(user)
+    print(user.values('email'))
     email_body = code
-    data = {'email_body': email_body, 'to_email': user.email,
+    data = {'email_body': email_body, 'to_email': user.values('email'),
                 'email_subject': 'Ваш код для подтверждения почты'}
     email = EmailMessage(
         subject=data['email_subject'], body=data['email_body'], to=[data['to_email']])
