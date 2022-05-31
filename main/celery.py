@@ -1,5 +1,7 @@
 import os
 import logging
+import ssl
+
 from celery import Celery
 from celery.signals import after_setup_logger
 
@@ -18,6 +20,16 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 
 # discover and load tasks.py in django apps
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
+
+app.conf.update(BROKER_URL=str(os.getenv('REDIS_URL')),
+                CELERY_RESULT_BACKEND=str(os.getenv('REDIS_URL')),
+                broker_use_ssl = {
+                        'ssl_cert_reqs': ssl.CERT_NONE
+                    },
+                redis_backend_use_ssl = {
+                    'ssl_cert_reqs': ssl.CERT_NONE
+                }
+                )
 
 
 @app.task

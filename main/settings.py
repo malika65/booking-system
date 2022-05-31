@@ -16,7 +16,6 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 from celery.schedules import crontab
-from kombu import Queue
 import dj_database_url
 from corsheaders.defaults import default_headers
 
@@ -302,8 +301,9 @@ DATABASES = {
 db_from_env = dj_database_url.config(conn_max_age=600)
 DATABASES['default'].update(db_from_env)
 
+
 CELERY_BROKER_URL = os.environ['REDIS_URL']
-CELERY_RESULT_BACKEND = os.environ['CELERY_BACKEND']
+CELERY_RESULT_BACKEND = os.environ['REDIS_URL']
 
 CELERY_BEAT_SCHEDULE = {
     'queue_every_five_mins': {

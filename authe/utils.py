@@ -5,6 +5,7 @@ from django.urls import reverse
 
 import threading
 
+from authe.models import User
 from main.celery import app
 
 
@@ -34,7 +35,9 @@ def send_email(user, current_site):
 
 
 @app.task
-def send_code_to_email(user, code):
+def send_code_to_email(user_id, code):
+    user = User.objects.filter(id=user_id)
+    print(user)
     email_body = code
     data = {'email_body': email_body, 'to_email': user.email,
                 'email_subject': 'Ваш код для подтверждения почты'}
