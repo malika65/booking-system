@@ -46,9 +46,9 @@ class BookingEmailThread:
 
 @app.task
 def send_booking_to_email(booking_id, hotel_id, room_id, num_of_guests, user_id, room_price):
-    user_data = User.objects.filter(id=user_id).last()
-    hotel_data = Hotel.objects.filter(id=hotel_id).last()
-    room_data = Room.objects.filter(id=room_id).last()
+    user_data = User.objects.filter(id=user_id).first()
+    hotel_data = Hotel.objects.filter(id=hotel_id).first()
+    room_data = Room.objects.filter(id=room_id).first()
     email_body = BookingEmailThread(user_data.email, hotel_data.hotel_name,
                                     room_data.room_name, num_of_guests,
                                     room_price, booking_id)
