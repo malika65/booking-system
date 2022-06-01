@@ -95,3 +95,5 @@ celery==5.2.7
 pyopenssl
 pyasn1
 ndg-httpsclient
+schedule~=1.1.0
+PyDrive~=1.3.1
