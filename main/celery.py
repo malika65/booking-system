@@ -6,6 +6,8 @@ from celery import Celery
 from celery.signals import after_setup_logger
 from django.core import management
 
+from main import settings
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'main.settings')
 
 app = Celery("main")
@@ -14,8 +16,8 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 
 app.autodiscover_tasks()
 #
-app.conf.update(BROKER_URL='rediss://:p2c97d946f1f1a0246db67f32f70ec89435736f51dffdcf9f7db96dcdcb16ca3c@ec2-3-251-43-118.eu-west-1.compute.amazonaws.com:25650',
-                CELERY_RESULT_BACKEND='rediss://:p2c97d946f1f1a0246db67f32f70ec89435736f51dffdcf9f7db96dcdcb16ca3c@ec2-3-251-43-118.eu-west-1.compute.amazonaws.com:25650',
+app.conf.update(BROKER_URL=settings.CELERY_BROKER_URL,
+                CELERY_RESULT_BACKEND=settings.CELERY_RESULT_BACKEND,
                 broker_use_ssl = {
                         'ssl_cert_reqs': ssl.CERT_NONE
                     },
