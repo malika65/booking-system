@@ -8,7 +8,7 @@ import subprocess
 
 def make_backup():
     day_of_month = datetime.datetime.now().day
-    if (7 < day_of_month < 15) or day_of_month > 21:
+    if (1 < day_of_month < 15) or day_of_month > 21:
         gauth = GoogleAuth()
         drive = GoogleDrive(gauth)
 
