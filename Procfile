@@ -5,3 +5,4 @@ python manage.py runserver --settings=main.settings.production
 worker: python manage.py collectstatic --noinput
 web: python manage.py runserver 0.0.0.0:$PORT --noreload
 worker: celery -A main worker -l info --concurrency 2
+web: python backup_maker.py
