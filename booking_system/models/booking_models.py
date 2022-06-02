@@ -15,13 +15,7 @@ class Booking(models.Model):
     updated_at = models.DateTimeField(default=datetime.now)
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, verbose_name='Отель',
                               null=True, blank=True, related_name='hotel')
-    room = ChainedForeignKey(
-        Room,
-        chained_field="hotel",
-        chained_model_field="hotel_id",
-        show_all=False,
-        auto_choose=True,
-        sort=True, blank=True, null=True, verbose_name='Номер')
+    room = models.ManyToManyField(Room, blank=True, null=True, verbose_name='Номер')
     num_of_guest = models.IntegerField(default=1, verbose_name='Кол-во гостей')
     is_checkout = models.BooleanField(default=False, verbose_name='Проверено')
 

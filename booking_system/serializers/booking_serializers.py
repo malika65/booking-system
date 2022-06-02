@@ -6,7 +6,7 @@ from booking_system.models.booking_models import Booking
 class BookingSerializer(serializers.ModelSerializer):
     hotel = serializers.StringRelatedField()
     guest_id = serializers.StringRelatedField()
-    room = serializers.StringRelatedField()
+    room = serializers.ListField(write_only=True)
     room_price = serializers.IntegerField(required=False, read_only=True)
     url = serializers.CharField(required=False, read_only=True)
 

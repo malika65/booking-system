@@ -95,12 +95,13 @@ class BookingListCreate(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         hotel = Hotel.objects.get(pk=self.request.data['hotel'])
-        room = Room.objects.get(pk=self.request.data['room'])
+
         booking = serializer.save(guest_id=self.request.user,
                                   hotel=hotel,
-                                  room=room)
+                                  )
+        booking.room.set(self.request.data['room'])
 
-        send_booking_to_email.delay(booking.id, hotel.id, room.id, self.request.data['num_of_guest'],
+        send_booking_to_email.delay(booking.id, hotel.id, 1, self.request.data['num_of_guest'],
                                     self.request.user.id, self.request.data['room_price'])
 
 
