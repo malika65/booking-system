@@ -1,4 +1,5 @@
 import datetime
+import time
 
 import schedule
 from pydrive.auth import GoogleAuth
@@ -23,10 +24,13 @@ def make_backup():
         subprocess.run(["rm", "-rf", "latest.dump"])
 
 
-schedule.every().friday.do(make_backup)
+schedule.every().saturday.do(make_backup)
+
+# schedule.every(10).seconds.do(make_backup)
 
 while True:
     schedule.run_pending()
+    time.sleep(1)
 
 # Restore command
 # subprocess.run(["heroku", "pg:backups:restore", 'https://drive.google.com/uc?id=1UCwErrCtrOkBRmKEXTt6i7Qg40LxJ8z1&export=download', "DATABASE_URL", "--confirm", "silk-travel"])
