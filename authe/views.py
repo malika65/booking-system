@@ -51,7 +51,7 @@ class UserRegistrationView(GenericAPIView):
             refresh_token = str(refresh)
             access_token = str(refresh.access_token)
             login(request, user)
-            send_code_to_email(user.id, code.code)
+            send_code_to_email.delay(user.id, code.code)
 
             response = {
                 'success': True,
@@ -91,7 +91,6 @@ class VerifyEmail(APIView):
         except jwt.ExpiredSignatureError as identifier:
             return Response({'error': 'Activation Expired'}, status=status.HTTP_400_BAD_REQUEST)
         except jwt.exceptions.DecodeError as identifier:
-            print(identifier)
             return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
 
 
