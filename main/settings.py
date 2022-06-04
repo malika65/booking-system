@@ -83,6 +83,7 @@ AUTH_USER_MODEL = 'authe.User'
 # Application definition
 
 INSTALLED_APPS = [
+    'admin_reorder',
     'whitenoise.runserver_nostatic',
     'modeltranslation',
     'django.contrib.admin',
@@ -96,7 +97,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'drf_yasg',
-    'rest_framework_simplejwt.token_blacklist',
+    # 'rest_framework_simplejwt.token_blacklist',
     'booking_system.apps.BookingSystemConfig',
     'authe.apps.AutheConfig',
     'django_extensions',
@@ -116,6 +117,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'admin_reorder.middleware.ModelAdminReorder',
 ]
 
 ES_URL = os.environ['ES_URL']
@@ -328,3 +330,53 @@ CACHES = {
         }
     }
 }
+
+ADMIN_REORDER = (
+    {'app': 'authe',
+     'label': 'Пользователи',
+     'models': ('authe.User',
+                'authe.ConfirmCode',
+                'auth.Group',
+                )
+    },
+    {'app': 'booking_system',
+     'label': 'Отели и комнаты',
+     'models': ('booking_system.Hotel',
+                'booking_system.Room',
+                )
+    },
+    {'app': 'booking_system',
+     'label': 'Бронирования',
+     'models': (
+                'booking_system.Booking',
+                )
+    },
+    {'app': 'booking_system',
+     'label': 'Услуги отелей',
+        'models': (
+            'booking_system.FacilitiesAndServicesHotels',
+            'booking_system.HotelCategoryStars',
+            'booking_system.AdditionalService',
+            'booking_system.ChildService',
+        )
+   },
+    {'app': 'booking_system',
+     'label': 'Услуги комнат',
+        'models': (
+            'booking_system.FacilitiesAndServicesRooms',
+            'booking_system.Characteristics',
+        )
+   },
+    {'app': 'booking_system',
+     'label': 'Услуги комнат',
+        'models': (
+            'booking_system.FoodCategory',
+            'booking_system.AdditionalService',
+        )
+   },
+    {'app': 'booking_system',
+     'label': 'Страны',
+     'models': ('booking_system.Country',
+                )
+     }
+)

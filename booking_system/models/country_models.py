@@ -8,7 +8,7 @@ class Country(models.Model):
         return self.country_name or ''
 
     class Meta:
-        verbose_name_plural = "3. Страны и города"
+        verbose_name_plural = "Страны и города"
 
 
 class City(models.Model):

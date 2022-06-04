@@ -52,7 +52,7 @@ class Hotel(models.Model):
     checkout_date = models.CharField(null=True, verbose_name='Регистрация выезда до', max_length=20)
 
     class Meta:
-        verbose_name_plural = "2. Отели"
+        verbose_name_plural = "Отели"
 
     def __str__(self) -> str:
         return self.hotel_name or ''
@@ -92,7 +92,7 @@ class Room(models.Model):
         return self.room_name or ''
 
     class Meta:
-        verbose_name_plural = "7. Типы Номеров"
+        verbose_name_plural = "Типы Номеров"
 
 
 class PeriodPrice(models.Model):

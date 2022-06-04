@@ -138,44 +138,55 @@ class HotelSearchSerializer(serializers.ModelSerializer):
         filters_in_request = self.context['request']
         total_rooms_price = 0
         representation = super().to_representation(instance)
-        guests_in_room = filters_in_request.GET['guests'].split('-')
+        guests_from_request = filters_in_request.GET['guests'].split('-')
         rooms_with_guest = []
-        for guest in guests_in_room:
-            s = {}
-            s[guest.split('and')[0]] = guest.split('and')[1].split('.')
-            rooms_with_guest.append(s)
-        rooms = {}
-        child_service = representation.get('child_service_id')
-        for index, room_guests in enumerate(rooms_with_guest):
-            childs = room_guests.values()
-            adults, rest_childs = self.check_if_child_service_exist(*childs, child_service)
-            new_key = adults + int(list(room_guests)[0])
-            room_guests[new_key] = room_guests.pop(list(room_guests)[0])
-            room_guests[new_key] = rest_childs
+        result_searched_rooms = {}
+        child_services = representation.get('child_service_id')
         try:
-            for room_index, adult_and_child in enumerate(rooms_with_guest, start=1):
-                adult = list(adult_and_child.keys())[0]
-                child = len(list(adult_and_child.values())[0])
-                room = Room.objects.select_related('hotel_id').filter(hotel_id=representation.get('id'),
-                                                                      characteristics_id__capacity=adult,
-                                                                      child_capacity=child)
-                prices = PeriodPrice.objects.filter(room_id__id=room.values('id').last()['id'])
+            for guest in guests_from_request:
+                s = {}
+                s[guest.split('and')[0]] = guest.split('and')[1].split('.')
+                rooms_with_guest.append(s)
+
+            for index, room_guests in enumerate(rooms_with_guest):
+                childs = room_guests.values()
+                adults, rest_childs = self.check_if_child_service_exist(*childs, child_services)
+                new_key = adults + int(list(room_guests)[0])
+                room_guests[new_key] = room_guests.pop(list(room_guests)[0])
+                room_guests[new_key] = rest_childs
+
+            child_years = [list(i.values())[0] for i in rooms_with_guest]
+            total_num_of_room = len(rooms_with_guest)
+
+            max_num_of_guest = max([max(i, key=i.get) for i in rooms_with_guest])
+
+            room_for_max_num_of_guests = [sub for sub in rooms_with_guest if list(sub.keys())[0] == max_num_of_guest]
+            converted_to_dict = {k:v for element in room_for_max_num_of_guests for k,v in element.items()}
+
+            adult = list(converted_to_dict.keys())[0]
+            child = len(list(converted_to_dict.values())[0])
+            rooms = Room.objects.select_related('hotel_id').filter(hotel_id=representation.get('id'),
+                                                                   characteristics_id__capacity__gte=adult,
+                                                                   child_capacity__gte=child)
+
+            serialized_rooms = RoomSerializer(rooms, many=True, context=self.context).data
+
+            result_searched_rooms['amount_of_room'] = total_num_of_room
+
+            child_years = [item for sublist in child_years for item in sublist]
+            for index, child in enumerate(child_years):
+                for child_service in child_services:
+                    if child_service.get('until_age') == int(child):
+                        total_rooms_price += child_service.get('result_price')
+
+            for room in serialized_rooms:
+                prices = PeriodPrice.objects.filter(room_id__id=room.get('id'))
                 actual_price = self.get_room_price_depends_on_datetime(prices)
-                total_rooms_price += actual_price
-                child_years = list(adult_and_child.values())[0]
-                for index, child in enumerate(child_years):
+                room['totat_price'] = total_rooms_price + (total_num_of_room*actual_price)
+            result_searched_rooms[f'rooms'] = serialized_rooms
 
-                    if child_service[index].get('until_age') == int(child):
-                        total_rooms_price += child_service[index].get('result_price')
-                room = RoomSerializer(room, many=True, context=self.context)
-                rooms[f'room{room_index}'] = room.data[0]
-
-                total_rooms_price += self.get_child_service_prices(child_years, child_service)
-
-            representation['result'] = rooms
-            representation['total_price'] = total_rooms_price
+            representation['result'] = result_searched_rooms
             return representation
         except TypeError as e:
             representation['result'] = {'message': 'Nothing'}
             return representation
-

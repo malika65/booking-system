@@ -32,7 +32,7 @@ class FacilitiesAndServicesHotels(models.Model):
         return self.hotel_category_name or ''
 
     class Meta:
-        verbose_name_plural = "6. Удобства и услуги отелей"
+        verbose_name_plural = "Удобства и услуги отелей"
 
 
 class FacilitiesAndServicesRooms(models.Model):
@@ -42,7 +42,7 @@ class FacilitiesAndServicesRooms(models.Model):
         return self.room_category_name or ''
 
     class Meta:
-        verbose_name_plural = "9. Удобства и услуги комнат"
+        verbose_name_plural = "Удобства и услуги комнат"
 
 
 class FoodCategory(models.Model):
@@ -52,7 +52,7 @@ class FoodCategory(models.Model):
         return self.food_category_name or ''
 
     class Meta:
-        verbose_name_plural = "5. Категории питания"
+        verbose_name_plural = "Категории питания"
 
 
 class HotelCategoryStars(models.Model):
@@ -66,7 +66,7 @@ class HotelCategoryStars(models.Model):
         return self.hotel_category_name or ''
 
     class Meta:
-        verbose_name_plural = "4. Категории отелей(звезды)"
+        verbose_name_plural = "Категории отелей(звезды)"
 
 
 class Characteristics(models.Model):
@@ -77,7 +77,7 @@ class Characteristics(models.Model):
         return self.name or ''
 
     class Meta:
-        verbose_name_plural = "8. Характеристики"
+        verbose_name_plural = "Характеристики"
 
 
 class AdditionalService(models.Model):

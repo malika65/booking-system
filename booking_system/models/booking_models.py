@@ -32,4 +32,4 @@ class Booking(models.Model):
                self.room.price
 
     class Meta:
-        verbose_name_plural = "1. Бронирования"
+        verbose_name_plural = "Бронирования"
