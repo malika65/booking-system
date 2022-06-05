@@ -101,8 +101,13 @@ class BookingListCreate(generics.ListCreateAPIView):
                                   )
         booking.room.set(self.request.data['room'])
 
-        send_booking_to_email.delay(booking.id, hotel.id, self.request.data['room'], self.request.data['num_of_guest'],
-                                    self.request.user.id, self.request.data['room_price'])
+        send_booking_to_email.delay(booking_id=booking.id, hotel_id=hotel.id, rooms=self.request.data['room'],
+                                    num_of_guests=self.request.data['num_of_guest'],
+                                    user_id=self.request.user.id,
+                                    room_price=self.request.data['room_price'],
+                                    num_of_adults=self.request.data['num_of_adults'],
+                                    num_of_childs=self.request.data['num_of_childs'],
+                                    child_years=self.request.data['child_years'])
 
 
 class BookingDetail(generics.RetrieveUpdateDestroyAPIView):

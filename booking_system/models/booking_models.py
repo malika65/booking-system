@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+from django.core.validators import RegexValidator
 from django.db import models
 from smart_selects.db_fields import ChainedForeignKey
 
@@ -17,6 +18,9 @@ class Booking(models.Model):
                               null=True, blank=True, related_name='hotel')
     room = models.ManyToManyField(Room, blank=True, null=True, verbose_name='Номер')
     num_of_guest = models.IntegerField(default=1, verbose_name='Кол-во гостей')
+    phone_regex = RegexValidator(regex=r'^\+\d{8,15}$',
+                                 message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
+    phone_number = models.CharField(validators=[phone_regex], max_length=16, blank=True)
     is_checkout = models.BooleanField(default=False, verbose_name='Проверено')
 
     def __str__(self) -> str:
