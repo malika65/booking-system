@@ -128,3 +128,4 @@ class BookingServiceAdmin(admin.ModelAdmin):
 
 
 # admin.site.register(Booking)
+

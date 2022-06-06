@@ -14,6 +14,7 @@ import os
 from datetime import timedelta
 from pathlib import Path
 from urllib.parse import urlparse
+from django.contrib import admin
 
 from celery.schedules import crontab
 import dj_database_url
@@ -83,7 +84,6 @@ AUTH_USER_MODEL = 'authe.User'
 # Application definition
 
 INSTALLED_APPS = [
-    'admin_reorder',
     'whitenoise.runserver_nostatic',
     'modeltranslation',
     'django.contrib.admin',
@@ -117,7 +117,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-    'admin_reorder.middleware.ModelAdminReorder',
 ]
 
 ES_URL = os.environ['ES_URL']
@@ -331,52 +330,39 @@ CACHES = {
     }
 }
 
-ADMIN_REORDER = (
-    {'app': 'authe',
-     'label': 'Пользователи',
-     'models': ('authe.User',
-                'authe.ConfirmCode',
-                'auth.Group',
-                )
-    },
-    {'app': 'booking_system',
-     'label': 'Отели и комнаты',
-     'models': ('booking_system.Hotel',
-                'booking_system.Room',
-                )
-    },
-    {'app': 'booking_system',
-     'label': 'Бронирования',
-     'models': (
-                'booking_system.Booking',
-                )
-    },
-    {'app': 'booking_system',
-     'label': 'Услуги отелей',
-        'models': (
-            'booking_system.FacilitiesAndServicesHotels',
-            'booking_system.HotelCategoryStars',
-            'booking_system.AdditionalService',
-            'booking_system.ChildService',
-        )
-   },
-    {'app': 'booking_system',
-     'label': 'Услуги комнат',
-        'models': (
-            'booking_system.FacilitiesAndServicesRooms',
-            'booking_system.Characteristics',
-        )
-   },
-    {'app': 'booking_system',
-     'label': 'Услуги комнат',
-        'models': (
-            'booking_system.FoodCategory',
-            'booking_system.AdditionalService',
-        )
-   },
-    {'app': 'booking_system',
-     'label': 'Страны',
-     'models': ('booking_system.Country',
-                )
-     }
+ADMIN_ORDERING = (
+    ('authe', [
+        'User',
+        'ConfirmCode',
+    ]),
+    ('booking_system', [
+        'Hotel',
+        'Booking',
+        'Category',
+        'FacilitiesAndServicesHotels',
+        'HotelCategoryStars',
+        'AdditionalService',
+        'ChildService',
+        'Room',
+        'FacilitiesAndServicesRooms',
+        'Characteristics',
+        'FoodCategory',
+        'AdditionalService',
+        'Country'
+    ]),
 )
+
+
+# Creating a sort function
+def get_app_list(self, request):
+    app_dict = self._build_app_dict(request)
+    for app_name, object_list in ADMIN_ORDERING:
+        app = app_dict[app_name]
+
+        app['models'].sort(key=lambda x: object_list.index(x['object_name']))
+        yield app
+
+
+# Covering django.contrib.admin.AdminSite.get_app_list
+
+admin.AdminSite.get_app_list = get_app_list
