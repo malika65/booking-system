@@ -101,14 +101,6 @@ class HotelSearchSerializer(serializers.ModelSerializer):
                   'hotel_category', 'food_category', 'category_id', 'checkin_date', 'checkout_date',
                   'additional_service_id', 'child_service_id', 'images', 'guests']
 
-    @staticmethod
-    def get_room_price_depends_on_datetime(prices):
-        for price in prices:
-            today = datetime.datetime.today()
-            start = datetime.datetime.strptime(str(price.start_date), '%Y-%m-%d')
-            end = datetime.datetime.strptime(str(price.end_date), '%Y-%m-%d')
-            if start <= today <= end:
-                return price.price
 
     @staticmethod
     def check_if_child_service_exist(childs, child_services):
@@ -180,8 +172,7 @@ class HotelSearchSerializer(serializers.ModelSerializer):
                         total_rooms_price += child_service.get('result_price')
 
             for room in serialized_rooms:
-                prices = PeriodPrice.objects.filter(room_id__id=room.get('id'))
-                actual_price = self.get_room_price_depends_on_datetime(prices)
+                actual_price = room.get('result_price')
                 room['totat_price'] = total_rooms_price + (total_num_of_room*actual_price)
             result_searched_rooms[f'rooms'] = serialized_rooms
 
