@@ -15,7 +15,7 @@ CURRENCY_CHOICES = [
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=100, verbose_name='Подкатегории')
+    name = models.CharField(max_length=200, verbose_name='Подкатегории')
 
     def __str__(self) -> str:
         return self.name or ''
@@ -25,7 +25,7 @@ class Category(models.Model):
 
 
 class FacilitiesAndServicesHotels(models.Model):
-    hotel_category_name = models.CharField(max_length=50, verbose_name='Наименование услуги и удобств отеля')
+    hotel_category_name = models.CharField(max_length=100, verbose_name='Наименование услуги и удобств отеля')
     category_id = models.ForeignKey(Category, null=True, on_delete=models.CASCADE, verbose_name='Подкатегория')
 
     def __str__(self) -> str:
@@ -36,7 +36,7 @@ class FacilitiesAndServicesHotels(models.Model):
 
 
 class FacilitiesAndServicesRooms(models.Model):
-    room_category_name = models.CharField(max_length=50, verbose_name='Наименование услуги и удобств комнаты')
+    room_category_name = models.CharField(max_length=100, verbose_name='Наименование услуги и удобств комнаты')
 
     def __str__(self) -> str:
         return self.room_category_name or ''
@@ -46,7 +46,7 @@ class FacilitiesAndServicesRooms(models.Model):
 
 
 class FoodCategory(models.Model):
-    food_category_name = models.CharField(max_length=50, verbose_name='Категория питания')
+    food_category_name = models.CharField(max_length=100, verbose_name='Категория питания')
 
     def __str__(self) -> str:
         return self.food_category_name or ''
@@ -70,7 +70,7 @@ class HotelCategoryStars(models.Model):
 
 
 class Characteristics(models.Model):
-    name = models.CharField(max_length=50, verbose_name='Название')
+    name = models.CharField(max_length=100, verbose_name='Название')
     capacity = models.IntegerField(default=1, verbose_name='Вместимость')
 
     def __str__(self) -> str:
@@ -81,7 +81,7 @@ class Characteristics(models.Model):
 
 
 class AdditionalService(models.Model):
-    name = models.CharField(max_length=50, verbose_name='Название', null=True)
+    name = models.CharField(max_length=200, verbose_name='Название', null=True)
     price = models.FloatField(default=0, null=True, blank=True, verbose_name='Цена')
     currency = models.CharField(
         max_length=10,
@@ -97,7 +97,7 @@ class AdditionalService(models.Model):
 
 
 class ChildService(models.Model):
-    name = models.CharField(max_length=50, verbose_name='Название', null=True)
+    name = models.CharField(max_length=200, verbose_name='Название', null=True)
     until_age = models.IntegerField(default=1, validators=[
         MaxValueValidator(17),
         MinValueValidator(1)

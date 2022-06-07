@@ -16,7 +16,7 @@ class Booking(models.Model):
     updated_at = models.DateTimeField(default=datetime.now)
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, verbose_name='Отель',
                               null=True, blank=True, related_name='hotel')
-    room = models.ManyToManyField(Room, blank=True, null=True, verbose_name='Номер')
+    room = models.ManyToManyField(Room, blank=True, verbose_name='Номер')
     num_of_guest = models.IntegerField(default=1, verbose_name='Кол-во гостей')
     phone_regex = RegexValidator(regex=r'^\+\d{8,15}$',
                                  message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
