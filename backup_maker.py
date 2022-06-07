@@ -38,7 +38,7 @@ def make_backup():
         subprocess.run(["rm", "-rf", "credentials.json"])
 
 
-schedule.every().monday.do(make_backup)
+schedule.every().wednesday.do(make_backup)
 
 # schedule.every(10).seconds.do(make_backup)
 
