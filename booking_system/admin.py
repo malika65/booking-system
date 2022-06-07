@@ -52,6 +52,7 @@ class RoomAdmin(TranslationAdmin):
         models.ManyToManyField: {'widget': CheckboxSelectMultiple},
     }
     field = '__all__'
+    list_display = ('room_name', 'hotel_id')
     inlines = [PeriodPriceInline]
 
 
@@ -121,9 +122,7 @@ class ChildServiceAdmin(TranslationAdmin):
 
 @admin.register(Booking)
 class BookingServiceAdmin(admin.ModelAdmin):
-    # formfield_overrides = {
-    #     models.ManyToManyField: {'widget': CheckboxSelectMultiple},
-    # }
+    list_display = ('guest_id', 'is_checkout')
     field = '__all__'
 
 
