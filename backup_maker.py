@@ -8,8 +8,6 @@ from google_drive_downloader import GoogleDriveDownloader as gdd
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 
-GOOGLE_APPLICATION_CREDENTIALS = os.environ['client_secrets']
-
 
 def make_backup():
     day_of_month = datetime.datetime.now().day
