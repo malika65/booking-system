@@ -153,7 +153,7 @@ class HotelSearchSerializer(serializers.ModelSerializer):
             max_num_of_guest = max([max(i, key=i.get) for i in rooms_with_guest])
 
             room_for_max_num_of_guests = [sub for sub in rooms_with_guest if list(sub.keys())[0] == max_num_of_guest]
-            converted_to_dict = {k:v for element in room_for_max_num_of_guests for k,v in element.items()}
+            converted_to_dict = {k: v for element in room_for_max_num_of_guests for k,v in element.items()}
 
             adult = list(converted_to_dict.keys())[0]
             child = len(list(converted_to_dict.values())[0])
