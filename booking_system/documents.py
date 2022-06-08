@@ -278,6 +278,19 @@ class RoomDocument(Document):
             }
         ),
         'is_active': fields.TextField(),
+        'images': fields.NestedField(properties={
+                'id': fields.IntegerField(),
+                'image_url': fields.TextField(analyzer=html_strip,
+                                              fields={'raw': fields.KeywordField()})
+            })
+    })
+
+    prices = fields.NestedField(properties={
+        'id': fields.IntegerField(),
+        'price': fields.FloatField(),
+        'currency': fields.TextField(),
+        'start_date': fields.DateField(),
+        'end_date': fields.DateField()
     })
 
     class Index:

@@ -108,7 +108,9 @@ class HotelSearchSerializer(serializers.ModelSerializer):
         rest_childs = []
         for child in childs:
             services_ages = [i.get('until_age') for i in child_services]
-            if services_conditions := [i for i in services_ages if int(child)<=i]:
+            if child == '0':
+                rest_childs.append(0)
+            elif services_conditions := [i for i in services_ages if int(child)<=i]:
                 rest_childs.append(min(services_conditions))
             else:
                 adults += 1
@@ -156,13 +158,16 @@ class HotelSearchSerializer(serializers.ModelSerializer):
             converted_to_dict = {k: v for element in room_for_max_num_of_guests for k,v in element.items()}
 
             adult = list(converted_to_dict.keys())[0]
-            child = len(list(converted_to_dict.values())[0])
+
+            if list(converted_to_dict.values())[0][0] == 0:
+                child = 0
+            else:
+                child = len(list(converted_to_dict.values())[0])
+
             rooms = Room.objects.select_related('hotel_id').filter(hotel_id=representation.get('id'),
                                                                    characteristics_id__capacity__gte=adult,
                                                                    child_capacity__gte=child)
-
             serialized_rooms = RoomSerializer(rooms, many=True, context=self.context).data
-
             result_searched_rooms['amount_of_room'] = total_num_of_room
 
             child_years = [item for sublist in child_years for item in sublist]
@@ -179,5 +184,6 @@ class HotelSearchSerializer(serializers.ModelSerializer):
             representation['result'] = result_searched_rooms
             return representation
         except TypeError as e:
+            print(e)
             representation['result'] = {'message': 'Nothing'}
             return representation

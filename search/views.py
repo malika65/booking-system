@@ -63,10 +63,10 @@ class HotelDocumentView(DocumentViewSet):
         'room_name_id': 'room_id.id',
         # 'room_price': {
         #     'field': 'room_id.price',
-        #     # 'lookups': [
-        #     #     LOOKUP_FILTER_RANGE,
-        #     #     LOOKUP_QUERY_IN,
-        #     # ],
+        #     'lookups': [
+        #         LOOKUP_FILTER_RANGE,
+        #         LOOKUP_QUERY_IN,
+        #     ],
         # },
         # 'room_capacity': {
         #     'field': 'room_id.characteristics_id.capacity',
