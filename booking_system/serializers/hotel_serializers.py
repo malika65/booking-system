@@ -133,6 +133,7 @@ class HotelSearchSerializer(serializers.ModelSerializer):
         total_rooms_price = 0
         representation = super().to_representation(instance)
         guests_from_request = filters_in_request.GET['guests'].split('-')
+        room_category_ids_filter = list(filter(None, filters_in_request.GET['room_category_ids'].strip('][').split(',')))
         rooms_with_guest = []
         result_searched_rooms = {}
         child_services = representation.get('child_service_id')
@@ -163,10 +164,15 @@ class HotelSearchSerializer(serializers.ModelSerializer):
                 child = 0
             else:
                 child = len(list(converted_to_dict.values())[0])
-
-            rooms = Room.objects.select_related('hotel_id').filter(hotel_id=representation.get('id'),
-                                                                   characteristics_id__capacity__gte=adult,
-                                                                   child_capacity__gte=child)
+            if room_category_ids_filter:
+                rooms = Room.objects.filter(hotel_id=representation.get('id'),
+                                            characteristics_id__capacity__gte=adult,
+                                            child_capacity__gte=child,
+                                            category_id__in=room_category_ids_filter)
+            else:
+                rooms = Room.objects.filter(hotel_id=representation.get('id'),
+                                            characteristics_id__capacity__gte=adult,
+                                            child_capacity__gte=child)
             serialized_rooms = RoomSerializer(rooms, many=True, context=self.context).data
             result_searched_rooms['amount_of_room'] = total_num_of_room
 
@@ -184,6 +190,5 @@ class HotelSearchSerializer(serializers.ModelSerializer):
             representation['result'] = result_searched_rooms
             return representation
         except TypeError as e:
-            print(e)
             representation['result'] = {'message': 'Nothing'}
             return representation
