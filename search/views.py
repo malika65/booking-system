@@ -13,7 +13,6 @@ from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
 
 from booking_system.documents import HotelDocument
 from booking_system.serializers.hotel_serializers import HotelSearchSerializer
-from search.nested_rooms import NestedRoomsBackend
 
 
 class HotelDocumentView(DocumentViewSet):
@@ -28,7 +27,6 @@ class HotelDocumentView(DocumentViewSet):
         DefaultOrderingFilterBackend,
         CompoundSearchFilterBackend,
         FunctionalSuggesterFilterBackend,
-        NestedRoomsBackend
     ]
 
     search_fields = {
