@@ -84,14 +84,14 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ('name_ru', 'name_en')
+        fields = ('id', 'name_ru', 'name_en')
 
 
 class FoodCategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FoodCategory
-        fields = ('food_category_name_ru', 'food_category_name_en')
+        fields = ('id', 'food_category_name_ru', 'food_category_name_en')
 
 
 class HotelCategoryStarsSerializer(serializers.ModelSerializer):
