@@ -29,7 +29,7 @@ class HotelSerializer(serializers.ModelSerializer):
     city = CitySerializer()
     food_category = FoodCategorySerializer(read_only=True, many=True)
     hotel_category = HotelCategoryStarsSerializer(read_only=True, many=True)
-    category_id = FacilitiesAndServicesHotelsSerializer(read_only=True, many=True)
+    facilities_hotel_id = FacilitiesAndServicesHotelsSerializer(read_only=True, many=True)
     additional_service_id = AdditionalServiceSerializer(read_only=True, many=True)
     child_service_id = ChildServiceSerializer(read_only=True, many=True)
     images = HotelImageSerializer(many=True)
@@ -38,7 +38,7 @@ class HotelSerializer(serializers.ModelSerializer):
         model = Hotel
         fields = ['id', 'hotel_name_ru', 'hotel_name_en', 'hotel_address_ru', 'hotel_address_en',
                   'hotel_description_ru', 'hotel_description_en', 'is_active', 'city',
-                  'hotel_category', 'food_category', 'category_id', 'checkin_date', 'checkout_date',
+                  'hotel_category', 'food_category', 'facilities_hotel_id', 'checkin_date', 'checkout_date',
                   'additional_service_id', 'child_service_id', 'images']
 
 

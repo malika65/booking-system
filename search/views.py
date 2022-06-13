@@ -1,3 +1,4 @@
+from django_elasticsearch_dsl_drf import viewsets
 from django_elasticsearch_dsl_drf.filter_backends import (
     FilteringFilterBackend,
     OrderingFilterBackend,
@@ -8,11 +9,11 @@ from django_elasticsearch_dsl_drf.pagination import PageNumberPagination
 from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
 
 from booking_system.documents import HotelDocument
-from booking_system.filter import HotelFilter, HotelCategoryFilter
+# from booking_system.filter import HotelFilter, HotelCategoryFilter
 from booking_system.serializers.hotel_serializers import HotelSearchSerializer
 
 
-class HotelDocumentView(DocumentViewSet):
+class HotelDocumentView(viewsets.ReadOnlyModelViewSet):
     document = HotelDocument
     serializer_class = HotelSearchSerializer
     pagination_class = PageNumberPagination
@@ -23,7 +24,7 @@ class HotelDocumentView(DocumentViewSet):
         OrderingFilterBackend,
         DefaultOrderingFilterBackend,
         SearchFilterBackend,
-        HotelCategoryFilter,
+        # HotelCategoryFilter,
     )
 
     search_fields = {
