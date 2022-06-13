@@ -13,19 +13,18 @@ from booking_system.documents import HotelDocument
 from booking_system.serializers.hotel_serializers import HotelSearchSerializer
 
 
-class HotelDocumentView(viewsets.ReadOnlyModelViewSet):
+class HotelDocumentView(DocumentViewSet):
     document = HotelDocument
     serializer_class = HotelSearchSerializer
     pagination_class = PageNumberPagination
     lookup_field = 'id'
 
-    filter_backends = (
+    filter_backends = [
         FilteringFilterBackend,
         OrderingFilterBackend,
         DefaultOrderingFilterBackend,
         SearchFilterBackend,
-        # HotelCategoryFilter,
-    )
+    ]
 
     search_fields = {
         'hotel_name_ru': {'fuzziness': 2, 'minimum_should_match': "65%"},
