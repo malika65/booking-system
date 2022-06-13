@@ -1,7 +1,9 @@
 import datetime
 
+from django_elasticsearch_dsl_drf.serializers import DocumentSerializer
 from rest_framework import serializers
 
+from booking_system.documents import HotelDocument
 from booking_system.models.hotel_models import PeriodPrice, HotelImage, Hotel, Room
 from booking_system.serializers.characteristics_serializers import CitySerializer, FoodCategorySerializer, \
     HotelCategoryStarsSerializer, FacilitiesAndServicesHotelsSerializer, AdditionalServiceSerializer, \
@@ -77,7 +79,7 @@ class RoomSerializer(serializers.ModelSerializer):
         return rooms
 
 
-class HotelSearchSerializer(serializers.ModelSerializer):
+class HotelSearchSerializer(DocumentSerializer):
     hotel_name_ru = serializers.CharField(max_length=100)
     hotel_name_en = serializers.CharField(max_length=100)
     hotel_address_ru = serializers.CharField(max_length=100)
@@ -95,11 +97,12 @@ class HotelSearchSerializer(serializers.ModelSerializer):
     guests = serializers.CharField(required=False, read_only=True)
 
     class Meta:
-        model = Hotel
-        fields = ['id', 'hotel_name_ru', 'hotel_name_en', 'hotel_address_ru', 'hotel_address_en',
+        document = HotelDocument
+        fields = ('id', 'hotel_name_ru', 'hotel_name_en', 'hotel_address_ru', 'hotel_address_en',
                   'hotel_description_ru', 'hotel_description_en', 'is_active', 'city',
-                  'hotel_category', 'food_category', 'category_id', 'checkin_date', 'checkout_date',
-                  'additional_service_id', 'child_service_id', 'images', 'guests']
+                  'hotel_category', 'food_category', 'facilities_hotel_id', 'checkin_date', 'checkout_date',
+                  'additional_service_id', 'child_service_id', 'images', 'guests')
+        read_only_fields = fields
 
 
     @staticmethod
@@ -190,5 +193,45 @@ class HotelSearchSerializer(serializers.ModelSerializer):
             representation['result'] = result_searched_rooms
             return representation
         except TypeError as e:
-            representation['result'] = {'message': 'Nothing'}
+            representation = {'message': 'Nothing'}
             return representation
+
+    def get_hotel_category(self, obj):
+        if obj.hotel_category:
+            return list(obj.hotel_category)
+        else:
+            return []
+
+    def get_food_category(self, obj):
+        if obj.food_category:
+            return list(obj.food_category)
+        else:
+            return []
+
+    def get_facilities_hotel_id(self, obj):
+        if obj.facilities_hotel_id:
+            return list(obj.facilities_hotel_id)
+        else:
+            return []
+
+    def get_additional_service_id(self, obj):
+        if obj.additional_service_id:
+            return list(obj.additional_service_id)
+        else:
+            return []
+
+    # def get_child_service_id(self, obj):
+    #     """Get tags."""
+    #     if obj.child_service_id:
+    #         return list(obj.child_service_id)
+    #     else:
+    #         return []
+
+    def get_images(self, obj):
+        """Get tags."""
+        if obj.images:
+            return list(obj.images)
+        else:
+            return []
+
+

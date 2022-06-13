@@ -39,7 +39,7 @@ class Hotel(models.Model):
         sort=True, blank=True, null=True, verbose_name='Город')
     food_category = models.ManyToManyField(FoodCategory, blank=True, verbose_name='Категории питания')
     hotel_category = models.ManyToManyField(HotelCategoryStars, blank=True, verbose_name='Звезды отеля')
-    category_id = models.ManyToManyField(FacilitiesAndServicesHotels, blank=True, verbose_name='Удобства и услуги')
+    facilities_hotel_id = models.ManyToManyField(FacilitiesAndServicesHotels, blank=True, verbose_name='Удобства и услуги')
     additional_service_id = models.ManyToManyField(AdditionalService, blank=True, verbose_name='Дополнительные услуги')
     child_service_id = models.ManyToManyField(ChildService, blank=True, verbose_name='Услуги проживания с детьми')
     is_active = models.BooleanField(default=True, verbose_name='Активный')

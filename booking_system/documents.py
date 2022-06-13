@@ -20,10 +20,13 @@ from elasticsearch_dsl import analyzer
 from django_elasticsearch_dsl import TextField
 
 
+_filters = ["lowercase", "stop", "snowball"]
+
+
 html_strip = analyzer(
     'html_strip',
     tokenizer="standard",
-    filter=["lowercase", "stop", "snowball"],
+    filter=_filters,
     char_filter=["html_strip"]
 )
 
@@ -46,6 +49,7 @@ class CategoryDocument(Document):
 
 @registry.register_document
 class FacilitiesAndServicesHotelsDocument(Document):
+
     class Index:
         name = 'facilities_hotels'
         settings = {
@@ -97,6 +101,7 @@ class FoodCategoryDocument(Document):
 
 @registry.register_document
 class HotelCategoryStarsDocument(Document):
+
     class Index:
         name = 'hotel_category_stars'
         settings = {
@@ -270,7 +275,7 @@ class RoomDocument(Document):
                 'hotel_category_stars': fields.IntegerField()
             }
         ),
-        'category_id': fields.ObjectField(
+        'facilities_hotel_id': fields.ObjectField(
             properties={
                 'id': fields.IntegerField(),
                 'hotel_category_name_ru': fields.TextField(),
@@ -378,11 +383,12 @@ class HotelDocument(Document):
         'hotel_category_name_en': fields.TextField(),
         'hotel_category_stars': fields.TextField(),
     })
-    category_id = fields.ObjectField(properties={
+    facilities_hotel_id = fields.ObjectField(properties={
         'id': fields.IntegerField(),
         'hotel_category_name_ru': fields.TextField(),
         'hotel_category_name_en': fields.TextField(),
     })
+
     additional_service_id = fields.ObjectField(
         properties={
             'id': fields.IntegerField(),
@@ -473,7 +479,7 @@ class BookingDocument(Document):
                 'hotel_category_stars': fields.IntegerField()
             }
         ),
-        'category_id': fields.ObjectField(
+        'facilities_hotel_id': fields.ObjectField(
             properties={
                 'id': fields.IntegerField(),
                 'hotel_category_name_ru': fields.TextField(),
@@ -544,7 +550,7 @@ class BookingDocument(Document):
                     'hotel_category_stars': fields.IntegerField()
                 }
             ),
-            'category_id': fields.ObjectField(
+            'facilities_hotel_id': fields.ObjectField(
                 properties={
                     'id': fields.IntegerField(),
                     'hotel_category_name_ru': fields.TextField(),

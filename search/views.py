@@ -1,18 +1,14 @@
-from django_elasticsearch_dsl_drf.filter_backends import CompoundSearchFilterBackend, FunctionalSuggesterFilterBackend, \
-    FacetedSearchFilterBackend
-from django_elasticsearch_dsl_drf.constants import (LOOKUP_FILTER_RANGE,
-                                                    LOOKUP_QUERY_IN,
-                                                    )
-from django_elasticsearch_dsl_drf.filter_backends import CompoundSearchFilterBackend, FunctionalSuggesterFilterBackend
 from django_elasticsearch_dsl_drf.filter_backends import (
     FilteringFilterBackend,
     OrderingFilterBackend,
     DefaultOrderingFilterBackend,
 )
+from django_elasticsearch_dsl_drf.filter_backends import SearchFilterBackend, IdsFilterBackend
 from django_elasticsearch_dsl_drf.pagination import PageNumberPagination
 from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
 
 from booking_system.documents import HotelDocument
+from booking_system.filter import HotelFilter, HotelCategoryFilter
 from booking_system.serializers.hotel_serializers import HotelSearchSerializer
 
 
@@ -22,14 +18,13 @@ class HotelDocumentView(DocumentViewSet):
     pagination_class = PageNumberPagination
     lookup_field = 'id'
 
-    filter_backends = [
+    filter_backends = (
         FilteringFilterBackend,
         OrderingFilterBackend,
         DefaultOrderingFilterBackend,
-        CompoundSearchFilterBackend,
-        FunctionalSuggesterFilterBackend,
-        # FacetedSearchFilterBackend,
-    ]
+        SearchFilterBackend,
+        HotelCategoryFilter,
+    )
 
     search_fields = {
         'hotel_name_ru': {'fuzziness': 2, 'minimum_should_match': "65%"},
@@ -45,12 +40,11 @@ class HotelDocumentView(DocumentViewSet):
         'hotel_address_ru',
         'hotel_address_en',
     )
-    filter_fields = {
-        'food_category': 'food_category.id',
-        'hotel_category': 'hotel_category.id',
-        'categories': 'category_id.id',
-    }
-
+    filter_fields = (
+        # 'food_category': 'food_category.id',
+        'hotel_category.id'
+        # 'facilities_hotel_id': 'facilities_hotel_id.id',
+    )
     ordering_fields = {
         'id': 'id',
     }
