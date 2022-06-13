@@ -123,7 +123,7 @@ ES_URL = os.environ['ES_URL']
 
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts': 'localhost:9200',
+        'hosts': ES_URL,
     },
 }
 
