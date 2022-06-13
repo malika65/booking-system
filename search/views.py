@@ -1,4 +1,5 @@
-from django_elasticsearch_dsl_drf.filter_backends import CompoundSearchFilterBackend, FunctionalSuggesterFilterBackend
+from django_elasticsearch_dsl_drf.filter_backends import CompoundSearchFilterBackend, FunctionalSuggesterFilterBackend, \
+    FacetedSearchFilterBackend
 from django_elasticsearch_dsl_drf.constants import (LOOKUP_FILTER_RANGE,
                                                     LOOKUP_QUERY_IN,
                                                     )
@@ -27,6 +28,7 @@ class HotelDocumentView(DocumentViewSet):
         DefaultOrderingFilterBackend,
         CompoundSearchFilterBackend,
         FunctionalSuggesterFilterBackend,
+        # FacetedSearchFilterBackend,
     ]
 
     search_fields = {
