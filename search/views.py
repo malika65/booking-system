@@ -41,11 +41,11 @@ class HotelDocumentView(viewsets.ReadOnlyModelViewSet):
         'hotel_address_ru',
         'hotel_address_en',
     )
-    filter_fields = (
-        # 'food_category': 'food_category.id',
-        'hotel_category.id'
-        # 'facilities_hotel_id': 'facilities_hotel_id.id',
-    )
+    filter_fields = {
+        'food_category': 'food_category.id',
+        'hotel_category': 'hotel_category.id',
+        'facilities_hotel_id': 'facilities_hotel_id.id',
+    }
     ordering_fields = {
         'id': 'id',
     }
