@@ -163,3 +163,8 @@ class UserRegisterRequestSerializer(serializers.Serializer):
         'pasport']
 
 
+class ContactUsSerializer(serializers.Serializer):
+
+    email = serializers.EmailField()
+    message = serializers.CharField()
+

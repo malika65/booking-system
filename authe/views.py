@@ -26,8 +26,8 @@ from .serializers import (EmailVerificationSerializer, LogoutSerializer,
                           ResetPasswordEmailRequestSerializer,
                           SetNewPasswordSerializer, UserLoginSerializer,
                           UserRegistrationSerializer, UserSerializer,
-                          UserRegisterRequestSerializer)
-from .utils import send_email, send_code_to_email, send_reset_email
+                          UserRegisterRequestSerializer, ContactUsSerializer)
+from .utils import send_code_to_email, send_reset_email, send_contact_us_email
 
 
 class UserRegistrationView(GenericAPIView):
@@ -332,3 +332,29 @@ class SendRequestToRegisterHotelAPIView(GenericAPIView):
 
         email.send()
         return Response({'success': True, 'message': 'Заявка была отправлена'}, status=status.HTTP_200_OK)
+
+
+class CommentViewSet(GenericAPIView):
+    serializer_class = ContactUsSerializer
+    permission_classes = (AllowAny,)
+    # parser_classes = (FormParser, MultiPartParser)
+    # renderer_classes = (UserJSONRenderer,)
+
+    def post(self, request):
+        comment = ContactUsSerializer(data=request.data)
+        if comment.is_valid():
+            form_email = comment.data['email']
+            form_message = comment.data['message']
+
+            send_contact_us_email.delay(
+                form_message,
+                form_email,
+            )
+
+            return Response(comment.data)
+
+        return Response(
+            {
+                "success": False,
+                'error-code': 'invalid-data'
+            })

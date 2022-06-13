@@ -176,6 +176,10 @@ class HotelSearchSerializer(DocumentSerializer):
                 rooms = Room.objects.filter(hotel_id=representation.get('id'),
                                             characteristics_id__capacity__gte=adult,
                                             child_capacity__gte=child)
+
+            if not rooms:
+                representation = {'message': 'Nothing'}
+                return representation
             serialized_rooms = RoomSerializer(rooms, many=True, context=self.context).data
             result_searched_rooms['amount_of_room'] = total_num_of_room
 
@@ -196,42 +200,7 @@ class HotelSearchSerializer(DocumentSerializer):
             representation = {'message': 'Nothing'}
             return representation
 
-    def get_hotel_category(self, obj):
-        if obj.hotel_category:
-            return list(obj.hotel_category)
-        else:
-            return []
 
-    def get_food_category(self, obj):
-        if obj.food_category:
-            return list(obj.food_category)
-        else:
-            return []
 
-    def get_facilities_hotel_id(self, obj):
-        if obj.facilities_hotel_id:
-            return list(obj.facilities_hotel_id)
-        else:
-            return []
-
-    def get_additional_service_id(self, obj):
-        if obj.additional_service_id:
-            return list(obj.additional_service_id)
-        else:
-            return []
-
-    # def get_child_service_id(self, obj):
-    #     """Get tags."""
-    #     if obj.child_service_id:
-    #         return list(obj.child_service_id)
-    #     else:
-    #         return []
-
-    def get_images(self, obj):
-        """Get tags."""
-        if obj.images:
-            return list(obj.images)
-        else:
-            return []
 
 

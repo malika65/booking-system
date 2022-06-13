@@ -1,7 +1,10 @@
+import os
+
 from django.core.mail import EmailMessage
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from authe.models import User
+from main import settings
 from main.celery import app
 
 
@@ -35,3 +38,15 @@ def send_reset_email(data):
     email = EmailMessage(
         subject=data['email_subject'], body=data['email_body'], to=[data['to_email']])
     email.send()
+
+
+@app.task
+def send_contact_us_email(form_message, form_email):
+    data = {'email_body': f'{form_email} хочет связаться с вами. \n' + \
+                          f'Сообщение: {form_message}',
+            'to_email': settings.EMAIL_FROM,
+            'email_subject': 'Хотят связаться с вами'}
+    email = EmailMessage(
+        subject=data['email_subject'], body=data['email_body'], to=['silktravel.business@gmail.com'])
+    email.send()
+
