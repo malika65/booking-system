@@ -21,6 +21,7 @@ import dj_database_url
 from corsheaders.defaults import default_headers
 import cloudinary
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -106,6 +107,7 @@ INSTALLED_APPS = [
 
 ]
 
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -156,12 +158,13 @@ SWAGGER_SETTINGS = {
     'PERSIST_AUTH': True,
 }
 
+API_KEY_CUSTOM_HEADER = "HTTP_X_API_KEY"
 
 # REST framework settings
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework_api_key.permissions.HasAPIKey',
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
-        # 'rest_framework_api_key.permissions.HasAPIKey',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -339,6 +342,7 @@ ADMIN_ORDERING = (
     ('authe', [
         'User',
         'ConfirmCode',
+
     ]),
     ('booking_system', [
         'Hotel',
@@ -356,6 +360,9 @@ ADMIN_ORDERING = (
         'Country',
         'HotelImage'
     ]),
+    ('rest_framework_api_key', [
+        'APIKey'
+    ])
 )
 
 

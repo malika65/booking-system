@@ -87,5 +87,4 @@ class UserAdmin(BaseUserAdmin):
 # Now register the new UserAdmin...
 admin.site.register(User, UserAdmin)
 
-
 admin.site.register(ConfirmCode)

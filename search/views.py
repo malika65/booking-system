@@ -9,7 +9,6 @@ from django_elasticsearch_dsl_drf.pagination import PageNumberPagination
 from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
 
 from booking_system.documents import HotelDocument
-# from booking_system.filter import HotelFilter, HotelCategoryFilter
 from booking_system.serializers.hotel_serializers import HotelSearchSerializer
 
 
