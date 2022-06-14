@@ -2,6 +2,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework_api_key.permissions import HasAPIKey
 
 from booking_system.serializers.booking_serializers import BookingSerializer
 from booking_system.serializers.characteristics_serializers import (
@@ -33,61 +34,61 @@ from .utils import send_booking_to_email
 class HotelList(generics.ListAPIView):
     queryset = Hotel.objects.all()
     serializer_class = HotelSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (AllowAny, HasAPIKey)
 
 
 class HotelDetail(generics.RetrieveAPIView):
     queryset = Hotel.objects.all()
     serializer_class = HotelSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (AllowAny, HasAPIKey)
 
 
 class CategoryList(generics.ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (AllowAny, HasAPIKey)
 
 
 class FacilitiesAndServicesHotelsList(generics.ListAPIView):
     queryset = FacilitiesAndServicesHotels.objects.all()
     serializer_class = FacilitiesAndServicesHotelsSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (AllowAny, HasAPIKey)
 
 
 class FacilitiesAndServicesRoomsList(generics.ListAPIView):
     queryset = FacilitiesAndServicesRooms.objects.all()
     serializer_class = FacilitiesAndServicesRoomsSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (AllowAny, HasAPIKey)
 
 
 class FoodCategoryList(generics.ListAPIView):
     queryset = FoodCategory.objects.all()
     serializer_class = FoodCategorySerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (AllowAny, HasAPIKey)
 
 
 class HotelCategoryStarsList(generics.ListAPIView):
     queryset = HotelCategoryStars.objects.all()
     serializer_class = HotelCategoryStarsSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (AllowAny, HasAPIKey)
 
 
 class CharacteristicsList(generics.ListAPIView):
     queryset = Characteristics.objects.all()
     serializer_class = CharacteristicsSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (AllowAny, HasAPIKey)
 
 
 class RoomList(generics.ListAPIView):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (AllowAny, HasAPIKey)
 
 
 class BookingListCreate(generics.ListCreateAPIView):
     queryset = Booking.objects.all()
     serializer_class = BookingSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (AllowAny, HasAPIKey)
 
     def get_queryset(self):
         user = self.request.user
@@ -113,7 +114,7 @@ class BookingListCreate(generics.ListCreateAPIView):
 class BookingDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Booking.objects.all()
     serializer_class = BookingSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, HasAPIKey)
 
     def get_queryset(self):
         user = self.request.user

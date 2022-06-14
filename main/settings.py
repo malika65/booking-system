@@ -49,14 +49,14 @@ CSRF_TRUSTED_ORIGINS = ['https://silk-travel.herokuapp.com']
 # CORS_ALLOW_ALL_ORIGINS = True # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
-    'http://localhost:3000/',
+    'https://silkway.bf.kg',
 ]
 
 CORS_ALLOWED_ORIGINS = [
     "http://silk-travel.herokuapp.com",
     "https://silk-travel.herokuapp.com",
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
+    "https://silkway.bf.kg",
+    "https://silkway.bf.kg",
 ]
 
 # CORS_ALLOW_HEADERS = [
@@ -73,10 +73,10 @@ CORS_ALLOWED_ORIGINS = [
 # ]
 
 CORS_ORIGIN_WHITELIST = [
-    'http://localhost:3000',
+    'https://silkway.bf.kg',
 ] # If this is used, then not need to use `CORS_ORIGIN_ALLOW_ALL = True`
 CORS_ORIGIN_REGEX_WHITELIST = [
-    'http://localhost:3000',
+    'https://silkway.bf.kg',
 ]
 
 AUTH_USER_MODEL = 'authe.User'
@@ -92,12 +92,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django_elasticsearch_dsl',
-    # 'cloudinary_storage',
     'django.contrib.staticfiles',
     'cloudinary',
     'smart_selects',
     'corsheaders',
     'rest_framework',
+    'rest_framework_api_key',
     'drf_yasg',
     'booking_system.apps.BookingSystemConfig',
     'authe.apps.AutheConfig',
@@ -161,6 +161,7 @@ SWAGGER_SETTINGS = {
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+        # 'rest_framework_api_key.permissions.HasAPIKey',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -352,7 +353,8 @@ ADMIN_ORDERING = (
         'Characteristics',
         'FoodCategory',
         'AdditionalService',
-        'Country'
+        'Country',
+        'HotelImage'
     ]),
 )
 
@@ -371,9 +373,16 @@ def get_app_list(self, request):
 
 admin.AdminSite.get_app_list = get_app_list
 
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ['CLOUD_NAME'],
+    'API_KEY': os.environ['API_KEY'],
+    'API_SECRET': os.environ['API_SECRET'],
+}
+
 cloudinary.config(
     cloud_name=os.environ['CLOUD_NAME'],
     api_key=os.environ['API_KEY'],
-    api_secret=os.environ['API_SECRET']
+    api_secret=os.environ['API_SECRET'],
+    use_filename=True
 )
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'

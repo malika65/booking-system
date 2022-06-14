@@ -126,5 +126,5 @@ class BookingServiceAdmin(admin.ModelAdmin):
     field = '__all__'
 
 
-# admin.site.register(HotelImage)
+admin.site.register(HotelImage)
 

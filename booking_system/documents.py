@@ -1,7 +1,7 @@
+from cloudinary.models import CloudinaryField
 from django.db.models.fields.files import ImageFieldFile
 from django_elasticsearch_dsl import Document, fields
 from django_elasticsearch_dsl.registries import registry
-from rest_framework.fields import ImageField
 
 from authe.models import User
 from .models.hotel_models import Hotel, Room, HotelImage, PeriodPrice
