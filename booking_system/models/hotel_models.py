@@ -1,3 +1,4 @@
+from cloudinary.models import CloudinaryField
 from django.db import models
 from smart_selects.db_fields import ChainedForeignKey
 
@@ -56,7 +57,7 @@ class Hotel(models.Model):
 class HotelImage(models.Model):
     hotel = models.ForeignKey(Hotel, default=None, on_delete=models.CASCADE, related_name='images')
     image_url = models.TextField(max_length=10000, blank=True, null=True)
-    image = models.FileField()
+    image = CloudinaryField('image')
 
     class Meta:
         verbose_name = 'Изображение'
@@ -64,15 +65,6 @@ class HotelImage(models.Model):
 
     def __str__(self):
         return self.hotel.hotel_name
-
-    def save(self, *args, **kwargs):
-        try:
-            get_text = self.image.url
-            self.image_url = get_text
-            super(HotelImage, self).save(*args, **kwargs)
-        except Exception as exp:
-            print("Exception: {exp}".format(exp=exp))
-        return super(HotelImage, self).save(*args, **kwargs)
 
 
 class Room(models.Model):

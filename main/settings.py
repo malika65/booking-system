@@ -19,7 +19,7 @@ from django.contrib import admin
 from celery.schedules import crontab
 import dj_database_url
 from corsheaders.defaults import default_headers
-
+import cloudinary
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -91,13 +91,14 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
     'django_elasticsearch_dsl',
+    # 'cloudinary_storage',
+    'django.contrib.staticfiles',
+    'cloudinary',
     'smart_selects',
     'corsheaders',
     'rest_framework',
     'drf_yasg',
-    # 'rest_framework_simplejwt.token_blacklist',
     'booking_system.apps.BookingSystemConfig',
     'authe.apps.AutheConfig',
     'django_extensions',
@@ -241,10 +242,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'build/static'),
-    os.path.join(BASE_DIR, 'static'),
-]
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'build/static'),
+#     os.path.join(BASE_DIR, 'static'),
+# ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
 
@@ -255,7 +256,7 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 # Default primary key field type
@@ -369,3 +370,10 @@ def get_app_list(self, request):
 # Covering django.contrib.admin.AdminSite.get_app_list
 
 admin.AdminSite.get_app_list = get_app_list
+
+cloudinary.config(
+    cloud_name=os.environ['CLOUD_NAME'],
+    api_key=os.environ['API_KEY'],
+    api_secret=os.environ['API_SECRET']
+)
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
