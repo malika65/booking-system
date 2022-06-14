@@ -177,9 +177,6 @@ class HotelSearchSerializer(DocumentSerializer):
                                             characteristics_id__capacity__gte=adult,
                                             child_capacity__gte=child)
 
-            if not rooms:
-                representation = {'message': 'Nothing'}
-                return representation
             serialized_rooms = RoomSerializer(rooms, many=True, context=self.context).data
             result_searched_rooms['amount_of_room'] = total_num_of_room
 
