@@ -32,6 +32,7 @@ os.environ["PATH"] += os.pathsep + 'C:/Program Files/Graphviz/bin'
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+# SECRET_KEY = 'django-insecure-l0)5n^%a%9ck*!pwkk=q7szp+_w%j5(ydn(e=1inhqw@wj#bo0'
 SECRET_KEY = os.environ['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -39,14 +40,14 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOW_CREDENTIALS = True
 
 
 CSRF_TRUSTED_ORIGINS = ['https://silk-travel.herokuapp.com']
 
-CORS_ALLOW_ALL_ORIGINS = True # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
+# CORS_ALLOW_ALL_ORIGINS = True # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
     'https://silkway.bf.kg',
@@ -59,18 +60,18 @@ CORS_ALLOWED_ORIGINS = [
     "https://silkway.bf.kg",
 ]
 
-CORS_ALLOW_HEADERS = [
-    'Access-Control-Allow-Origin',
-    'accept',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
-]
+# CORS_ALLOW_HEADERS = [
+#     'Access-Control-Allow-Origin',
+#     'accept',
+#     'accept-encoding',
+#     'authorization',
+#     'content-type',
+#     'dnt',
+#     'origin',
+#     'user-agent',
+#     'x-csrftoken',
+#     'x-requested-with',
+# ]
 
 CORS_ORIGIN_WHITELIST = [
     'https://silkway.bf.kg',
@@ -126,16 +127,16 @@ ES_URL = os.environ['ES_URL']
 
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts': 'localhost:9200',
+        'hosts': ES_URL,
     },
 }
 
 JQUERY_URL = False
 
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SESSION_COOKIE_SECURE = False
-CSRF_COOKIE_SECURE = False
-SECURE_SSL_REDIRECT = False
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# SESSION_COOKIE_SECURE = False
+# CSRF_COOKIE_SECURE = False
+# SECURE_SSL_REDIRECT = False
 
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -246,6 +247,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'build/static'),
+#     os.path.join(BASE_DIR, 'static'),
+# ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
 
