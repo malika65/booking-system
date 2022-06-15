@@ -138,7 +138,7 @@ class HotelSearchSerializer(DocumentSerializer):
         date_time_from = datetime.datetime.strptime(date_from, '%Y-%m-%d')
         date_time_to = datetime.datetime.strptime(date_to, '%Y-%m-%d')
         delta = date_time_to - date_time_from
-        days = delta.days
+        days = delta.days + 1
         total_rooms_price = 0
         representation = super().to_representation(instance)
         guests_from_request = filters_in_request.GET['guests'].split('-')
