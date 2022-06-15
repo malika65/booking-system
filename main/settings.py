@@ -99,6 +99,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework_api_key',
+    'rest_framework_simplejwt.token_blacklist',
     'drf_yasg',
     'booking_system.apps.BookingSystemConfig',
     'authe.apps.AutheConfig',
