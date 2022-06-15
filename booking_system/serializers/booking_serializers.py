@@ -17,5 +17,5 @@ class BookingSerializer(serializers.ModelSerializer):
         model = Booking
         fields = ('guest_id', 'checkin_date', 'checkout_date',
                   'hotel', 'room', 'num_of_guest', 'room_price', 'url', 'phone_number',
-                  'num_of_adults', 'num_of_childs', 'child_years')
+                  'num_of_adults', 'num_of_childs', 'child_years', 'is_checkout')
 
