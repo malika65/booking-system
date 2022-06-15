@@ -28,7 +28,7 @@ class BookingEmailThread:
             f'Детей: {self.num_of_childs} \n' + \
             f'Возрасты детей: {self.child_years} \n' + \
             f'Общая стоимость: {self.price} \n' + \
-            f'Перейти для подтверждения: http://127.0.0.1:8000/admin/booking_system/booking/{self.booking_id}/'
+            f'Перейти для подтверждения: {settings.ROOT_URL}/admin/booking_system/booking/{self.booking_id}/'
         return message
 
 

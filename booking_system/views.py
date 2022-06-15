@@ -1,5 +1,3 @@
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_api_key.permissions import HasAPIKey
@@ -17,7 +15,6 @@ from booking_system.serializers.hotel_serializers import (
     HotelSerializer,
     RoomSerializer,
 )
-from main.celery import reload_indexes
 from .models.booking_models import Booking
 from .models.characteristic_models import (
     FacilitiesAndServicesHotels,

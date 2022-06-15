@@ -394,3 +394,5 @@ cloudinary.config(
     use_filename=True
 )
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+ROOT_URL = os.environ['ROOT_URL']
