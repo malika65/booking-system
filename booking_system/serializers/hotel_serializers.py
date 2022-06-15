@@ -133,6 +133,12 @@ class HotelSearchSerializer(DocumentSerializer):
 
     def to_representation(self, instance):
         filters_in_request = self.context['request']
+        date_from = str(filters_in_request.GET['date_from'])
+        date_to = str(filters_in_request.GET['date_to'])
+        date_time_from = datetime.datetime.strptime(date_from, '%Y-%m-%d')
+        date_time_to = datetime.datetime.strptime(date_to, '%Y-%m-%d')
+        delta = date_time_to - date_time_from
+        days = delta.days
         total_rooms_price = 0
         representation = super().to_representation(instance)
         guests_from_request = filters_in_request.GET['guests'].split('-')
@@ -188,7 +194,7 @@ class HotelSearchSerializer(DocumentSerializer):
 
             for room in serialized_rooms:
                 actual_price = room.get('result_price')
-                room['totat_price'] = total_rooms_price + (total_num_of_room*actual_price)
+                room['totat_price'] = days*(total_rooms_price + (total_num_of_room*actual_price))
             result_searched_rooms[f'rooms'] = serialized_rooms
 
             representation['result'] = result_searched_rooms
