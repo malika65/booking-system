@@ -123,13 +123,13 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
-ES_URL = os.environ['ES_URL']
+# ES_URL = os.environ['ES_URL']
 
-ELASTICSEARCH_DSL = {
-    'default': {
-        'hosts': ES_URL,
-    },
-}
+# ELASTICSEARCH_DSL = {
+#     'default': {
+#         'hosts': ES_URL,
+#     },
+# }
 
 JQUERY_URL = False
 
