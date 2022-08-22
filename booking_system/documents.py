@@ -35,10 +35,10 @@ html_strip = analyzer(
 class CategoryDocument(Document):
     class Index:
         name = 'categories'
-        settings = {
-            'number_of_shards': 0,
-            'number_of_replicas': 0,
-        }
+        # settings = {
+        #     'number_of_shards': 1,
+        #     'number_of_replicas': 0,
+        # }
     name_ru = TextField()
     name_en = TextField()
 
@@ -52,10 +52,10 @@ class FacilitiesAndServicesHotelsDocument(Document):
 
     class Index:
         name = 'facilities_hotels'
-        settings = {
-            'number_of_shards': 0,
-            'number_of_replicas': 0,
-        }
+        # settings = {
+        #     'number_of_shards': 1,
+        #     'number_of_replicas': 0,
+        # }
 
     hotel_category_name_ru = TextField()
     hotel_category_name_en = TextField()
@@ -69,10 +69,10 @@ class FacilitiesAndServicesHotelsDocument(Document):
 class FacilitiesAndServicesRoomsDocument(Document):
     class Index:
         name = 'facilities_rooms'
-        settings = {
-            'number_of_shards': 0,
-            'number_of_replicas': 0,
-        }
+        # settings = {
+        #     'number_of_shards': 1,
+        #     'number_of_replicas': 0,
+        # }
 
     room_category_name_ru = TextField()
     room_category_name_en = TextField()
@@ -86,10 +86,10 @@ class FacilitiesAndServicesRoomsDocument(Document):
 class FoodCategoryDocument(Document):
     class Index:
         name = 'food_category_rooms'
-        settings = {
-            'number_of_shards': 0,
-            'number_of_replicas': 0,
-        }
+        # settings = {
+        #     'number_of_shards': 1,
+        #     'number_of_replicas': 0,
+        # }
 
     food_category_name_ru = TextField()
     food_category_name_en = TextField()
@@ -104,10 +104,10 @@ class HotelCategoryStarsDocument(Document):
 
     class Index:
         name = 'hotel_category_stars'
-        settings = {
-            'number_of_shards': 0,
-            'number_of_replicas': 0,
-        }
+        # settings = {
+        #     'number_of_shards': 1,
+        #     'number_of_replicas': 0,
+        # }
 
     hotel_category_name_ru = TextField()
     hotel_category_name_en = TextField()
@@ -123,10 +123,10 @@ class HotelCategoryStarsDocument(Document):
 class CountryDocument(Document):
     class Index:
         name = 'country'
-        settings = {
-            'number_of_shards': 0,
-            'number_of_replicas': 0,
-        }
+        # settings = {
+        #     'number_of_shards': 1,
+        #     'number_of_replicas': 0,
+        # }
 
     country_name_ru = TextField()
     country_name_en = TextField()
@@ -146,10 +146,10 @@ class CityDocument(Document):
 
     class Index:
         name = 'city'
-        settings = {
-            'number_of_shards': 0,
-            'number_of_replicas': 0,
-        }
+        # settings = {
+        #     'number_of_shards': 1,
+        #     'number_of_replicas': 0,
+        # }
 
     city_name_ru = TextField()
     city_name_en = TextField()
@@ -163,10 +163,10 @@ class CityDocument(Document):
 class CharacteristicsDocument(Document):
     class Index:
         name = 'characteristics'
-        settings = {
-            'number_of_shards': 0,
-            'number_of_replicas': 0,
-        }
+        # settings = {
+        #     'number_of_shards': 1,
+        #     'number_of_replicas': 0,
+        # }
 
     name_ru = TextField()
     name_en = TextField()
@@ -210,10 +210,10 @@ class PeriodPriceDocument(Document):
 
     class Index:
         name = 'period_price'
-        settings = {
-            'number_of_shards': 0,
-            'number_of_replicas': 0,
-        }
+        # settings = {
+        #     'number_of_shards': 1,
+        #     'number_of_replicas': 0,
+        # }
 
     class Django:
         model = PeriodPrice
@@ -300,10 +300,10 @@ class RoomDocument(Document):
 
     class Index:
         name = 'room'
-        settings = {
-            'number_of_shards': 0,
-            'number_of_replicas': 0,
-        }
+        # settings = {
+        #     'number_of_shards': 1,
+        #     'number_of_replicas': 0,
+        # }
 
     class Django:
         model = Room
@@ -316,10 +316,10 @@ class RoomDocument(Document):
 class UserDocument(Document):
     class Index:
         name = 'users'
-        settings = {
-            'number_of_shards': 0,
-            'number_of_replicas': 0,
-        }
+        # settings = {
+        #     'number_of_shards': 1,
+        #     'number_of_replicas': 0,
+        # }
 
     class Django:
         model = User
@@ -334,10 +334,10 @@ class HotelImageDocument(Document):
 
     class Index:
         name = 'hotel_images'
-        settings = {
-            'number_of_shards': 0,
-            'number_of_replicas': 0,
-        }
+        # settings = {
+        #     'number_of_shards': 1,
+        #     'number_of_replicas': 0,
+        # }
 
     class Django:
         model = HotelImage
@@ -422,10 +422,10 @@ class HotelDocument(Document):
 
     class Index:
         name = 'hotels'
-        settings = {
-            'number_of_shards': 0,
-            'number_of_replicas': 0,
-        }
+        # settings = {
+        #     'number_of_shards': 1,
+        #     'number_of_replicas': 0,
+        # }
 
     class Django:
         model = Hotel
@@ -563,10 +563,10 @@ class BookingDocument(Document):
 
     class Index:
         name = 'bookings'
-        settings = {
-            'number_of_shards': 0,
-            'number_of_replicas': 0,
-        }
+        # settings = {
+        #     'number_of_shards': 1,
+        #     'number_of_replicas': 0,
+        # }
 
     class Django:
         model = Booking
