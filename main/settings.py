@@ -51,6 +51,7 @@ CSRF_TRUSTED_ORIGINS = ['https://silk-travel.herokuapp.com']
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
     'https://silkway.bf.kg',
+    'https://silkwaytravel.kg'
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -58,6 +59,9 @@ CORS_ALLOWED_ORIGINS = [
     "https://silk-travel.herokuapp.com",
     "https://silkway.bf.kg",
     "https://silkway.bf.kg",
+    "http://silkwaytravel.kg",
+    "https://silkwaytravel.kg"
+
 ]
 
 # CORS_ALLOW_HEADERS = [
@@ -75,9 +79,11 @@ CORS_ALLOWED_ORIGINS = [
 
 CORS_ORIGIN_WHITELIST = [
     'https://silkway.bf.kg',
+    'https://silkwaytravel.kg',
 ] # If this is used, then not need to use `CORS_ORIGIN_ALLOW_ALL = True`
 CORS_ORIGIN_REGEX_WHITELIST = [
     'https://silkway.bf.kg',
+    'https://silkwaytravel.kg',
 ]
 
 AUTH_USER_MODEL = 'authe.User'
