@@ -44,10 +44,10 @@ class HotelAdmin(TranslationAdmin):
 
 class PeriodPriceInline(admin.TabularInline):
     model = PeriodPrice
-    list_display = ('date_from',)
+    list_display = ('date_from', 'room_id')
 
-    def date_from(self, obj):
-        return obj.room_id.date_from
+
+admin.site.register(PeriodPrice)
 
 
 @admin.register(Room)
@@ -56,7 +56,7 @@ class RoomAdmin(TranslationAdmin):
         models.ManyToManyField: {'widget': CheckboxSelectMultiple},
     }
     field = '__all__'
-    list_display = ('room_name', 'hotel_id')
+    list_display = ('id', 'room_name', 'hotel_id')
     inlines = [PeriodPriceInline]
 
 
