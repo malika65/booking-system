@@ -52,7 +52,7 @@ class RoomAdmin(TranslationAdmin):
         models.ManyToManyField: {'widget': CheckboxSelectMultiple},
     }
     field = '__all__'
-    list_display = ('room_name', 'hotel_id')
+    list_display = ('room_name', 'hotel_id', 'date_from')
     inlines = [PeriodPriceInline]
 
 
