@@ -46,6 +46,9 @@ class PeriodPriceInline(admin.TabularInline):
     model = PeriodPrice
     list_display = ('date_from',)
 
+    def date_from(self, obj):
+        return obj.room_id.date_from
+
 
 @admin.register(Room)
 class RoomAdmin(TranslationAdmin):
