@@ -44,10 +44,6 @@ class HotelAdmin(TranslationAdmin):
 
 class PeriodPriceInline(admin.TabularInline):
     model = PeriodPrice
-    list_display = ('date_from', 'room_id')
-
-
-admin.site.register(PeriodPrice)
 
 
 @admin.register(Room)
