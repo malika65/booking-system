@@ -98,7 +98,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'cloudinary',
     'smart_selects',
-    'CORS_ALLOWED_ORIGINS',
     'rest_framework',
     'rest_framework_api_key',
     'rest_framework_simplejwt.token_blacklist',
