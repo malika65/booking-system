@@ -51,7 +51,7 @@ CSRF_TRUSTED_ORIGINS = ['https://silk-travel.herokuapp.com']
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
     # 'https://silkway.bf.kg',
-    'https://silkwaytravel.kg'
+    'https://silkwaytravel.kg/'
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -59,8 +59,8 @@ CORS_ALLOWED_ORIGINS = [
     "https://silk-travel.herokuapp.com",
     # "https://silkway.bf.kg",
     # "https://silkway.bf.kg",
-    "http://silkwaytravel.kg",
-    "https://silkwaytravel.kg"
+    "http://silkwaytravel.kg/",
+    "https://silkwaytravel.kg/"
 
 ]
 
