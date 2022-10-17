@@ -72,9 +72,9 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 
-CORS_ORIGIN_WHITELIST = [
-    'https://silkwaytravel.kg',
-] # If this is used, then not need to use `CORS_ORIGIN_ALLOW_ALL = True`
+# CORS_ORIGIN_WHITELIST = [
+#     'https://silkwaytravel.kg',
+# ] # If this is used, then not need to use `CORS_ORIGIN_ALLOW_ALL = True`
 CORS_ORIGIN_REGEX_WHITELIST = [
     'https://silkwaytravel.kg',
 ]
