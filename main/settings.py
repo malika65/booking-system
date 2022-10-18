@@ -434,5 +434,6 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
     'Access-Control-Allow-Origin',
     'Access-Control-Allow-Credentials',
-    'x-authorization'
+    'x-authorization',
+    'X-Api-Key',
 ]
