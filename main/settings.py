@@ -38,46 +38,46 @@ SECRET_KEY = os.environ['SECRET_KEY']
 DEBUG = True
 
 
-ALLOWED_HOSTS = ['*']
-CORS_ORIGIN_ALLOW_ALL = True
-
-CORS_ALLOW_CREDENTIALS = True
-
-CSRF_TRUSTED_ORIGINS = ['https://silk-travel.herokuapp.com',
-                        'https://silkwaytravel.kg']
+ALLOWED_HOSTS = ["*"]
+# CORS_ORIGIN_ALLOW_ALL = True
+#
+# CORS_ALLOW_CREDENTIALS = True
+#
+# CSRF_TRUSTED_ORIGINS = ['https://silk-travel.herokuapp.com',
+#                         'https://silkwaytravel.kg']
 
 # CORS_ALLOW_ALL_ORIGINS = True # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
 
-CORS_ALLOWED_ORIGIN_REGEXES = [
-    'https://silkwaytravel.kg'
-]
-
-CORS_ALLOWED_ORIGINS = [
-    "http://silk-travel.herokuapp.com",
-    "https://silk-travel.herokuapp.com",
-    "https://silkwaytravel.kg",
-
-]
-
-CORS_ALLOW_HEADERS = [
-    'Access-Control-Allow-Origin',
-    'accept',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
-]
-
-# CORS_ORIGIN_WHITELIST = [
+# CORS_ALLOWED_ORIGIN_REGEXES = [
+#     'https://silkwaytravel.kg'
+# ]
+#
+# CORS_ALLOWED_ORIGINS = [
+#     "http://silk-travel.herokuapp.com",
+#     "https://silk-travel.herokuapp.com",
+#     "https://silkwaytravel.kg",
+#
+# ]
+#
+# CORS_ALLOW_HEADERS = [
+#     'Access-Control-Allow-Origin',
+#     'accept',
+#     'accept-encoding',
+#     'authorization',
+#     'content-type',
+#     'dnt',
+#     'origin',
+#     'user-agent',
+#     'x-csrftoken',
+#     'x-requested-with',
+# ]
+#
+# # CORS_ORIGIN_WHITELIST = [
+# #     'https://silkwaytravel.kg',
+# # ] # If this is used, then not need to use `CORS_ORIGIN_ALLOW_ALL = True`
+# CORS_ORIGIN_REGEX_WHITELIST = [
 #     'https://silkwaytravel.kg',
-# ] # If this is used, then not need to use `CORS_ORIGIN_ALLOW_ALL = True`
-CORS_ORIGIN_REGEX_WHITELIST = [
-    'https://silkwaytravel.kg',
-]
+# ]
 
 AUTH_USER_MODEL = 'authe.User'
 
@@ -135,7 +135,7 @@ USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = False
 
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -399,3 +399,40 @@ cloudinary.config(
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 ROOT_URL = os.environ['ROOT_URL']
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_PREFLIGHT_MAX_AGE = 86400
+
+CORS_ALLOWED_ORIGINS = [
+    "http://silk-travel.herokuapp.com",
+    "https://silk-travel.herokuapp.com",
+    "https://silkwaytravel.kg",
+    # 'http://localhost:3000',
+    # 'http://kube-master.linux.doscredobank.kg'
+]
+
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'PATCH',
+    'POST',
+    'PUT',
+    'OPTIONS'
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    'Access-Control-Allow-Origin',
+    'Access-Control-Allow-Credentials',
+    'x-authorization'
+]
